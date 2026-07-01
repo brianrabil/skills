@@ -9,17 +9,20 @@
   },
   "scripts": {
     "dev": "turbo run dev",
+    "agent:dev": "pnpm --filter agent agent:dev",
     "build": "turbo run build",
     "lint": "oxlint .",
     "lint:fix": "oxlint --fix .",
     "fmt": "oxfmt .",
     "fmt:check": "oxfmt --check",
-    "skills:sync": "skills experimental_install"
+    "skills:sync": "skills experimental_install",
+    "doctor": "react-doctor"
   },
   "devDependencies": {
     "@changesets/cli": "^2.31.0",
     "oxfmt": "^0.57.0",
     "oxlint": "^1.72.0",
+    "react-doctor": "^0.5.8",
     "skills": "^1.5.14",
     "turbo": "^2.5.0"
   },

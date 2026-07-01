@@ -8,11 +8,12 @@
   },
   "scripts": {
     "build": "eve build",
-    "dev": "eve dev",
+    "agent:dev": "eve dev",
     "start": "eve start",
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@agent-browser/sandbox": "^0.31.1",
     "@vercel/connect": "0.2.2",
     "ai": "^7.0.0",
     "eve": "^0.17.2",

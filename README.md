@@ -82,6 +82,7 @@ This repo is a [pnpm workspace](https://pnpm.io/workspaces) orchestrated with
 ```bash
 pnpm install                       # install workspace dependencies
 pnpm --filter docs dev             # start the docs site on :3000
+pnpm agent:dev                     # start the eve agent's interactive TUI dev mode
 pnpm build                         # build apps/docs and apps/agent
 pnpm exec turbo run quality        # lint + format check (oxlint + oxfmt)
 pnpm exec turbo run quality:fix    # lint --fix, then format
@@ -94,6 +95,5 @@ pnpm skills:sync                   # restore local dev-tool skills from skills-l
 > matched, running `npx skills ...` from inside this repo would resolve to
 > the local project instead of the registry CLI.
 
-Versioning is driven by [changesets](https://github.com/changesets/changesets)
-and the [autoship](https://github.com/vercel-labs/autoship) CLI; merging to
-`main` only versions and tags the repo — nothing is published to npm.
+Versioning is driven by [changesets](https://github.com/changesets/changesets);
+merging to `main` only versions and tags the repo — nothing is published to npm.
