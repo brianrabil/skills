@@ -1,0 +1,52 @@
+---
+title: oRPC
+description: Build, consume, or debug oRPC APIs and clients — procedures, routers, contracts, OpenAPI, framework adapters, and integrations.
+---
+
+[oRPC](https://orpc.dev) builds APIs that are end-to-end type-safe and
+OpenAPI-compliant, with no code-generation step — types flow from your
+router or contract straight to the client through TypeScript inference.
+
+This skill teaches an agent oRPC's actual builder chain, error model, and
+adapter split, backed by a verbatim mirror of the official docs so it never
+has to guess signatures from memory or lean on patterns borrowed from tRPC,
+gRPC, or Connect.
+
+## Install
+
+```bash
+npx skills add brianrabil/skills --skill orpc
+```
+
+## What it covers
+
+- **Procedure** — the unit of API logic, built with the `os` builder from
+  `@orpc/server`: `.$context()`, `.use()` (middleware), `.input()`,
+  `.output()`, `.errors()`, `.meta()`, `.handler()`.
+- **Router** — a plain nested object of procedures and/or nested routers.
+- **Contract** — an optional, implementation-free description of a
+  procedure/router, implemented later via `.implement()`.
+- **Context & middleware** — typed dependencies threaded through handlers via
+  `.$context<T>()`, composed with `os.middleware(...)`.
+- **Client** — server-side (`createRouterClient`) or wire (`createORPCClient`
+  + `RPCLink`/`OpenAPILink`).
+- **Handler** — `RPCHandler` (oRPC's compact wire protocol) or
+  `OpenAPIHandler` (REST/OpenAPI semantics), mounted via a framework adapter.
+
+Framework adapters: Next.js, Nuxt, Astro, SvelteKit, SolidStart, Remix, Hono,
+Express, Fastify, Elysia, H3, Electron, React Native, browser extensions.
+
+Integrations: TanStack Query, NestJS, Effect, Pino, OpenTelemetry, Sentry,
+Better Auth, AI SDK, and a guided tRPC migration path.
+
+## How it's built
+
+The skill's `references/` directory mirrors
+[orpc.dev/llms-full.txt](https://orpc.dev/llms-full.txt) verbatim, split one
+file per doc page and organized by topic (fundamentals, contract, client,
+RPC protocol, OpenAPI, adapters, plugins, helpers, integrations, best
+practices, advanced, migrations, ecosystem). The agent loads only the
+reference files a task actually needs, and prefers them over prior training
+knowledge — oRPC ships fast and its API shifts between majors.
+
+See the full skill source: [`skills/orpc`](https://github.com/brianrabil/skills/tree/main/skills/orpc).
