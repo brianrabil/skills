@@ -1,7 +1,12 @@
 import { ArrowRight, Network } from "lucide-react";
 import Link from "next/link";
+import ClaudeCode from "@thesvg/react/claude-code";
+import Codex from "@thesvg/react/codex";
+import Cursor from "@thesvg/react/cursor";
 import Github from "@thesvg/react/github";
-import type { CSSProperties, ComponentType } from "react";
+import Windsurf from "@thesvg/react/windsurf";
+import Zed from "@thesvg/react/zed";
+import type { CSSProperties, ComponentType, ReactNode } from "react";
 import { Button } from "@workspace/ui/components/button";
 import {
   Card,
@@ -22,7 +27,18 @@ import { docsRoute, gitConfig } from "@/lib/shared";
 const githubUrl = `https://github.com/${gitConfig.user}/${gitConfig.repo}`;
 const installCommand = `npx skills add ${gitConfig.user}/${gitConfig.repo}`;
 
-const agents = ["Claude Code", "Cursor", "Codex", "Windsurf", "Zed", "70+ more"];
+// `mono` variants ship unfilled paths and zed hardcodes white fills, so the
+// strip forces fill-current at both the svg root and path level (CSS beats
+// SVG presentation attributes) to stay theme-adaptive.
+const agentIconClass = "size-4 fill-current [&_path]:fill-current";
+
+const agents: { name: string; icon: ReactNode }[] = [
+  { name: "Claude Code", icon: <ClaudeCode variant="mono" className={agentIconClass} /> },
+  { name: "Cursor", icon: <Cursor variant="mono" className={agentIconClass} /> },
+  { name: "Codex", icon: <Codex className={agentIconClass} /> },
+  { name: "Windsurf", icon: <Windsurf variant="mono" className={agentIconClass} /> },
+  { name: "Zed", icon: <Zed className={agentIconClass} /> },
+];
 
 type Skill = {
   name: string;
@@ -35,7 +51,7 @@ type Skill = {
 const skills: Skill[] = [
   {
     name: "oRPC",
-    slug: "orpc",
+    slug: "libraries/orpc",
     tag: "Mirrors official docs",
     icon: Network,
     description:
@@ -72,11 +88,11 @@ export default function HomePage() {
         <div className="mx-auto w-full max-w-6xl px-4 py-16 lg:py-20">
           <div className="flex max-w-2xl flex-col items-start gap-6 text-left">
             <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
-              Give your coding agent real expertise
+              Stop letting your coding agent guess
             </h1>
             <p className="max-w-lg text-lg text-balance text-muted-foreground">
-              A personal collection of reusable instructions for Claude Code, Cursor, Codex, and 70+
-              other coding agents, installed with one command.
+              Skills give your agent working knowledge of the libraries and workflows you actually
+              use. Install them all with one command.
             </p>
             <Snippet className="w-full max-w-md" code={installCommand}>
               <SnippetAddon>
@@ -112,13 +128,18 @@ export default function HomePage() {
 
       {/* Compatible agents strip */}
       <section className="border-b border-border">
-        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-3 gap-y-1 px-4 py-4 text-sm text-muted-foreground">
+        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-5 gap-y-2 px-4 py-4 text-sm">
           <span className="text-xs font-medium text-muted-foreground">Works with</span>
-          {agents.map((agent) => (
-            <span key={agent} className="font-medium text-foreground/80">
-              {agent}
+          {agents.map(({ name, icon }) => (
+            <span
+              key={name}
+              className="inline-flex items-center gap-1.5 font-medium text-foreground/80"
+            >
+              {icon}
+              {name}
             </span>
           ))}
+          <span className="text-muted-foreground">70+ more</span>
         </div>
       </section>
 
@@ -129,7 +150,8 @@ export default function HomePage() {
             <Eyebrow>The collection</Eyebrow>
             <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Browse the skills</h2>
             <p className="max-w-lg text-muted-foreground">
-              One published skill so far, with more on the way.
+              Library skills mirror official docs, so your agent works from the real API instead of
+              a hazy memory of it. My own custom skills land next.
             </p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -181,7 +203,8 @@ export default function HomePage() {
               Add a skill to your next project
             </h2>
             <p className="max-w-sm text-muted-foreground">
-              Install the whole collection in seconds. It works with whatever agent you already run.
+              One command installs everything. Your agent loads a skill only when the task calls for
+              it.
             </p>
           </div>
           <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center lg:w-auto">
