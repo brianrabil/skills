@@ -2,3 +2,8 @@
 node_modules/
 *.log
 .turbo/
+
+# Locally-installed dev-tool skills (restore via `npx skills experimental_install`,
+# which reads skills-lock.json — see CLAUDE.md)
+.agents/
+.claude/skills/

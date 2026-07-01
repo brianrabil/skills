@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "private": true,
   "license": "MIT",
-  "packageManager": "pnpm@10.34.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/brianrabil/skills.git"
@@ -11,10 +10,21 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
-    "lint": "turbo run lint"
+    "lint": "oxlint .",
+    "lint:fix": "oxlint --fix .",
+    "fmt": "oxfmt .",
+    "fmt:check": "oxfmt --check",
+    "skills:sync": "skills experimental_install"
   },
   "devDependencies": {
     "@changesets/cli": "^2.31.0",
+    "oxfmt": "^0.57.0",
+    "oxlint": "^1.72.0",
+    "skills": "^1.5.14",
     "turbo": "^2.5.0"
-  }
+  },
+  "engines": {
+    "node": "24.x"
+  },
+  "packageManager": "pnpm@10.34.3"
 }
