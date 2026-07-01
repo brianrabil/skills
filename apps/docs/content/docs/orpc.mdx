@@ -29,7 +29,7 @@ npx skills add brianrabil/skills --skill orpc
 - **Context & middleware** — typed dependencies threaded through handlers via
   `.$context<T>()`, composed with `os.middleware(...)`.
 - **Client** — server-side (`createRouterClient`) or wire (`createORPCClient`
-  + `RPCLink`/`OpenAPILink`).
+  plus a link such as `RPCLink` or `OpenAPILink`).
 - **Handler** — `RPCHandler` (oRPC's compact wire protocol) or
   `OpenAPIHandler` (REST/OpenAPI semantics), mounted via a framework adapter.
 
