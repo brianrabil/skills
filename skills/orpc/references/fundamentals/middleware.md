@@ -2,8 +2,8 @@
 
 Middleware is a powerful feature in oRPC that enables reusable and extensible procedures. It allows you to:
 
-* Intercept, hook into, or listen to a handler's execution.
-* Inject or guard the execution context.
+- Intercept, hook into, or listen to a handler's execution.
+- Inject or guard the execution context.
 
 ## Overview
 
@@ -11,7 +11,7 @@ Middleware is a function that takes a `next` function as a parameter and either 
 of `next` or modifies the result before returning it.
 
 ```ts twoslash
-import { os } from '@orpc/server'
+import { os } from "@orpc/server";
 // ---cut---
 const authMiddleware = os
   .$context<{ something?: string }>() // <-- define dependent-context
@@ -19,21 +19,20 @@ const authMiddleware = os
     // Execute logic before the handler
 
     const result = await next({
-      context: { // Pass additional context
-        user: { id: 1, name: 'John' }
-      }
-    })
+      context: {
+        // Pass additional context
+        user: { id: 1, name: "John" },
+      },
+    });
 
     // Execute logic after the handler
 
-    return result
-  })
+    return result;
+  });
 
-const example = os
-  .use(authMiddleware)
-  .handler(async ({ context }) => {
-    const user = context.user
-  })
+const example = os.use(authMiddleware).handler(async ({ context }) => {
+  const user = context.user;
+});
 ```
 
 ## Dependent context
@@ -48,11 +47,11 @@ Middleware can be defined inline within `.use`, which is useful for simple middl
 const example = os
   .use(async ({ context, next }) => {
     // Execute logic before the handler
-    return next()
+    return next();
   })
   .handler(async ({ context }) => {
     // Handler logic
-  })
+  });
 ```
 
 ## Middleware Context
@@ -60,32 +59,33 @@ const example = os
 Middleware can be used to inject or guard the [context](/docs/context).
 
 ```ts twoslash
-import { ORPCError, os } from '@orpc/server'
+import { ORPCError, os } from "@orpc/server";
 // ---cut---
 const setting = os
   .use(async ({ context, next }) => {
     return next({
       context: {
-        auth: await auth() // <-- inject auth payload
-      }
-    })
+        auth: await auth(), // <-- inject auth payload
+      },
+    });
   })
   .use(async ({ context, next }) => {
-    if (!context.auth) { // <-- guard auth
-      throw new ORPCError('UNAUTHORIZED')
+    if (!context.auth) {
+      // <-- guard auth
+      throw new ORPCError("UNAUTHORIZED");
     }
 
     return next({
       context: {
-        auth: context.auth // <-- override auth
-      }
-    })
+        auth: context.auth, // <-- override auth
+      },
+    });
   })
   .handler(async ({ context }) => {
-    console.log(context.auth) // <-- access auth
-  })
+    console.log(context.auth); // <-- access auth
+  });
 // ---cut-after---
-declare function auth(): { userId: number } | null
+declare function auth(): { userId: number } | null;
 ```
 
 ::: info
@@ -99,23 +99,23 @@ Middleware can access input, enabling use cases like permission checks.
 ```ts
 const canUpdate = os.middleware(async ({ context, next }, input: number) => {
   // Perform permission check
-  return next()
-})
+  return next();
+});
 
 const ping = os
   .input(z.number())
   .use(canUpdate)
   .handler(async ({ input }) => {
     // Handler logic
-  })
+  });
 
 // Mapping input if necessary
 const pong = os
   .input(z.object({ id: z.number() }))
-  .use(canUpdate, input => input.id)
+  .use(canUpdate, (input) => input.id)
   .handler(async ({ input }) => {
     // Handler logic
-  })
+  });
 ```
 
 ::: info
@@ -123,11 +123,11 @@ You can adapt a middleware to accept a different input shape by using `.mapInput
 
 ```ts
 const canUpdate = os.middleware(async ({ context, next }, input: number) => {
-  return next()
-})
+  return next();
+});
 
 // Transform middleware to accept a new input shape
-const mappedCanUpdate = canUpdate.mapInput((input: { id: number }) => input.id)
+const mappedCanUpdate = canUpdate.mapInput((input: { id: number }) => input.id);
 ```
 
 :::
@@ -138,18 +138,18 @@ Middleware can also modify the output of a handler, such as implementing caching
 
 ```ts
 const cacheMid = os.middleware(async ({ context, next, path }, input, output) => {
-  const cacheKey = path.join('/') + JSON.stringify(input)
+  const cacheKey = path.join("/") + JSON.stringify(input);
 
   if (db.has(cacheKey)) {
-    return output(db.get(cacheKey))
+    return output(db.get(cacheKey));
   }
 
-  const result = await next({})
+  const result = await next({});
 
-  db.set(cacheKey, result.output)
+  db.set(cacheKey, result.output);
 
-  return result
-})
+  return result;
+});
 ```
 
 ## Concatenation
@@ -159,7 +159,7 @@ Multiple middleware functions can be combined using `.concat`.
 ```ts
 const concatMiddleware = aMiddleware
   .concat(os.middleware(async ({ next }) => next()))
-  .concat(anotherMiddleware)
+  .concat(anotherMiddleware);
 ```
 
 ::: info
@@ -171,30 +171,39 @@ If you want to concatenate two middlewares with different input types, you can u
 oRPC provides some built-in middlewares that can be used to simplify common use cases.
 
 ```ts
-import { onError, onFinish, onStart, onSuccess } from '@orpc/server'
+import { onError, onFinish, onStart, onSuccess } from "@orpc/server";
 
 const ping = os
-  .use(onStart(() => {
-    // Execute logic before the handler
-  }))
-  .use(onSuccess(() => {
-    // Execute when the handler succeeds
-  }))
-  .use(onError(() => {
-    // Execute when the handler fails
-  }))
-  .use(onFinish(() => {
-    // Execute logic after the handler
-  }))
+  .use(
+    onStart(() => {
+      // Execute logic before the handler
+    }),
+  )
+  .use(
+    onSuccess(() => {
+      // Execute when the handler succeeds
+    }),
+  )
+  .use(
+    onError(() => {
+      // Execute when the handler fails
+    }),
+  )
+  .use(
+    onFinish(() => {
+      // Execute logic after the handler
+    }),
+  )
   .handler(async ({ context }) => {
     // Handler logic
-  })
+  });
 ```
 
 ---
 
 ---
+
 url: /docs/migrations/from-trpc.md
 description: A comprehensive guide to migrate your tRPC application to oRPC
----
 
+---

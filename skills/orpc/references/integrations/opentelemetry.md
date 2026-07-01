@@ -45,32 +45,32 @@ To set up OpenTelemetry with oRPC, use the `ORPCInstrumentation` class. This cla
 ::: code-group
 
 ```ts twoslash [server]
-import { NodeSDK } from '@opentelemetry/sdk-node'
-import { ORPCInstrumentation } from '@orpc/otel'
+import { NodeSDK } from "@opentelemetry/sdk-node";
+import { ORPCInstrumentation } from "@orpc/otel";
 
 const sdk = new NodeSDK({
   instrumentations: [
     new ORPCInstrumentation(), // [!code highlight]
   ],
-})
+});
 
-sdk.start()
+sdk.start();
 ```
 
 ```ts twoslash [client]
-import { WebTracerProvider } from '@opentelemetry/sdk-trace-web'
-import { registerInstrumentations } from '@opentelemetry/instrumentation'
-import { ORPCInstrumentation } from '@orpc/otel'
+import { WebTracerProvider } from "@opentelemetry/sdk-trace-web";
+import { registerInstrumentations } from "@opentelemetry/instrumentation";
+import { ORPCInstrumentation } from "@orpc/otel";
 
-const provider = new WebTracerProvider()
+const provider = new WebTracerProvider();
 
-provider.register()
+provider.register();
 
 registerInstrumentations({
   instrumentations: [
     new ORPCInstrumentation(), // [!code highlight]
   ],
-})
+});
 ```
 
 :::
@@ -84,20 +84,20 @@ While OpenTelemetry can be used on both server and client sides, using it on the
 oRPC automatically creates spans for each [middleware](/docs/middleware) execution. You can access the active span to customize attributes, events, and other span data:
 
 ```ts
-import { trace } from '@opentelemetry/api'
+import { trace } from "@opentelemetry/api";
 
 export const someMiddleware = os.middleware(async (ctx, next) => {
-  const span = trace.getActiveSpan()
+  const span = trace.getActiveSpan();
 
-  span?.setAttribute('someAttribute', 'someValue')
-  span?.addEvent('someEvent')
+  span?.setAttribute("someAttribute", "someValue");
+  span?.addEvent("someEvent");
 
-  return next()
-})
+  return next();
+});
 
-Object.defineProperty(someMiddleware, 'name', {
-  value: 'someName',
-})
+Object.defineProperty(someMiddleware, "name", {
+  value: "someName",
+});
 ```
 
 ::: tip
@@ -109,34 +109,33 @@ Define the `name` property on your middleware to improve span naming and make tr
 oRPC may throw errors before they reach the error handling layer, such as invalid WebSocket messages or adapter interceptor errors. We recommend capturing these errors:
 
 ```ts
-import { SpanStatusCode, trace } from '@opentelemetry/api'
+import { SpanStatusCode, trace } from "@opentelemetry/api";
 
-const tracer = trace.getTracer('uncaught-errors')
+const tracer = trace.getTracer("uncaught-errors");
 
 function recordError(eventName: string, reason: unknown) {
-  const span = tracer.startSpan(eventName)
-  const message = String(reason)
+  const span = tracer.startSpan(eventName);
+  const message = String(reason);
 
   if (reason instanceof Error) {
-    span.recordException(reason)
-  }
-  else {
-    span.recordException({ message })
+    span.recordException(reason);
+  } else {
+    span.recordException({ message });
   }
 
-  span.setStatus({ code: SpanStatusCode.ERROR, message })
-  span.end()
+  span.setStatus({ code: SpanStatusCode.ERROR, message });
+  span.end();
 }
 
-process.on('uncaughtException', (reason) => {
-  recordError('uncaughtException', reason)
+process.on("uncaughtException", (reason) => {
+  recordError("uncaughtException", reason);
   // process.exit(1) // uncomment to restore default Node.js behavior
-})
+});
 
-process.on('unhandledRejection', (reason) => {
-  recordError('unhandledRejection', reason)
+process.on("unhandledRejection", (reason) => {
+  recordError("unhandledRejection", reason);
   // process.exit(1) // uncomment to restore default Node.js behavior
-})
+});
 ```
 
 ## Capture Abort Signals
@@ -144,21 +143,21 @@ process.on('unhandledRejection', (reason) => {
 If your application heavily uses [Event Iterator](/docs/event-iterator) or similar streaming patterns, we recommend capturing an event when the `signal` is aborted to properly track and detach unexpected long-running operations:
 
 ```ts
-import { trace } from '@opentelemetry/api'
+import { trace } from "@opentelemetry/api";
 
 const handler = new RPCHandler(router, {
   interceptors: [
     ({ request, next }) => {
-      const span = trace.getActiveSpan()
+      const span = trace.getActiveSpan();
 
-      request.signal?.addEventListener('abort', () => {
-        span?.addEvent('aborted', { reason: String(request.signal?.reason) })
-      })
+      request.signal?.addEventListener("abort", () => {
+        span?.addEvent("aborted", { reason: String(request.signal?.reason) });
+      });
 
-      return next()
+      return next();
     },
   ],
-})
+});
 ```
 
 ## Context Propagation
@@ -172,10 +171,11 @@ Common libraries for HTTP instrumentation include [@hono/otel](https://www.npmjs
 ---
 
 ---
+
 url: /docs/best-practices/optimize-ssr.md
 description: >-
-  Optimize SSR performance in Next.js, SvelteKit, and other frameworks by using
-  oRPC to make direct server-side API calls, avoiding unnecessary network
-  requests.
----
+Optimize SSR performance in Next.js, SvelteKit, and other frameworks by using
+oRPC to make direct server-side API calls, avoiding unnecessary network
+requests.
 
+---

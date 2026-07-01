@@ -37,32 +37,32 @@ A normal [router](/docs/router) works as a contract router as long as it does no
 :::
 
 ```ts twoslash
-import { contract } from './shared/planet'
+import { contract } from "./shared/planet";
 // ---cut---
-import type { JsonifiedClient } from '@orpc/openapi-client'
-import type { ContractRouterClient } from '@orpc/contract'
-import { createORPCClient, onError } from '@orpc/client'
-import { OpenAPILink } from '@orpc/openapi-client/fetch'
+import type { JsonifiedClient } from "@orpc/openapi-client";
+import type { ContractRouterClient } from "@orpc/contract";
+import { createORPCClient, onError } from "@orpc/client";
+import { OpenAPILink } from "@orpc/openapi-client/fetch";
 
 const link = new OpenAPILink(contract, {
-  url: 'http://localhost:3000/api',
+  url: "http://localhost:3000/api",
   headers: () => ({
-    'x-api-key': 'my-api-key',
+    "x-api-key": "my-api-key",
   }),
   fetch: (request, init) => {
     return globalThis.fetch(request, {
       ...init,
-      credentials: 'include', // Include cookies for cross-origin requests
-    })
+      credentials: "include", // Include cookies for cross-origin requests
+    });
   },
   interceptors: [
     onError((error) => {
-      console.error(error)
-    })
+      console.error(error);
+    }),
   ],
-})
+});
 
-const client: JsonifiedClient<ContractRouterClient<typeof contract>> = createORPCClient(link)
+const client: JsonifiedClient<ContractRouterClient<typeof contract>> = createORPCClient(link);
 ```
 
 :::warning
@@ -73,8 +73,8 @@ Due to JSON limitations, you must wrap your client with `JsonifiedClient` to ens
 
 Unlike [RPCLink](/docs/client/rpc-link), `OpenAPILink` has some constraints:
 
-* Payloads containing a `Blob` or `File` (outside the root level) must use `multipart/form-data` and serialized using [Bracket Notation](/docs/openapi/bracket-notation).
-* For `GET` requests, the payload must be sent as `URLSearchParams` and serialized using [Bracket Notation](/docs/openapi/bracket-notation).
+- Payloads containing a `Blob` or `File` (outside the root level) must use `multipart/form-data` and serialized using [Bracket Notation](/docs/openapi/bracket-notation).
+- For `GET` requests, the payload must be sent as `URLSearchParams` and serialized using [Bracket Notation](/docs/openapi/bracket-notation).
 
 :::warning
 In these cases, both the request and response are subject to the limitations of [Bracket Notation Limitations](/docs/openapi/bracket-notation#limitations). Additionally, oRPC converts data to strings (exclude `null` and `undefined` will not be represented).
@@ -88,10 +88,10 @@ In these cases, both the request and response are subject to the limitations of 
 const handler = new OpenAPIHandler(router, {
   plugins: [
     new CORSPlugin({
-      exposeHeaders: ['Content-Disposition'],
+      exposeHeaders: ["Content-Disposition"],
     }),
   ],
-})
+});
 ```
 
 ## Using Client Context
@@ -99,30 +99,28 @@ const handler = new OpenAPIHandler(router, {
 Client context lets you pass extra information when calling procedures and dynamically modify OpenAPILink's behavior.
 
 ```ts twoslash
-import { contract } from './shared/planet'
+import { contract } from "./shared/planet";
 // ---cut---
-import type { JsonifiedClient } from '@orpc/openapi-client'
-import type { ContractRouterClient } from '@orpc/contract'
-import { createORPCClient } from '@orpc/client'
-import { OpenAPILink } from '@orpc/openapi-client/fetch'
+import type { JsonifiedClient } from "@orpc/openapi-client";
+import type { ContractRouterClient } from "@orpc/contract";
+import { createORPCClient } from "@orpc/client";
+import { OpenAPILink } from "@orpc/openapi-client/fetch";
 
 interface ClientContext {
-  something?: string
+  something?: string;
 }
 
 const link = new OpenAPILink<ClientContext>(contract, {
-  url: 'http://localhost:3000/api',
+  url: "http://localhost:3000/api",
   headers: async ({ context }) => ({
-    'x-api-key': context?.something ?? ''
-  })
-})
+    "x-api-key": context?.something ?? "",
+  }),
+});
 
-const client: JsonifiedClient<ContractRouterClient<typeof contract, ClientContext>> = createORPCClient(link)
+const client: JsonifiedClient<ContractRouterClient<typeof contract, ClientContext>> =
+  createORPCClient(link);
 
-const result = await client.planet.list(
-  { limit: 10 },
-  { context: { something: 'value' } }
-)
+const result = await client.planet.list({ limit: 10 }, { context: { something: "value" } });
 ```
 
 :::info
@@ -136,13 +134,13 @@ You can define `url` as a function, ensuring compatibility with environments tha
 ```ts
 const link = new OpenAPILink({
   url: () => {
-    if (typeof window === 'undefined') {
-      throw new Error('OpenAPILink is not allowed on the server side.')
+    if (typeof window === "undefined") {
+      throw new Error("OpenAPILink is not allowed on the server side.");
     }
 
-    return `${window.location.origin}/api`
+    return `${window.location.origin}/api`;
   },
-})
+});
 ```
 
 ## SSE Like Behavior
@@ -156,7 +154,8 @@ The `OpenAPILink` follows the same lifecycle as the [RPCLink Lifecycle](/docs/cl
 ---
 
 ---
+
 url: /docs/integrations/opentelemetry.md
 description: Seamlessly integrate oRPC with OpenTelemetry for distributed tracing
----
 
+---

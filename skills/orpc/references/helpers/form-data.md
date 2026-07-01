@@ -7,15 +7,15 @@ Form data helpers provide utilities for parsing HTML form data and extracting va
 Parses HTML form data using [bracket notation](/docs/openapi/bracket-notation) to deserialize complex nested objects and arrays.
 
 ```ts twoslash
-import { parseFormData } from '@orpc/openapi-client/helpers'
+import { parseFormData } from "@orpc/openapi-client/helpers";
 
-const form = new FormData()
-form.append('name', 'John')
-form.append('user[email]', 'john@example.com')
-form.append('user[hobbies][]', 'reading')
-form.append('user[hobbies][]', 'gaming')
+const form = new FormData();
+form.append("name", "John");
+form.append("user[email]", "john@example.com");
+form.append("user[hobbies][]", "reading");
+form.append("user[hobbies][]", "gaming");
 
-const parsed = parseFormData(form)
+const parsed = parseFormData(form);
 // Result:
 // {
 //   name: 'John',
@@ -31,26 +31,26 @@ const parsed = parseFormData(form)
 Extracts validation error messages from [standard schema](https://github.com/standard-schema/standard-schema) issues using [bracket notation](/docs/openapi/bracket-notation) paths.
 
 ```ts twoslash
-import { getIssueMessage } from '@orpc/openapi-client/helpers'
+import { getIssueMessage } from "@orpc/openapi-client/helpers";
 
 const error = {
   data: {
     issues: [
       {
-        path: ['user', 'email'],
-        message: 'Invalid email format'
-      }
-    ]
-  }
-}
+        path: ["user", "email"],
+        message: "Invalid email format",
+      },
+    ],
+  },
+};
 
-const emailError = getIssueMessage(error, 'user[email]')
+const emailError = getIssueMessage(error, "user[email]");
 // Returns: 'Invalid email format'
 
-const tagError = getIssueMessage(error, 'user[tags][]')
+const tagError = getIssueMessage(error, "user[tags][]");
 // Returns error message for any array item
 
-const anyError = getIssueMessage('anything', 'path')
+const anyError = getIssueMessage("anything", "path");
 // Returns undefined if cannot find issue
 ```
 
@@ -61,39 +61,39 @@ The `getIssueMessage` utility works with any data type but requires validation e
 ## Usage Example
 
 ```tsx
-import { getIssueMessage, parseFormData } from '@orpc/openapi-client/helpers'
+import { getIssueMessage, parseFormData } from "@orpc/openapi-client/helpers";
 
 export function ContactForm() {
-  const [error, setError] = useState()
+  const [error, setError] = useState();
 
   const handleSubmit = (form: FormData) => {
     try {
-      const data = parseFormData(form)
+      const data = parseFormData(form);
       // Process structured data
+    } catch (error) {
+      setError(error);
     }
-    catch (error) {
-      setError(error)
-    }
-  }
+  };
 
   return (
     <form action={handleSubmit}>
       <input name="user[name]" type="text" />
-      <span>{getIssueMessage(error, 'user[name]')}</span>
+      <span>{getIssueMessage(error, "user[name]")}</span>
 
       <input name="user[emails][]" type="email" />
-      <span>{getIssueMessage(error, 'user[emails][]')}</span>
+      <span>{getIssueMessage(error, "user[emails][]")}</span>
 
       <button type="submit">Submit</button>
     </form>
-  )
+  );
 }
 ```
 
 ---
 
 ---
+
 url: /docs/getting-started.md
 description: Quick guide to oRPC
----
 
+---

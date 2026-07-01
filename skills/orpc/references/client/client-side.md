@@ -33,28 +33,28 @@ deno add npm:@orpc/client@latest
 This guide uses [RPCLink](/docs/client/rpc-link), so make sure your server is set up with [RPCHandler](/docs/rpc-handler) or any API that follows the [RPC Protocol](/docs/advanced/rpc-protocol).
 
 ```ts
-import { createORPCClient, onError } from '@orpc/client'
-import { RPCLink } from '@orpc/client/fetch'
-import { RouterClient } from '@orpc/server'
-import { ContractRouterClient } from '@orpc/contract'
+import { createORPCClient, onError } from "@orpc/client";
+import { RPCLink } from "@orpc/client/fetch";
+import { RouterClient } from "@orpc/server";
+import { ContractRouterClient } from "@orpc/contract";
 
 const link = new RPCLink({
-  url: 'http://localhost:3000/rpc',
+  url: "http://localhost:3000/rpc",
   headers: () => ({
-    authorization: 'Bearer token',
+    authorization: "Bearer token",
   }),
   // fetch: <-- provide fetch polyfill fetch if needed
   interceptors: [
     onError((error) => {
-      console.error(error)
-    })
+      console.error(error);
+    }),
   ],
-})
+});
 
 // Create a client for your router
-const client: RouterClient<typeof router> = createORPCClient(link)
+const client: RouterClient<typeof router> = createORPCClient(link);
 // Or, create a client using a contract
-const client: ContractRouterClient<typeof contract> = createORPCClient(link)
+const client: ContractRouterClient<typeof contract> = createORPCClient(link);
 ```
 
 :::tip
@@ -66,14 +66,14 @@ You can export `RouterClient<typeof router>` and `ContractRouterClient<typeof co
 Once your client is set up, you can call your [procedures](/docs/procedure) as if they were local functions.
 
 ```ts twoslash
-import { router } from './shared/planet'
-import { RouterClient } from '@orpc/server'
+import { router } from "./shared/planet";
+import { RouterClient } from "@orpc/server";
 
-const client = {} as RouterClient<typeof router>
+const client = {} as RouterClient<typeof router>;
 // ---cut---
-const planet = await client.planet.find({ id: 1 })
+const planet = await client.planet.find({ id: 1 });
 
-client.planet.create
+client.planet.create;
 //            ^|
 ```
 
@@ -82,15 +82,15 @@ client.planet.create
 In oRPC, a client is a simple object-like structure. To merge multiple clients, you simply assign each client to a property in a new object:
 
 ```ts
-const clientA: RouterClient<typeof routerA> = createORPCClient(linkA)
-const clientB: RouterClient<typeof routerB> = createORPCClient(linkB)
-const clientC: RouterClient<typeof routerC> = createORPCClient(linkC)
+const clientA: RouterClient<typeof routerA> = createORPCClient(linkA);
+const clientB: RouterClient<typeof routerB> = createORPCClient(linkB);
+const clientC: RouterClient<typeof routerC> = createORPCClient(linkC);
 
 export const orpc = {
   a: clientA,
   b: clientB,
   c: clientC,
-}
+};
 ```
 
 ## Utilities
@@ -102,13 +102,13 @@ These utilities can be used for any kind of oRPC client.
 ### Infer Client Inputs
 
 ```ts twoslash
-import type { orpc as client } from './shared/planet'
+import type { orpc as client } from "./shared/planet";
 // ---cut---
-import type { InferClientInputs } from '@orpc/client'
+import type { InferClientInputs } from "@orpc/client";
 
-type Inputs = InferClientInputs<typeof client>
+type Inputs = InferClientInputs<typeof client>;
 
-type FindPlanetInput = Inputs['planet']['find']
+type FindPlanetInput = Inputs["planet"]["find"];
 ```
 
 Recursively infers the **input types** from a client. Produces a nested map where each endpoint's input type is preserved.
@@ -116,13 +116,13 @@ Recursively infers the **input types** from a client. Produces a nested map wher
 ### Infer Client Body Inputs
 
 ```ts twoslash
-import type { orpc as client } from './shared/planet'
+import type { orpc as client } from "./shared/planet";
 // ---cut---
-import type { InferClientBodyInputs } from '@orpc/client'
+import type { InferClientBodyInputs } from "@orpc/client";
 
-type BodyInputs = InferClientBodyInputs<typeof client>
+type BodyInputs = InferClientBodyInputs<typeof client>;
 
-type FindPlanetBodyInput = BodyInputs['planet']['find']
+type FindPlanetBodyInput = BodyInputs["planet"]["find"];
 ```
 
 Recursively infers the **body input types** from a client. If an endpoint's input includes `{ body: ... }`, only the `body` portion is extracted. Produces a nested map of body input types.
@@ -130,13 +130,13 @@ Recursively infers the **body input types** from a client. If an endpoint's inpu
 ### Infer Client Outputs
 
 ```ts twoslash
-import type { orpc as client } from './shared/planet'
+import type { orpc as client } from "./shared/planet";
 // ---cut---
-import type { InferClientOutputs } from '@orpc/client'
+import type { InferClientOutputs } from "@orpc/client";
 
-type Outputs = InferClientOutputs<typeof client>
+type Outputs = InferClientOutputs<typeof client>;
 
-type FindPlanetOutput = Outputs['planet']['find']
+type FindPlanetOutput = Outputs["planet"]["find"];
 ```
 
 Recursively infers the **output types** from a client. Produces a nested map where each endpoint's output type is preserved.
@@ -144,13 +144,13 @@ Recursively infers the **output types** from a client. Produces a nested map whe
 ### Infer Client Body Outputs
 
 ```ts twoslash
-import type { orpc as client } from './shared/planet'
+import type { orpc as client } from "./shared/planet";
 // ---cut---
-import type { InferClientBodyOutputs } from '@orpc/client'
+import type { InferClientBodyOutputs } from "@orpc/client";
 
-type BodyOutputs = InferClientBodyOutputs<typeof client>
+type BodyOutputs = InferClientBodyOutputs<typeof client>;
 
-type FindPlanetBodyOutput = BodyOutputs['planet']['find']
+type FindPlanetBodyOutput = BodyOutputs["planet"]["find"];
 ```
 
 Recursively infers the **body output types** from a client. If an endpoint's output includes `{ body: ... }`, only the `body` portion is extracted. Produces a nested map of body output types.
@@ -158,13 +158,13 @@ Recursively infers the **body output types** from a client. If an endpoint's out
 ### Infer Client Errors
 
 ```ts twoslash
-import type { orpc as client } from './shared/planet'
+import type { orpc as client } from "./shared/planet";
 // ---cut---
-import type { InferClientErrors } from '@orpc/client'
+import type { InferClientErrors } from "@orpc/client";
 
-type Errors = InferClientErrors<typeof client>
+type Errors = InferClientErrors<typeof client>;
 
-type FindPlanetError = Errors['planet']['find']
+type FindPlanetError = Errors["planet"]["find"];
 ```
 
 Recursively infers the **error types** from a client when using [type-safe error handling](/docs/error-handling#type‐safe-error-handling). Produces a nested map where each endpoint's error type is preserved.
@@ -172,11 +172,11 @@ Recursively infers the **error types** from a client when using [type-safe error
 ### Infer Client Error Union
 
 ```ts twoslash
-import type { orpc as client } from './shared/planet'
+import type { orpc as client } from "./shared/planet";
 // ---cut---
-import type { InferClientErrorUnion } from '@orpc/client'
+import type { InferClientErrorUnion } from "@orpc/client";
 
-type AllErrors = InferClientErrorUnion<typeof client>
+type AllErrors = InferClientErrorUnion<typeof client>;
 ```
 
 Recursively infers a **union of all error types** from a client when using [type-safe error handling](/docs/error-handling#type‐safe-error-handling). Useful when you want to handle all possible errors from any endpoint at once.
@@ -184,11 +184,11 @@ Recursively infers a **union of all error types** from a client when using [type
 ### Infer Client Context
 
 ```ts twoslash
-import type { orpc as client } from './shared/planet'
+import type { orpc as client } from "./shared/planet";
 // ---cut---
-import type { InferClientContext } from '@orpc/client'
+import type { InferClientContext } from "@orpc/client";
 
-type Context = InferClientContext<typeof client>
+type Context = InferClientContext<typeof client>;
 ```
 
 Infers the client context type from a client.
@@ -196,7 +196,8 @@ Infers the client context type from a client.
 ---
 
 ---
+
 url: /docs/comparison.md
 description: How is oRPC different from other RPC or REST solutions?
----
 
+---

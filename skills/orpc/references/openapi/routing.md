@@ -11,8 +11,8 @@ This feature applies only when using [OpenAPIHandler](/docs/openapi/openapi-hand
 By default, oRPC uses the `POST` method, constructs paths from router keys with `/`, and returns a 200 status on success. Override these defaults with `.route`:
 
 ```ts
-os.route({ method: 'GET', path: '/example', successStatus: 200 })
-os.route({ method: 'POST', path: '/example', successStatus: 201 })
+os.route({ method: "GET", path: "/example", successStatus: 200 });
+os.route({ method: "POST", path: "/example", successStatus: 201 });
 ```
 
 :::info
@@ -24,11 +24,10 @@ The `.route` can be called multiple times; each call [spread merges](https://dev
 By default, path parameters merge with query/body into a single input object. You can modify this behavior as described in the [Input/Output structure docs](/docs/openapi/input-output-structure).
 
 ```ts
-os.route({ path: '/example/{id}' })
-  .input(z.object({ id: z.string() }))
+os.route({ path: "/example/{id}" }).input(z.object({ id: z.string() }));
 
-os.route({ path: '/example/{+path}' }) // Matches slashes (/)
-  .input(z.object({ path: z.string() }))
+os.route({ path: "/example/{+path}" }) // Matches slashes (/)
+  .input(z.object({ path: z.string() }));
 ```
 
 ## Route Prefixes
@@ -36,11 +35,11 @@ os.route({ path: '/example/{+path}' }) // Matches slashes (/)
 Use `.prefix` to prepend a common path to all procedures in a router that have an explicitly defined `path`:
 
 ```ts
-const router = os.prefix('/planets').router({
+const router = os.prefix("/planets").router({
   list: listPlanet,
   find: findPlanet,
   create: createPlanet,
-})
+});
 ```
 
 ::: warning
@@ -57,8 +56,8 @@ If you follow the [contract-first approach](/docs/contract-first/define-contract
 
 ```ts
 const router = {
-  planet: os.prefix('/planets').lazy(() => import('./planet'))
-}
+  planet: os.prefix("/planets").lazy(() => import("./planet")),
+};
 ```
 
 :::warning
@@ -70,13 +69,14 @@ Do not use the `lazy` helper from `@orpc/server` here, as it cannot apply route 
 Customize the initial oRPC routing settings using `.$route`:
 
 ```ts
-const base = os.$route({ method: 'GET' })
+const base = os.$route({ method: "GET" });
 ```
 
 ---
 
 ---
+
 url: /docs/openapi/openapi-specification.md
 description: Generate OpenAPI specifications for oRPC with ease.
----
 
+---

@@ -9,32 +9,32 @@ You set up an oRPC server inside TanStack Start using its [Server Routes](https:
 ::: code-group
 
 ```ts [src/routes/api/rpc.$.ts]
-import { RPCHandler } from '@orpc/server/fetch'
-import { createFileRoute } from '@tanstack/react-router'
-import { onError } from '@orpc/server'
+import { RPCHandler } from "@orpc/server/fetch";
+import { createFileRoute } from "@tanstack/react-router";
+import { onError } from "@orpc/server";
 
 const handler = new RPCHandler(router, {
   interceptors: [
     onError((error) => {
-      console.error(error)
+      console.error(error);
     }),
   ],
-})
+});
 
-export const Route = createFileRoute('/api/rpc/$')({
+export const Route = createFileRoute("/api/rpc/$")({
   server: {
     handlers: {
       ANY: async ({ request }) => {
         const { response } = await handler.handle(request, {
-          prefix: '/api/rpc',
+          prefix: "/api/rpc",
           context: {}, // Provide initial context if needed
-        })
+        });
 
-        return response ?? new Response('Not Found', { status: 404 })
+        return response ?? new Response("Not Found", { status: 404 });
       },
     },
   },
-})
+});
 ```
 
 :::
@@ -48,18 +48,24 @@ The `handler` can be any supported oRPC handler, including [RPCHandler](/docs/rp
 Use `createIsomorphicFn` to configure the RPC link with environment-specific settings for both browser and SSR environments:
 
 ```ts
-import { RPCLink } from '@orpc/client/fetch'
-import { createIsomorphicFn } from '@tanstack/react-start'
-import { getRequestHeaders } from '@tanstack/react-start/server'
+import { RPCLink } from "@orpc/client/fetch";
+import { createIsomorphicFn } from "@tanstack/react-start";
+import { getRequestHeaders } from "@tanstack/react-start/server";
 
 const getClientLink = createIsomorphicFn()
-  .client(() => new RPCLink({
-    url: `${window.location.origin}/api/rpc`,
-  }))
-  .server(() => new RPCLink({
-    url: 'http://localhost:3000/api/rpc',
-    headers: () => getRequestHeaders(),
-  }))
+  .client(
+    () =>
+      new RPCLink({
+        url: `${window.location.origin}/api/rpc`,
+      }),
+  )
+  .server(
+    () =>
+      new RPCLink({
+        url: "http://localhost:3000/api/rpc",
+        headers: () => getRequestHeaders(),
+      }),
+  );
 ```
 
 :::info
@@ -73,35 +79,37 @@ To reduce HTTP requests and improve latency during SSR, you can utilize a [Serve
 ::: code-group
 
 ```ts [src/lib/orpc.ts]
-import { createRouterClient } from '@orpc/server'
-import type { RouterClient } from '@orpc/server'
-import { createORPCClient } from '@orpc/client'
-import { RPCLink } from '@orpc/client/fetch'
-import { getRequestHeaders } from '@tanstack/react-start/server'
-import { createIsomorphicFn } from '@tanstack/react-start'
+import { createRouterClient } from "@orpc/server";
+import type { RouterClient } from "@orpc/server";
+import { createORPCClient } from "@orpc/client";
+import { RPCLink } from "@orpc/client/fetch";
+import { getRequestHeaders } from "@tanstack/react-start/server";
+import { createIsomorphicFn } from "@tanstack/react-start";
 
 const getORPCClient = createIsomorphicFn()
-  .server(() => createRouterClient(router, {
-    /**
-     * Provide initial context if needed.
-     *
-     * Because this client instance is shared across all requests,
-     * only include context that's safe to reuse globally.
-     * For per-request context, use middleware context or pass a function as the initial context.
-     */
-    context: async () => ({
-      headers: getRequestHeaders(), // provide headers if initial context required
+  .server(() =>
+    createRouterClient(router, {
+      /**
+       * Provide initial context if needed.
+       *
+       * Because this client instance is shared across all requests,
+       * only include context that's safe to reuse globally.
+       * For per-request context, use middleware context or pass a function as the initial context.
+       */
+      context: async () => ({
+        headers: getRequestHeaders(), // provide headers if initial context required
+      }),
     }),
-  }))
+  )
   .client((): RouterClient<typeof router> => {
     const link = new RPCLink({
       url: `${window.location.origin}/api/rpc`,
-    })
+    });
 
-    return createORPCClient(link)
-  })
+    return createORPCClient(link);
+  });
 
-export const client: RouterClient<typeof router> = getORPCClient()
+export const client: RouterClient<typeof router> = getORPCClient();
 ```
 
 :::
@@ -109,7 +117,8 @@ export const client: RouterClient<typeof router> = getORPCClient()
 ---
 
 ---
+
 url: /docs/advanced/testing-mocking.md
 description: How to test and mock oRPC routers and procedures?
----
 
+---

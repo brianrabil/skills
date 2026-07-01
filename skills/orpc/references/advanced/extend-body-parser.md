@@ -3,13 +3,13 @@
 In some cases, you may need to extend the body parser to handle larger payloads or additional data types. This can be done by creating a custom body parser that extends the default functionality.
 
 ```ts
-import { RPCHandler } from '@orpc/server/fetch'
-import { getFilenameFromContentDisposition } from '@orpc/standard-server'
+import { RPCHandler } from "@orpc/server/fetch";
+import { getFilenameFromContentDisposition } from "@orpc/standard-server";
 
-const OVERRIDE_BODY_CONTEXT = Symbol('OVERRIDE_BODY_CONTEXT')
+const OVERRIDE_BODY_CONTEXT = Symbol("OVERRIDE_BODY_CONTEXT");
 
 interface OverrideBodyContext {
-  fetchRequest: Request
+  fetchRequest: Request;
 }
 
 const handler = new RPCHandler(router, {
@@ -23,51 +23,53 @@ const handler = new RPCHandler(router, {
             fetchRequest: options.request,
           },
         },
-      })
+      });
     },
   ],
   rootInterceptors: [
     (options) => {
-      const { fetchRequest } = (options.context as any)[OVERRIDE_BODY_CONTEXT] as OverrideBodyContext
+      const { fetchRequest } = (options.context as any)[
+        OVERRIDE_BODY_CONTEXT
+      ] as OverrideBodyContext;
 
       return options.next({
         ...options,
         request: {
           ...options.request,
           async body() {
-            const contentDisposition = fetchRequest.headers.get('content-disposition')
-            const contentType = fetchRequest.headers.get('content-type')
+            const contentDisposition = fetchRequest.headers.get("content-disposition");
+            const contentType = fetchRequest.headers.get("content-type");
 
-            if (contentDisposition === null && contentType?.startsWith('multipart/form-data')) {
+            if (contentDisposition === null && contentType?.startsWith("multipart/form-data")) {
               // Custom handling for multipart/form-data
               // Example: use @mjackson/form-data-parser for streaming parsing
-              return fetchRequest.formData()
+              return fetchRequest.formData();
             }
 
             // if has content-disposition always treat as file upload
             if (
-              contentDisposition !== null || (
-                !contentType?.startsWith('application/json')
-                && !contentType?.startsWith('application/x-www-form-urlencoded')
-              )
+              contentDisposition !== null ||
+              (!contentType?.startsWith("application/json") &&
+                !contentType?.startsWith("application/x-www-form-urlencoded"))
             ) {
               // Custom handling for file uploads
               // Example: streaming file into disk to reduce memory usage
-              const fileName = getFilenameFromContentDisposition(contentDisposition ?? '') ?? 'blob'
-              const blob = await fetchRequest.blob()
+              const fileName =
+                getFilenameFromContentDisposition(contentDisposition ?? "") ?? "blob";
+              const blob = await fetchRequest.blob();
               return new File([blob], fileName, {
                 type: blob.type,
-              })
+              });
             }
 
             // fallback to default body parser
-            return options.request.body()
+            return options.request.body();
           },
         },
-      })
+      });
     },
   ],
-})
+});
 ```
 
 ::: warning
@@ -77,7 +79,8 @@ The `adapterInterceptors` can be different based on the adapter you are using. T
 ---
 
 ---
+
 url: /docs/adapters/fastify.md
 description: Use oRPC inside an Fastify project
----
 
+---

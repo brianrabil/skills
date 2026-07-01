@@ -41,16 +41,16 @@ deno add npm:@orpc/vue-colada@latest npm:@pinia/colada@latest
 Before you begin, ensure you have already configured a [server-side client](/docs/client/server-side) or a [client-side client](/docs/client/client-side).
 
 ```ts twoslash
-import { router } from './shared/planet'
-import { RouterClient } from '@orpc/server'
+import { router } from "./shared/planet";
+import { RouterClient } from "@orpc/server";
 
-declare const client: RouterClient<typeof router>
+declare const client: RouterClient<typeof router>;
 // ---cut---
-import { createORPCVueColadaUtils } from '@orpc/vue-colada'
+import { createORPCVueColadaUtils } from "@orpc/vue-colada";
 
-export const orpc = createORPCVueColadaUtils(client)
+export const orpc = createORPCVueColadaUtils(client);
 
-orpc.planet.find.queryOptions({ input: { id: 123 } })
+orpc.planet.find.queryOptions({ input: { id: 123 } });
 //               ^|
 
 //
@@ -62,11 +62,11 @@ Prevent key conflicts by passing a unique base key when creating your utils:
 
 ```ts
 const userORPC = createORPCVueColadaUtils(userClient, {
-  path: ['user']
-})
+  path: ["user"],
+});
 const postORPC = createORPCVueColadaUtils(postClient, {
-  path: ['post']
-})
+  path: ["post"],
+});
 ```
 
 ## Query Options Utility
@@ -74,18 +74,20 @@ const postORPC = createORPCVueColadaUtils(postClient, {
 Use `.queryOptions` to configure queries. Use it with hooks like `useQuery`, `useSuspenseQuery`, or `prefetchQuery`.
 
 ```ts twoslash
-import { router } from './shared/planet'
-import { RouterClient } from '@orpc/server'
-import { RouterUtils } from '@orpc/vue-colada'
-import { useQuery } from '@pinia/colada'
+import { router } from "./shared/planet";
+import { RouterClient } from "@orpc/server";
+import { RouterUtils } from "@orpc/vue-colada";
+import { useQuery } from "@pinia/colada";
 
-declare const orpc: RouterUtils<RouterClient<typeof router>>
+declare const orpc: RouterUtils<RouterClient<typeof router>>;
 // ---cut---
-const query = useQuery(orpc.planet.find.queryOptions({
-  input: { id: 123 }, // Specify input if needed
-  context: { cache: true }, // Provide client context if needed
-  // additional options...
-}))
+const query = useQuery(
+  orpc.planet.find.queryOptions({
+    input: { id: 123 }, // Specify input if needed
+    context: { cache: true }, // Provide client context if needed
+    // additional options...
+  }),
+);
 ```
 
 ## Mutation Options
@@ -93,19 +95,21 @@ const query = useQuery(orpc.planet.find.queryOptions({
 Use `.mutationOptions` to create options for mutations. Use it with hooks like `useMutation`.
 
 ```ts twoslash
-import { router } from './shared/planet'
-import { RouterClient } from '@orpc/server'
-import { RouterUtils } from '@orpc/vue-colada'
-import { useMutation } from '@pinia/colada'
+import { router } from "./shared/planet";
+import { RouterClient } from "@orpc/server";
+import { RouterUtils } from "@orpc/vue-colada";
+import { useMutation } from "@pinia/colada";
 
-declare const orpc: RouterUtils<RouterClient<typeof router>>
+declare const orpc: RouterUtils<RouterClient<typeof router>>;
 // ---cut---
-const mutation = useMutation(orpc.planet.create.mutationOptions({
-  context: { cache: true }, // Provide client context if needed
-  // additional options...
-}))
+const mutation = useMutation(
+  orpc.planet.create.mutationOptions({
+    context: { cache: true }, // Provide client context if needed
+    // additional options...
+  }),
+);
 
-mutation.mutate({ name: 'Earth' })
+mutation.mutate({ name: "Earth" });
 ```
 
 ## Query/Mutation Key
@@ -113,24 +117,24 @@ mutation.mutate({ name: 'Earth' })
 Use `.key` to generate a `QueryKey` or `MutationKey`. This is useful for tasks such as revalidating queries, checking mutation status, etc.
 
 ```ts twoslash
-import { router } from './shared/planet'
-import { RouterClient } from '@orpc/server'
-import { RouterUtils } from '@orpc/vue-colada'
-import { useQueryCache } from '@pinia/colada'
+import { router } from "./shared/planet";
+import { RouterClient } from "@orpc/server";
+import { RouterUtils } from "@orpc/vue-colada";
+import { useQueryCache } from "@pinia/colada";
 
-declare const orpc: RouterUtils<RouterClient<typeof router>>
+declare const orpc: RouterUtils<RouterClient<typeof router>>;
 // ---cut---
-const queryCache = useQueryCache()
+const queryCache = useQueryCache();
 
 // Invalidate all planet queries
 queryCache.invalidateQueries({
   key: orpc.planet.key(),
-})
+});
 
 // Invalidate the planet find query with id 123
 queryCache.invalidateQueries({
-  key: orpc.planet.find.key({ input: { id: 123 } })
-})
+  key: orpc.planet.find.key({ input: { id: 123 } }),
+});
 ```
 
 ## Calling Procedure Clients
@@ -138,7 +142,7 @@ queryCache.invalidateQueries({
 Use `.call` to call a procedure client directly. It's an alias for corresponding procedure client.
 
 ```ts
-const result = orpc.planet.find.call({ id: 123 })
+const result = orpc.planet.find.call({ id: 123 });
 ```
 
 ## Error Handling
@@ -146,17 +150,19 @@ const result = orpc.planet.find.call({ id: 123 })
 Easily manage type-safe errors using our built-in `isDefinedError` helper.
 
 ```ts
-import { isDefinedError } from '@orpc/client'
+import { isDefinedError } from "@orpc/client";
 
-const mutation = useMutation(orpc.planet.create.mutationOptions({
-  onError: (error) => {
-    if (isDefinedError(error)) {
-      // Handle the error here
-    }
-  },
-}))
+const mutation = useMutation(
+  orpc.planet.create.mutationOptions({
+    onError: (error) => {
+      if (isDefinedError(error)) {
+        // Handle the error here
+      }
+    },
+  }),
+);
 
-mutation.mutate({ name: 'Earth' })
+mutation.mutate({ name: "Earth" });
 
 if (mutation.error.value && isDefinedError(mutation.error.value)) {
   // Handle the error here
@@ -168,7 +174,8 @@ For more details, see our [type-safe error handling guide](/docs/error-handling#
 ---
 
 ---
+
 url: /docs/integrations/pino.md
 description: Integrate oRPC with Pino for structured logging and request tracking.
----
 
+---

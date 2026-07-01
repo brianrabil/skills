@@ -9,28 +9,27 @@ This plugin relies on the [OpenAPI Generator](/docs/openapi/openapi-specificatio
 ## Setup
 
 ```ts
-import { ZodToJsonSchemaConverter } from '@orpc/zod/zod4'
-import { OpenAPIReferencePlugin } from '@orpc/openapi/plugins'
+import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
+import { OpenAPIReferencePlugin } from "@orpc/openapi/plugins";
 
 const handler = new OpenAPIHandler(router, {
   plugins: [
     new OpenAPIReferencePlugin({
-      docsProvider: 'swagger', // default: 'scalar'
-      schemaConverters: [
-        new ZodToJsonSchemaConverter(),
-      ],
+      docsProvider: "swagger", // default: 'scalar'
+      schemaConverters: [new ZodToJsonSchemaConverter()],
       specGenerateOptions: {
         info: {
-          title: 'ORPC Playground',
-          version: '1.0.0',
+          title: "ORPC Playground",
+          version: "1.0.0",
         },
-        servers: [ // or let the plugin auto-infer from the request
-          { url: 'https://api.example.com/v1', },
+        servers: [
+          // or let the plugin auto-infer from the request
+          { url: "https://api.example.com/v1" },
         ],
       },
     }),
-  ]
-})
+  ],
+});
 ```
 
 ::: info
@@ -40,7 +39,8 @@ By default, the API reference client is served at the root path (`/`), and the O
 ---
 
 ---
+
 url: /docs/openapi/routing.md
 description: Configure procedure routing with oRPC.
----
 
+---

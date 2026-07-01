@@ -84,6 +84,7 @@ between versions.
 One file per doc page, verbatim. Load only what the current task needs.
 
 **Fundamentals** (`references/fundamentals/`)
+
 - `getting-started.md` — install, first router, first client
 - `procedure.md` — the `os` builder chain in full
 - `router.md` — composing procedures into routers, lazy routers
@@ -96,11 +97,13 @@ One file per doc page, verbatim. Load only what the current task needs.
 - `http.md` — oRPC's built-in HTTP support overview
 
 **Contract-first** (`references/contract/`)
+
 - `define-contract.md` — declaring a contract without a handler
 - `implement-contract.md` — implementing a contract with `.implement()`
 - `router-to-contract.md`, `openapi-to-contract.md` — deriving a contract from an existing router or OpenAPI spec
 
 **Client** (`references/client/`)
+
 - `server-side.md` — `createRouterClient`, `.callable`
 - `client-side.md` — `createORPCClient`, link setup
 - `error-handling.md` — `safe()`, `isDefinedError()`, typed client errors
@@ -108,10 +111,12 @@ One file per doc page, verbatim. Load only what the current task needs.
 - `dynamic-link.md` — switching links/base URLs at runtime
 
 **RPC protocol** (`references/rpc/`)
+
 - `protocol.md`, `serializer.md`, `handler.md`, `link.md` — oRPC's own wire format
 - `superjson.md` — swapping in SuperJson as the RPC serializer
 
 **OpenAPI** (`references/openapi/`)
+
 - `getting-started.md` — OpenAPI-specific setup on top of the base guide
 - `routing.md`, `input-and-output-structure.md`, `bracket-notation.md` — mapping procedures to HTTP methods/paths/params
 - `serializer.md`, `handler.md`, `link.md` — `OpenAPIHandler`/`OpenAPILink`
@@ -139,6 +144,7 @@ One file per doc page, verbatim. Load only what the current task needs.
 event iterators), `ratelimit.md` (memory/Redis/Upstash rate limiting)
 
 **Integrations** (`references/integrations/`)
+
 - `tanstack-query.md` — current `@orpc/tanstack-query` API
 - `tanstack-query-old-basic.md`, `-react.md`, `-solid.md`, `-svelte.md`, `-vue.md` — prior per-framework docs
 - `nestjs-implement-contract.md` — implementing a contract with NestJS
@@ -161,7 +167,7 @@ event iterators), `ratelimit.md` (memory/Redis/Upstash rate limiting)
 **Mini oRPC** (`references/mini-orpc/`) — a from-scratch teaching
 implementation of oRPC's core ideas: `overview.md`, `procedure-builder.md`,
 `server-side-client.md`, `client-side-client.md`, `beyond-the-basics.md`.
-Read these to understand *why* oRPC is shaped the way it is, not to write
+Read these to understand _why_ oRPC is shaped the way it is, not to write
 application code against.
 
 **Migrations** — `references/migrations/from-trpc.md`

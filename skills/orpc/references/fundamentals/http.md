@@ -14,201 +14,195 @@ oRPC includes built-in HTTP support, making it easy to expose RPC endpoints in a
 ::: code-group
 
 ```ts [node]
-import { createServer } from 'node:http' // or 'node:http2'
-import { RPCHandler } from '@orpc/server/node'
-import { CORSPlugin } from '@orpc/server/plugins'
-import { onError } from '@orpc/server'
+import { createServer } from "node:http"; // or 'node:http2'
+import { RPCHandler } from "@orpc/server/node";
+import { CORSPlugin } from "@orpc/server/plugins";
+import { onError } from "@orpc/server";
 
 const handler = new RPCHandler(router, {
-  plugins: [
-    new CORSPlugin()
-  ],
+  plugins: [new CORSPlugin()],
   interceptors: [
     onError((error) => {
-      console.error(error)
+      console.error(error);
     }),
   ],
-})
+});
 
 const server = createServer(async (req, res) => {
   const { matched } = await handler.handle(req, res, {
-    prefix: '/rpc',
-    context: {} // Provide initial context if needed
-  })
+    prefix: "/rpc",
+    context: {}, // Provide initial context if needed
+  });
 
   if (matched) {
-    return
+    return;
   }
 
-  res.statusCode = 404
-  res.end('Not found')
-})
+  res.statusCode = 404;
+  res.end("Not found");
+});
 
-server.listen(3000, '127.0.0.1', () => console.log('Listening on 127.0.0.1:3000'))
+server.listen(3000, "127.0.0.1", () => console.log("Listening on 127.0.0.1:3000"));
 ```
 
 ```ts [bun]
-import { RPCHandler } from '@orpc/server/fetch'
-import { CORSPlugin } from '@orpc/server/plugins'
-import { onError } from '@orpc/server'
+import { RPCHandler } from "@orpc/server/fetch";
+import { CORSPlugin } from "@orpc/server/plugins";
+import { onError } from "@orpc/server";
 
 const handler = new RPCHandler(router, {
-  plugins: [
-    new CORSPlugin()
-  ],
+  plugins: [new CORSPlugin()],
   interceptors: [
     onError((error) => {
-      console.error(error)
+      console.error(error);
     }),
   ],
-})
+});
 
 Bun.serve({
   async fetch(request: Request) {
     const { matched, response } = await handler.handle(request, {
-      prefix: '/rpc',
-      context: {} // Provide initial context if needed
-    })
+      prefix: "/rpc",
+      context: {}, // Provide initial context if needed
+    });
 
     if (matched) {
-      return response
+      return response;
     }
 
-    return new Response('Not found', { status: 404 })
-  }
-})
+    return new Response("Not found", { status: 404 });
+  },
+});
 ```
 
 ```ts [cloudflare]
-import { RPCHandler } from '@orpc/server/fetch'
-import { CORSPlugin } from '@orpc/server/plugins'
-import { onError } from '@orpc/server'
+import { RPCHandler } from "@orpc/server/fetch";
+import { CORSPlugin } from "@orpc/server/plugins";
+import { onError } from "@orpc/server";
 
 const handler = new RPCHandler(router, {
-  plugins: [
-    new CORSPlugin()
-  ],
+  plugins: [new CORSPlugin()],
   interceptors: [
     onError((error) => {
-      console.error(error)
+      console.error(error);
     }),
   ],
-})
+});
 
 export default {
   async fetch(request: Request, env: any, ctx: ExecutionContext): Promise<Response> {
     const { matched, response } = await handler.handle(request, {
-      prefix: '/rpc',
-      context: {} // Provide initial context if needed
-    })
+      prefix: "/rpc",
+      context: {}, // Provide initial context if needed
+    });
 
     if (matched) {
-      return response
+      return response;
     }
 
-    return new Response('Not found', { status: 404 })
-  }
-}
+    return new Response("Not found", { status: 404 });
+  },
+};
 ```
 
 ```ts [deno]
-import { RPCHandler } from '@orpc/server/fetch'
-import { CORSPlugin } from '@orpc/server/plugins'
-import { onError } from '@orpc/server'
+import { RPCHandler } from "@orpc/server/fetch";
+import { CORSPlugin } from "@orpc/server/plugins";
+import { onError } from "@orpc/server";
 
 const handler = new RPCHandler(router, {
-  plugins: [
-    new CORSPlugin()
-  ],
+  plugins: [new CORSPlugin()],
   interceptors: [
     onError((error) => {
-      console.error(error)
+      console.error(error);
     }),
   ],
-})
+});
 
 Deno.serve(async (request) => {
   const { matched, response } = await handler.handle(request, {
-    prefix: '/rpc',
-    context: {} // Provide initial context if needed
-  })
+    prefix: "/rpc",
+    context: {}, // Provide initial context if needed
+  });
 
   if (matched) {
-    return response
+    return response;
   }
 
-  return new Response('Not found', { status: 404 })
-})
+  return new Response("Not found", { status: 404 });
+});
 ```
 
 ```ts [fastify]
-import Fastify from 'fastify'
-import { RPCHandler } from '@orpc/server/fastify'
-import { onError } from '@orpc/server'
+import Fastify from "fastify";
+import { RPCHandler } from "@orpc/server/fastify";
+import { onError } from "@orpc/server";
 
 const rpcHandler = new RPCHandler(router, {
   interceptors: [
     onError((error) => {
-      console.error(error)
+      console.error(error);
     }),
   ],
-})
+});
 
-const fastify = Fastify()
+const fastify = Fastify();
 
-fastify.addContentTypeParser('*', (request, payload, done) => {
+fastify.addContentTypeParser("*", (request, payload, done) => {
   // Fully utilize oRPC feature by allowing any content type
   // And let oRPC parse the body manually by passing `undefined`
-  done(null, undefined)
-})
+  done(null, undefined);
+});
 
-fastify.all('/rpc/*', async (req, reply) => {
+fastify.all("/rpc/*", async (req, reply) => {
   const { matched } = await rpcHandler.handle(req, reply, {
-    prefix: '/rpc',
-  })
+    prefix: "/rpc",
+  });
 
   if (!matched) {
-    reply.status(404).send('Not found')
+    reply.status(404).send("Not found");
   }
-})
+});
 
-fastify.listen({ port: 3000 }).then(() => console.log('Listening on 127.0.0.1:3000'))
+fastify.listen({ port: 3000 }).then(() => console.log("Listening on 127.0.0.1:3000"));
 ```
 
 ```ts [aws-lambda]
-import { APIGatewayProxyEventV2 } from 'aws-lambda'
-import { RPCHandler } from '@orpc/server/aws-lambda'
-import { onError } from '@orpc/server'
+import { APIGatewayProxyEventV2 } from "aws-lambda";
+import { RPCHandler } from "@orpc/server/aws-lambda";
+import { onError } from "@orpc/server";
 
 const rpcHandler = new RPCHandler(router, {
   interceptors: [
     onError((error) => {
-      console.error(error)
+      console.error(error);
     }),
   ],
-})
+});
 
 /**
  * oRPC only supports [AWS Lambda response streaming](https://aws.amazon.com/blogs/compute/introducing-aws-lambda-response-streaming/).
  * If you need support chunked responses, use a combination of Hono's `aws-lambda` adapter and oRPC.
  */
-export const handler = awslambda.streamifyResponse<APIGatewayProxyEventV2>(async (event, responseStream, context) => {
-  const { matched } = await rpcHandler.handle(event, responseStream, {
-    prefix: '/rpc',
-    context: {} // Provide initial context if needed
-  })
+export const handler = awslambda.streamifyResponse<APIGatewayProxyEventV2>(
+  async (event, responseStream, context) => {
+    const { matched } = await rpcHandler.handle(event, responseStream, {
+      prefix: "/rpc",
+      context: {}, // Provide initial context if needed
+    });
 
-  if (matched) {
-    return
-  }
+    if (matched) {
+      return;
+    }
 
-  awslambda.HttpResponseStream.from(responseStream, {
-    statusCode: 404,
-  })
+    awslambda.HttpResponseStream.from(responseStream, {
+      statusCode: 404,
+    });
 
-  responseStream.write('Not found')
-  responseStream.end()
-})
+    responseStream.write("Not found");
+    responseStream.end();
+  },
+);
 ```
 
 :::
@@ -224,15 +218,15 @@ The `handler` can be any supported oRPC handler, such as [RPCHandler](/docs/rpc-
 | `fetch` | [MDN Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) (Browser, Node, Bun, Deno, Cloudflare Workers, etc.) |
 
 ```ts
-import { RPCLink } from '@orpc/client/fetch'
+import { RPCLink } from "@orpc/client/fetch";
 
 const link = new RPCLink({
-  url: 'http://localhost:3000/rpc',
+  url: "http://localhost:3000/rpc",
   headers: () => ({
-    'x-api-key': 'my-api-key'
+    "x-api-key": "my-api-key",
   }),
   // fetch: <-- polyfill fetch if needed
-})
+});
 ```
 
 ::: info
@@ -250,19 +244,19 @@ HTTP adapters provide reliability features for streaming [Event Iterators](/docs
 ```ts
 const handler = new RPCHandler(router, {
   eventIteratorInitialCommentEnabled: true,
-  eventIteratorInitialComment: 'start',
+  eventIteratorInitialComment: "start",
   eventIteratorKeepAliveEnabled: true,
   eventIteratorKeepAliveInterval: 5000,
-  eventIteratorKeepAliveComment: '',
-})
+  eventIteratorKeepAliveComment: "",
+});
 
 const link = new OpenAPILink({
   eventIteratorInitialCommentEnabled: true,
-  eventIteratorInitialComment: 'start',
+  eventIteratorInitialComment: "start",
   eventIteratorKeepAliveEnabled: true,
   eventIteratorKeepAliveInterval: 5000,
-  eventIteratorKeepAliveComment: '',
-})
+  eventIteratorKeepAliveComment: "",
+});
 ```
 
 ::: info
@@ -295,7 +289,8 @@ Sends periodic comments during inactivity to prevent connection timeouts.
 ---
 
 ---
+
 url: /docs/contract-first/implement-contract.md
 description: Learn how to implement a contract for contract-first development in oRPC
----
 
+---

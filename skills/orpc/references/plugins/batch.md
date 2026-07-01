@@ -13,14 +13,14 @@ This plugin requires configuration on both the server and client sides.
 ### Server
 
 ```ts twoslash
-import { RPCHandler } from '@orpc/server/fetch'
-import { router } from './shared/planet'
+import { RPCHandler } from "@orpc/server/fetch";
+import { router } from "./shared/planet";
 // ---cut---
-import { BatchHandlerPlugin } from '@orpc/server/plugins'
+import { BatchHandlerPlugin } from "@orpc/server/plugins";
 
 const handler = new RPCHandler(router, {
   plugins: [new BatchHandlerPlugin()],
-})
+});
 ```
 
 ::: info
@@ -32,23 +32,23 @@ The `handler` can be any supported oRPC handler, such as [RPCHandler](/docs/rpc-
 To use the `BatchLinkPlugin`, define at least one group. Requests within the same group will be considered for batching together, and each group requires a `context` as described in [client context](/docs/client/rpc-link#using-client-context).
 
 ```ts twoslash
-import { RPCLink } from '@orpc/client/fetch'
+import { RPCLink } from "@orpc/client/fetch";
 // ---cut---
-import { BatchLinkPlugin } from '@orpc/client/plugins'
+import { BatchLinkPlugin } from "@orpc/client/plugins";
 
 const link = new RPCLink({
-  url: 'https://api.example.com/rpc',
+  url: "https://api.example.com/rpc",
   plugins: [
     new BatchLinkPlugin({
       groups: [
         {
-          condition: options => true,
-          context: {} // Context used for the rest of the request lifecycle
-        }
-      ]
+          condition: (options) => true,
+          context: {}, // Context used for the rest of the request lifecycle
+        },
+      ],
     }),
   ],
-})
+});
 ```
 
 ::: info
@@ -63,19 +63,19 @@ If your environment does not support streaming responses, such as some serverles
 
 ```ts
 const link = new RPCLink({
-  url: 'https://api.example.com/rpc',
+  url: "https://api.example.com/rpc",
   plugins: [
     new BatchLinkPlugin({
-      mode: typeof window === 'undefined' ? 'buffered' : 'streaming', // [!code highlight]
+      mode: typeof window === "undefined" ? "buffered" : "streaming", // [!code highlight]
       groups: [
         {
-          condition: options => true,
-          context: {}
-        }
-      ]
+          condition: (options) => true,
+          context: {},
+        },
+      ],
     }),
   ],
-})
+});
 ```
 
 ## Limitations
@@ -83,25 +83,25 @@ const link = new RPCLink({
 The plugin does not support [AsyncIteratorObject](/docs/rpc-handler#supported-data-types) or [File/Blob](/docs/rpc-handler#supported-data-types) in responses (requests will auto fall back to the default behavior). To exclude unsupported procedures, use the `exclude` option:
 
 ```ts twoslash
-import { RPCLink } from '@orpc/client/fetch'
-import { BatchLinkPlugin } from '@orpc/client/plugins'
+import { RPCLink } from "@orpc/client/fetch";
+import { BatchLinkPlugin } from "@orpc/client/plugins";
 // ---cut---
 const link = new RPCLink({
-  url: 'https://api.example.com/rpc',
+  url: "https://api.example.com/rpc",
   plugins: [
     new BatchLinkPlugin({
       groups: [
         {
-          condition: options => true,
-          context: {}
-        }
+          condition: (options) => true,
+          context: {},
+        },
       ],
       exclude: ({ path }) => {
-        return ['planets/getImage', 'planets/subscribe'].includes(path.join('/'))
-      }
+        return ["planets/getImage", "planets/subscribe"].includes(path.join("/"));
+      },
     }),
   ],
-})
+});
 ```
 
 ## Request Headers
@@ -109,25 +109,25 @@ const link = new RPCLink({
 By default, oRPC uses the headers appear in all requests in the batch. To customize headers, use the `headers` option:
 
 ```ts twoslash
-import { RPCLink } from '@orpc/client/fetch'
-import { BatchLinkPlugin } from '@orpc/client/plugins'
+import { RPCLink } from "@orpc/client/fetch";
+import { BatchLinkPlugin } from "@orpc/client/plugins";
 // ---cut---
 const link = new RPCLink({
-  url: 'https://api.example.com/rpc',
+  url: "https://api.example.com/rpc",
   plugins: [
     new BatchLinkPlugin({
       groups: [
         {
-          condition: options => true,
-          context: {}
-        }
+          condition: (options) => true,
+          context: {},
+        },
       ],
       headers: () => ({
-        authorization: 'Bearer 1234567890',
-      })
+        authorization: "Bearer 1234567890",
+      }),
     }),
   ],
-})
+});
 ```
 
 ## Response Headers
@@ -135,18 +135,20 @@ const link = new RPCLink({
 By default, the response headers are empty. To customize headers, use the `headers` option:
 
 ```ts twoslash
-import { RPCHandler } from '@orpc/server/fetch'
-import { router } from './shared/planet'
+import { RPCHandler } from "@orpc/server/fetch";
+import { router } from "./shared/planet";
 // ---cut---
-import { BatchHandlerPlugin } from '@orpc/server/plugins'
+import { BatchHandlerPlugin } from "@orpc/server/plugins";
 
 const handler = new RPCHandler(router, {
-  plugins: [new BatchHandlerPlugin({
-    headers: responses => ({
-      'some-header': 'some-value',
-    })
-  })],
-})
+  plugins: [
+    new BatchHandlerPlugin({
+      headers: (responses) => ({
+        "some-header": "some-value",
+      }),
+    }),
+  ],
+});
 ```
 
 ## Groups
@@ -156,43 +158,46 @@ Requests within the same group will be considered for batching together, and eac
 In the example below, I used a group and `context` to batch requests based on the `cache` control:
 
 ```ts twoslash
-import { RPCLink } from '@orpc/client/fetch'
-import { BatchLinkPlugin } from '@orpc/client/plugins'
+import { RPCLink } from "@orpc/client/fetch";
+import { BatchLinkPlugin } from "@orpc/client/plugins";
 
 interface ClientContext {
-  cache?: RequestCache
+  cache?: RequestCache;
 }
 
 const link = new RPCLink<ClientContext>({
-  url: 'http://localhost:3000/rpc',
+  url: "http://localhost:3000/rpc",
   method: ({ context }) => {
     if (context?.cache) {
-      return 'GET'
+      return "GET";
     }
 
-    return 'POST'
+    return "POST";
   },
   plugins: [
     new BatchLinkPlugin({
       groups: [
         {
-          condition: ({ context }) => context?.cache === 'force-cache',
-          context: { // This context will be passed to the fetch method
-            cache: 'force-cache',
+          condition: ({ context }) => context?.cache === "force-cache",
+          context: {
+            // This context will be passed to the fetch method
+            cache: "force-cache",
           },
         },
-        { // Fallback for all other requests - need put it at the end of list
+        {
+          // Fallback for all other requests - need put it at the end of list
           condition: () => true,
           context: {},
         },
       ],
     }),
   ],
-  fetch: (request, init, { context }) => globalThis.fetch(request, {
-    ...init,
-    cache: context?.cache,
-  }),
-})
+  fetch: (request, init, { context }) =>
+    globalThis.fetch(request, {
+      ...init,
+      cache: context?.cache,
+    }),
+});
 ```
 
 Now, calls with `cache=force-cache` will be sent with `cache=force-cache`, whether they're batched or executed individually.
@@ -200,9 +205,10 @@ Now, calls with `cache=force-cache` will be sent with `cache=force-cache`, wheth
 ---
 
 ---
+
 url: /docs/integrations/better-auth.md
 description: >-
-  Seamlessly use Better Auth inside your oRPC projects without any extra
-  overhead.
----
+Seamlessly use Better Auth inside your oRPC projects without any extra
+overhead.
 
+---

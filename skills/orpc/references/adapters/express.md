@@ -9,37 +9,37 @@ Express's [body-parser](https://expressjs.com/en/resources/middleware/body-parse
 ## Basic
 
 ```ts
-import express from 'express'
-import cors from 'cors'
-import { RPCHandler } from '@orpc/server/node'
-import { onError } from '@orpc/server'
+import express from "express";
+import cors from "cors";
+import { RPCHandler } from "@orpc/server/node";
+import { onError } from "@orpc/server";
 
-const app = express()
+const app = express();
 
-app.use(cors())
+app.use(cors());
 
 const handler = new RPCHandler(router, {
   interceptors: [
     onError((error) => {
-      console.error(error)
+      console.error(error);
     }),
   ],
-})
+});
 
-app.use('/rpc{/*path}', async (req, res, next) => {
+app.use("/rpc{/*path}", async (req, res, next) => {
   const { matched } = await handler.handle(req, res, {
-    prefix: '/rpc',
+    prefix: "/rpc",
     context: {},
-  })
+  });
 
   if (matched) {
-    return
+    return;
   }
 
-  next()
-})
+  next();
+});
 
-app.listen(3000, () => console.log('Server listening on port 3000'))
+app.listen(3000, () => console.log("Server listening on port 3000"));
 ```
 
 ::: info
@@ -49,9 +49,10 @@ The `handler` can be any supported oRPC handler, such as [RPCHandler](/docs/rpc-
 ---
 
 ---
+
 url: /docs/advanced/extend-body-parser.md
 description: >-
-  Extend the body parser for more efficient handling of large payloads, extend
-  the data types.
----
+Extend the body parser for more efficient handling of large payloads, extend
+the data types.
 
+---

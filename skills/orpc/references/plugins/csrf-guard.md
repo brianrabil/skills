@@ -13,17 +13,15 @@ This plugin requires configuration on both the server and client sides.
 ### Server
 
 ```ts twoslash
-import { RPCHandler } from '@orpc/server/fetch'
-import { router } from './shared/planet'
+import { RPCHandler } from "@orpc/server/fetch";
+import { router } from "./shared/planet";
 // ---cut---
-import { SimpleCsrfProtectionHandlerPlugin } from '@orpc/server/plugins'
+import { SimpleCsrfProtectionHandlerPlugin } from "@orpc/server/plugins";
 
 const handler = new RPCHandler(router, {
   strictGetMethodPluginEnabled: false, // Replace Strict Get Method Plugin
-  plugins: [
-    new SimpleCsrfProtectionHandlerPlugin()
-  ],
-})
+  plugins: [new SimpleCsrfProtectionHandlerPlugin()],
+});
 ```
 
 ::: info
@@ -33,16 +31,14 @@ The `handler` can be any supported oRPC handler, such as [RPCHandler](/docs/rpc-
 ### Client
 
 ```ts twoslash
-import { RPCLink } from '@orpc/client/fetch'
+import { RPCLink } from "@orpc/client/fetch";
 // ---cut---
-import { SimpleCsrfProtectionLinkPlugin } from '@orpc/client/plugins'
+import { SimpleCsrfProtectionLinkPlugin } from "@orpc/client/plugins";
 
 const link = new RPCLink({
-  url: 'https://api.example.com/rpc',
-  plugins: [
-    new SimpleCsrfProtectionLinkPlugin(),
-  ],
-})
+  url: "https://api.example.com/rpc",
+  plugins: [new SimpleCsrfProtectionLinkPlugin()],
+});
 ```
 
 ::: info
@@ -52,9 +48,10 @@ The `link` can be any supported oRPC link, such as [RPCLink](/docs/client/rpc-li
 ---
 
 ---
+
 url: /docs/openapi/plugins/smart-coercion.md
 description: >-
-  Automatically converts input values to match schema types without manually
-  defining coercion logic.
----
+Automatically converts input values to match schema types without manually
+defining coercion logic.
 
+---

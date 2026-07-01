@@ -9,36 +9,36 @@ You set up an oRPC server inside Nuxt using its [Server Routes](https://nuxt.com
 ::: code-group
 
 ```ts [server/routes/rpc/[...].ts]
-import { RPCHandler } from '@orpc/server/fetch'
-import { onError } from '@orpc/server'
+import { RPCHandler } from "@orpc/server/fetch";
+import { onError } from "@orpc/server";
 
 const handler = new RPCHandler(router, {
   interceptors: [
     onError((error) => {
-      console.error(error)
+      console.error(error);
     }),
   ],
-})
+});
 
 export default defineEventHandler(async (event) => {
-  const request = toWebRequest(event)
+  const request = toWebRequest(event);
 
   const { response } = await handler.handle(request, {
-    prefix: '/rpc',
+    prefix: "/rpc",
     context: {}, // Provide initial context if needed
-  })
+  });
 
   if (response) {
-    return response
+    return response;
   }
 
-  setResponseStatus(event, 404, 'Not Found')
-  return 'Not found'
-})
+  setResponseStatus(event, 404, "Not Found");
+  return "Not found";
+});
 ```
 
 ```ts [server/routes/rpc/index.ts]
-export { default } from './[...]'
+export { default } from "./[...]";
 ```
 
 :::
@@ -53,21 +53,21 @@ To make the oRPC client compatible with SSR, set it up inside a [Nuxt Plugin](ht
 
 ```ts [app/plugins/orpc.ts]
 export default defineNuxtPlugin(() => {
-  const event = useRequestEvent()
+  const event = useRequestEvent();
 
   const link = new RPCLink({
-    url: `${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'}/rpc`,
+    url: `${typeof window !== "undefined" ? window.location.origin : "http://localhost:3000"}/rpc`,
     headers: event?.headers,
-  })
+  });
 
-  const client: RouterClient<typeof router> = createORPCClient(link)
+  const client: RouterClient<typeof router> = createORPCClient(link);
 
   return {
     provide: {
       client,
     },
-  }
-})
+  };
+});
 ```
 
 :::info
@@ -85,34 +85,34 @@ export default defineNuxtPlugin(() => {
   const link = new RPCLink({
     url: `${window.location.origin}/rpc`,
     headers: () => ({}),
-  })
+  });
 
-  const client: RouterClient<typeof router> = createORPCClient(link)
+  const client: RouterClient<typeof router> = createORPCClient(link);
 
   return {
     provide: {
       client,
     },
-  }
-})
+  };
+});
 ```
 
 ```ts [app/plugins/orpc.server.ts]
 export default defineNuxtPlugin((nuxt) => {
-  const event = useRequestEvent()
+  const event = useRequestEvent();
 
   const client = createRouterClient(router, {
     context: {
       headers: event?.headers, // provide headers if initial context required
     },
-  })
+  });
 
   return {
     provide: {
       client,
     },
-  }
-})
+  };
+});
 ```
 
 :::
@@ -120,7 +120,8 @@ export default defineNuxtPlugin((nuxt) => {
 ---
 
 ---
+
 url: /docs/examples/openai-streaming.md
 description: Combine oRPC with the OpenAI Streaming API to build a chatbot
----
 
+---

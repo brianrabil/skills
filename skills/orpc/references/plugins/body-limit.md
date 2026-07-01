@@ -7,8 +7,8 @@ The **Body Limit Plugin** restricts the size of the request body.
 Depending on your adapter, import the corresponding plugin:
 
 ```ts
-import { BodyLimitPlugin } from '@orpc/server/fetch'
-import { BodyLimitPlugin } from '@orpc/server/node'
+import { BodyLimitPlugin } from "@orpc/server/fetch";
+import { BodyLimitPlugin } from "@orpc/server/node";
 ```
 
 ## Setup
@@ -22,7 +22,7 @@ const handler = new RPCHandler(router, {
       maxBodySize: 1024 * 1024, // 1MB
     }),
   ],
-})
+});
 ```
 
 ::: info
@@ -32,9 +32,10 @@ The `handler` can be any supported oRPC handler, such as [RPCHandler](/docs/rpc-
 ---
 
 ---
+
 url: /docs/openapi/bracket-notation.md
 description: >-
-  Represent structured data in limited formats such as URL queries and form
-  data.
----
+Represent structured data in limited formats such as URL queries and form
+data.
 
+---

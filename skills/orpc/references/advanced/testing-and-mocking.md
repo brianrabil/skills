@@ -7,16 +7,14 @@ Testing and mocking are essential parts of the development process, ensuring you
 Using [Server-Side Clients](/docs/client/server-side), you can directly invoke your procedures in tests without additional setup. This approach allows you to test procedures in isolation, ensuring they behave correctly.
 
 ```ts
-import { call } from '@orpc/server'
+import { call } from "@orpc/server";
 
-it('works', async () => {
-  await expect(
-    call(router.planet.list, { page: 1, size: 10 })
-  ).resolves.toEqual([
-    { id: '1', name: 'Earth' },
-    { id: '2', name: 'Mars' },
-  ])
-})
+it("works", async () => {
+  await expect(call(router.planet.list, { page: 1, size: 10 })).resolves.toEqual([
+    { id: "1", name: "Earth" },
+    { id: "2", name: "Mars" },
+  ]);
+});
 ```
 
 ::: info
@@ -28,11 +26,11 @@ You can also use the [Fetch API](https://developer.mozilla.org/en-US/docs/Web/AP
 The [Implementer](/docs/contract-first/implement-contract#the-implementer) is designed for contract-first development, but it can also create alternative versions of your [router](/docs/router) or [procedure](/docs/procedure) for testing.
 
 ```ts twoslash
-import { router } from './shared/planet'
+import { router } from "./shared/planet";
 // ---cut---
-import { implement, unlazyRouter } from '@orpc/server'
+import { implement, unlazyRouter } from "@orpc/server";
 
-const fakeListPlanet = implement(router.planet.list).handler(() => [])
+const fakeListPlanet = implement(router.planet.list).handler(() => []);
 ```
 
 You can use `fakeListPlanet` to replace the actual `listPlanet` implementation during tests.
@@ -48,7 +46,8 @@ The `implement` function doesn't support [lazy routers](/docs/router#lazy-router
 ---
 
 ---
+
 url: /docs/openapi/integrations/trpc.md
 description: Use oRPC features in your tRPC applications.
----
 
+---

@@ -10,24 +10,24 @@ There's no functional difference, but this plugin provides a consistent interfac
 ## Context Setup
 
 ```ts twoslash
-import { os } from '@orpc/server'
+import { os } from "@orpc/server";
 // ---cut---
-import { getCookie } from '@orpc/server/helpers'
-import { RequestHeadersPluginContext } from '@orpc/server/plugins'
+import { getCookie } from "@orpc/server/helpers";
+import { RequestHeadersPluginContext } from "@orpc/server/plugins";
 
 interface ORPCContext extends RequestHeadersPluginContext {}
 
-const base = os.$context<ORPCContext>()
+const base = os.$context<ORPCContext>();
 
 const example = base
   .use(({ context, next }) => {
-    const sessionId = getCookie(context.reqHeaders, 'session_id')
-    return next()
+    const sessionId = getCookie(context.reqHeaders, "session_id");
+    return next();
   })
   .handler(({ context }) => {
-    const userAgent = context.reqHeaders?.get('user-agent')
-    return { userAgent }
-  })
+    const userAgent = context.reqHeaders?.get("user-agent");
+    return { userAgent };
+  });
 ```
 
 ::: info
@@ -42,13 +42,11 @@ Combine with [Cookie Helpers](/docs/helpers/cookie) for streamlined cookie manag
 ## Handler Setup
 
 ```ts
-import { RequestHeadersPlugin } from '@orpc/server/plugins'
+import { RequestHeadersPlugin } from "@orpc/server/plugins";
 
 const handler = new RPCHandler(router, {
-  plugins: [
-    new RequestHeadersPlugin()
-  ],
-})
+  plugins: [new RequestHeadersPlugin()],
+});
 ```
 
 ::: info
@@ -58,10 +56,11 @@ The `handler` can be any supported oRPC handler, such as [RPCHandler](/docs/rpc-
 ---
 
 ---
+
 url: /docs/plugins/request-validation.md
 description: >-
-  A plugin that blocks invalid requests before they reach your server.
-  Especially useful for applications that rely heavily on server-side
-  validation.
----
+A plugin that blocks invalid requests before they reach your server.
+Especially useful for applications that rely heavily on server-side
+validation.
 
+---

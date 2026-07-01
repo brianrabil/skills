@@ -7,27 +7,27 @@ Use [Node.js Worker Threads](https://nodejs.org/api/worker_threads.html) with oR
 Listen for a `MessagePort` sent from the main thread and upgrade it:
 
 ```ts
-import { parentPort } from 'node:worker_threads'
-import { RPCHandler } from '@orpc/server/message-port'
-import { onError } from '@orpc/server'
+import { parentPort } from "node:worker_threads";
+import { RPCHandler } from "@orpc/server/message-port";
+import { onError } from "@orpc/server";
 
 const handler = new RPCHandler(router, {
   interceptors: [
     onError((error) => {
-      console.error(error)
+      console.error(error);
     }),
   ],
-})
+});
 
-parentPort.on('message', (message) => {
+parentPort.on("message", (message) => {
   if (message instanceof MessagePort) {
     handler.upgrade(message, {
       context: {}, // Provide initial context if needed
-    })
+    });
 
-    message.start()
+    message.start();
   }
-})
+});
 ```
 
 ## Main Thread
@@ -35,20 +35,20 @@ parentPort.on('message', (message) => {
 Create a `MessageChannel`, send one port to the thread worker, and use the other to initialize the client link:
 
 ```ts
-import { MessageChannel, Worker } from 'node:worker_threads'
-import { RPCLink } from '@orpc/client/message-port'
+import { MessageChannel, Worker } from "node:worker_threads";
+import { RPCLink } from "@orpc/client/message-port";
 
-const { port1: clientPort, port2: serverPort } = new MessageChannel()
+const { port1: clientPort, port2: serverPort } = new MessageChannel();
 
-const worker = new Worker('some-worker.js')
+const worker = new Worker("some-worker.js");
 
-worker.postMessage(serverPort, [serverPort])
+worker.postMessage(serverPort, [serverPort]);
 
 const link = new RPCLink({
-  port: clientPort
-})
+  port: clientPort,
+});
 
-clientPort.start()
+clientPort.start();
 ```
 
 :::info
@@ -58,9 +58,10 @@ This only shows how to configure the link. For full client examples, see [Client
 ---
 
 ---
+
 url: /docs/openapi/plugins/zod-smart-coercion.md
 description: >-
-  A refined alternative to `z.coerce` that automatically converts inputs to the
-  expected type without modifying the input schema.
----
+A refined alternative to `z.coerce` that automatically converts inputs to the
+expected type without modifying the input schema.
 
+---

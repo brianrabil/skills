@@ -13,11 +13,11 @@ Here is the complete procedure builder system implementation over the basic [pro
 ::: code-group
 
 ```ts [server/src/builder.ts]
-import type { IntersectPick } from '@orpc/shared'
-import type { Middleware } from './middleware'
-import type { ProcedureDef, ProcedureHandler } from './procedure'
-import type { AnySchema, Context, InferSchemaInput, InferSchemaOutput, Schema, } from './types'
-import { Procedure } from './procedure'
+import type { IntersectPick } from "@orpc/shared";
+import type { Middleware } from "./middleware";
+import type { ProcedureDef, ProcedureHandler } from "./procedure";
+import type { AnySchema, Context, InferSchemaInput, InferSchemaOutput, Schema } from "./types";
+import { Procedure } from "./procedure";
 
 export interface BuilderDef<
   TInitialContext extends Context,
@@ -25,9 +25,9 @@ export interface BuilderDef<
   TInputSchema extends AnySchema,
   TOutputSchema extends AnySchema,
 > extends Omit<
-    ProcedureDef<TInitialContext, TCurrentContext, TInputSchema, TOutputSchema>,
-    'handler'
-  > {}
+  ProcedureDef<TInitialContext, TCurrentContext, TInputSchema, TOutputSchema>,
+  "handler"
+> {}
 
 export class Builder<
   TInitialContext extends Context,
@@ -38,55 +38,38 @@ export class Builder<
   /**
    * Holds the builder configuration.
    */
-  '~orpc': BuilderDef<
-    TInitialContext,
-    TCurrentContext,
-    TInputSchema,
-    TOutputSchema
-  >
+  "~orpc": BuilderDef<TInitialContext, TCurrentContext, TInputSchema, TOutputSchema>;
 
-  constructor(
-    def: BuilderDef<
-      TInitialContext,
-      TCurrentContext,
-      TInputSchema,
-      TOutputSchema
-    >
-  ) {
-    this['~orpc'] = def
+  constructor(def: BuilderDef<TInitialContext, TCurrentContext, TInputSchema, TOutputSchema>) {
+    this["~orpc"] = def;
   }
 
   /**
    * Sets the initial context type.
    */
-  $context<U extends Context>(): Builder<
-    U & Record<never, never>,
-    U,
-    TInputSchema,
-    TOutputSchema
-  > {
+  $context<U extends Context>(): Builder<U & Record<never, never>, U, TInputSchema, TOutputSchema> {
     // `& Record<never, never>` prevents "has no properties in common" TypeScript errors
     return new Builder({
-      ...this['~orpc'],
+      ...this["~orpc"],
       middlewares: [],
-    })
+    });
   }
 
   /**
    * Creates a middleware function.
    */
   middleware<UOutContext extends IntersectPick<TCurrentContext, UOutContext>>(
-    middleware: Middleware<TInitialContext, UOutContext>
+    middleware: Middleware<TInitialContext, UOutContext>,
   ): Middleware<TInitialContext, UOutContext> {
     // Ensures UOutContext doesn't conflict with current context
-    return middleware
+    return middleware;
   }
 
   /**
    * Applies middleware to transform context or enhance the pipeline.
    */
   use<UOutContext extends IntersectPick<TCurrentContext, UOutContext>>(
-    middleware: Middleware<TCurrentContext, UOutContext>
+    middleware: Middleware<TCurrentContext, UOutContext>,
   ): Builder<
     TInitialContext,
     Omit<TCurrentContext, keyof UOutContext> & UOutContext,
@@ -95,57 +78,51 @@ export class Builder<
   > {
     // UOutContext merges with and overrides current context properties
     return new Builder({
-      ...this['~orpc'],
-      middlewares: [...this['~orpc'].middlewares, middleware],
-    })
+      ...this["~orpc"],
+      middlewares: [...this["~orpc"].middlewares, middleware],
+    });
   }
 
   /**
    * Sets the input validation schema.
    */
   input<USchema extends AnySchema>(
-    schema: USchema
+    schema: USchema,
   ): Builder<TInitialContext, TCurrentContext, USchema, TOutputSchema> {
     return new Builder({
-      ...this['~orpc'],
+      ...this["~orpc"],
       inputSchema: schema,
-    })
+    });
   }
 
   /**
    * Sets the output validation schema.
    */
   output<USchema extends AnySchema>(
-    schema: USchema
+    schema: USchema,
   ): Builder<TInitialContext, TCurrentContext, TInputSchema, USchema> {
     return new Builder({
-      ...this['~orpc'],
+      ...this["~orpc"],
       outputSchema: schema,
-    })
+    });
   }
 
   /**
    * Defines the procedure handler and creates the final procedure.
    */
   handler<UFuncOutput extends InferSchemaInput<TOutputSchema>>(
-    handler: ProcedureHandler<
-      TCurrentContext,
-      InferSchemaOutput<TInputSchema>,
-      UFuncOutput
-    >
+    handler: ProcedureHandler<TCurrentContext, InferSchemaOutput<TInputSchema>, UFuncOutput>,
   ): Procedure<
     TInitialContext,
     TCurrentContext,
     TInputSchema,
-    TOutputSchema extends { initial?: true }
-      ? Schema<UFuncOutput>
-      : TOutputSchema
+    TOutputSchema extends { initial?: true } ? Schema<UFuncOutput> : TOutputSchema
   > {
     // If no output schema is defined, infer it from handler return type
     return new Procedure({
-      ...this['~orpc'],
+      ...this["~orpc"],
       handler,
-    }) as any
+    }) as any;
   }
 }
 
@@ -156,32 +133,23 @@ export const os = new Builder<
   Schema<unknown, unknown> & { initial?: true }
 >({
   middlewares: [],
-})
+});
 ```
 
 ```ts [server/src/procedure.ts]
-import type { AnyMiddleware } from './middleware'
-import type { AnySchema, Context } from './types'
+import type { AnyMiddleware } from "./middleware";
+import type { AnySchema, Context } from "./types";
 
-export interface ProcedureHandlerOptions<
-  TCurrentContext extends Context,
-  TInput,
-> {
-  context: TCurrentContext
-  input: TInput
-  path: readonly string[]
-  procedure: AnyProcedure
-  signal?: AbortSignal
+export interface ProcedureHandlerOptions<TCurrentContext extends Context, TInput> {
+  context: TCurrentContext;
+  input: TInput;
+  path: readonly string[];
+  procedure: AnyProcedure;
+  signal?: AbortSignal;
 }
 
-export interface ProcedureHandler<
-  TCurrentContext extends Context,
-  TInput,
-  THandlerOutput,
-> {
-  (
-    opt: ProcedureHandlerOptions<TCurrentContext, TInput>
-  ): Promise<THandlerOutput>
+export interface ProcedureHandler<TCurrentContext extends Context, TInput, THandlerOutput> {
+  (opt: ProcedureHandlerOptions<TCurrentContext, TInput>): Promise<THandlerOutput>;
 }
 
 export interface ProcedureDef<
@@ -196,11 +164,11 @@ export interface ProcedureDef<
    * Why `(type: TInitialContext) => unknown` instead of `TInitialContext`?
    * You can read detail about this topic [here](https://www.typescriptlang.org/docs/handbook/2/generics.html#variance-annotations)
    */
-  __initialContext?: (type: TInitialContext) => unknown
-  middlewares: readonly AnyMiddleware[]
-  inputSchema?: TInputSchema
-  outputSchema?: TOutputSchema
-  handler: ProcedureHandler<TCurrentContext, any, any>
+  __initialContext?: (type: TInitialContext) => unknown;
+  middlewares: readonly AnyMiddleware[];
+  inputSchema?: TInputSchema;
+  outputSchema?: TOutputSchema;
+  handler: ProcedureHandler<TCurrentContext, any, any>;
 }
 
 export class Procedure<
@@ -209,26 +177,14 @@ export class Procedure<
   TInputSchema extends AnySchema,
   TOutputSchema extends AnySchema,
 > {
-  '~orpc': ProcedureDef<
-    TInitialContext,
-    TCurrentContext,
-    TInputSchema,
-    TOutputSchema
-  >
+  "~orpc": ProcedureDef<TInitialContext, TCurrentContext, TInputSchema, TOutputSchema>;
 
-  constructor(
-    def: ProcedureDef<
-      TInitialContext,
-      TCurrentContext,
-      TInputSchema,
-      TOutputSchema
-    >
-  ) {
-    this['~orpc'] = def
+  constructor(def: ProcedureDef<TInitialContext, TCurrentContext, TInputSchema, TOutputSchema>) {
+    this["~orpc"] = def;
   }
 }
 
-export type AnyProcedure = Procedure<any, any, any, any>
+export type AnyProcedure = Procedure<any, any, any, any>;
 
 /**
  * TypeScript only enforces type constraints at compile time.
@@ -238,67 +194,58 @@ export type AnyProcedure = Procedure<any, any, any, any>
  */
 export function isProcedure(item: unknown): item is AnyProcedure {
   if (item instanceof Procedure) {
-    return true
+    return true;
   }
 
   return (
-    (typeof item === 'object' || typeof item === 'function')
-    && item !== null
-    && '~orpc' in item
-    && typeof item['~orpc'] === 'object'
-    && item['~orpc'] !== null
-    && 'middlewares' in item['~orpc']
-    && 'handler' in item['~orpc']
-  )
+    (typeof item === "object" || typeof item === "function") &&
+    item !== null &&
+    "~orpc" in item &&
+    typeof item["~orpc"] === "object" &&
+    item["~orpc"] !== null &&
+    "middlewares" in item["~orpc"] &&
+    "handler" in item["~orpc"]
+  );
 }
 ```
 
 ```ts [server/src/middleware.ts]
-import type { MaybeOptionalOptions, Promisable } from '@orpc/shared'
-import type { AnyProcedure } from './procedure'
-import type { Context } from './types'
+import type { MaybeOptionalOptions, Promisable } from "@orpc/shared";
+import type { AnyProcedure } from "./procedure";
+import type { Context } from "./types";
 
 export type MiddlewareResult<TOutContext extends Context> = Promisable<{
-  output: any
-  context: TOutContext
-}>
+  output: any;
+  context: TOutContext;
+}>;
 
 /**
  * By conditional checking `Record<never, never> extends TOutContext`
  * users can avoid declaring `context` when TOutContext can be empty.
  *
  */
-export type MiddlewareNextFnOptions<TOutContext extends Context> = Record<
-  never,
-  never
-> extends TOutContext
-  ? { context?: TOutContext }
-  : { context: TOutContext }
+export type MiddlewareNextFnOptions<TOutContext extends Context> =
+  Record<never, never> extends TOutContext ? { context?: TOutContext } : { context: TOutContext };
 
 export interface MiddlewareNextFn {
   <U extends Context = Record<never, never>>(
     ...rest: MaybeOptionalOptions<MiddlewareNextFnOptions<U>>
-  ): MiddlewareResult<U>
+  ): MiddlewareResult<U>;
 }
 
 export interface MiddlewareOptions<TInContext extends Context> {
-  context: TInContext
-  path: readonly string[]
-  procedure: AnyProcedure
-  signal?: AbortSignal
-  next: MiddlewareNextFn
+  context: TInContext;
+  path: readonly string[];
+  procedure: AnyProcedure;
+  signal?: AbortSignal;
+  next: MiddlewareNextFn;
 }
 
-export interface Middleware<
-  TInContext extends Context,
-  TOutContext extends Context,
-> {
-  (
-    options: MiddlewareOptions<TInContext>
-  ): Promisable<MiddlewareResult<TOutContext>>
+export interface Middleware<TInContext extends Context, TOutContext extends Context> {
+  (options: MiddlewareOptions<TInContext>): Promisable<MiddlewareResult<TOutContext>>;
 }
 
-export type AnyMiddleware = Middleware<any, any>
+export type AnyMiddleware = Middleware<any, any>;
 ```
 
 :::
@@ -310,31 +257,27 @@ The router is another essential component of oRPC that organizes procedures into
 ::: code-group
 
 ```ts [server/src/router.ts]
-import type { Procedure } from './procedure'
-import type { Context } from './types'
+import type { Procedure } from "./procedure";
+import type { Context } from "./types";
 
 /**
  * Router can be either a single procedure or a nested object of routers.
  * This recursive structure allows for unlimited nesting depth.
  */
-export type Router<T extends Context>
-  = | Procedure<T, any, any, any>
-    | { [k: string]: Router<T> }
+export type Router<T extends Context> = Procedure<T, any, any, any> | { [k: string]: Router<T> };
 
-export type AnyRouter = Router<any>
+export type AnyRouter = Router<any>;
 
 /**
  * Utility type that extracts the initial context types
  * from all procedures within a router.
  */
-export type InferRouterInitialContexts<T extends AnyRouter>
-  = T extends Procedure<infer UInitialContext, any, any, any>
+export type InferRouterInitialContexts<T extends AnyRouter> =
+  T extends Procedure<infer UInitialContext, any, any, any>
     ? UInitialContext
     : {
-        [K in keyof T]: T[K] extends AnyRouter
-          ? InferRouterInitialContexts<T[K]>
-          : never;
-      }
+        [K in keyof T]: T[K] extends AnyRouter ? InferRouterInitialContexts<T[K]> : never;
+      };
 ```
 
 :::
@@ -346,18 +289,18 @@ This implementation covers 60-70% of oRPC procedure building. Here are practical
 ```ts
 // Define reusable authentication middleware
 const authMiddleware = os
-  .$context<{ user?: { id: string, name: string } }>()
+  .$context<{ user?: { id: string; name: string } }>()
   .middleware(async ({ context, next }) => {
     if (!context.user) {
-      throw new Error('Unauthorized')
+      throw new Error("Unauthorized");
     }
 
     return next({
       context: {
-        user: context.user
-      }
-    })
-  })
+        user: context.user,
+      },
+    });
+  });
 
 // Public procedure with input validation
 export const listPlanet = os
@@ -369,31 +312,32 @@ export const listPlanet = os
   )
   .handler(async ({ input }) => {
     // Fetch planets with pagination
-    return [{ id: 1, name: 'Earth' }]
-  })
+    return [{ id: 1, name: "Earth" }];
+  });
 
 // Protected procedure with context and middleware
 export const createPlanet = os
-  .$context<{ user?: { id: string, name: string } }>()
+  .$context<{ user?: { id: string; name: string } }>()
   .use(authMiddleware)
   .input(PlanetSchema.omit({ id: true }))
   .handler(async ({ input, context }) => {
     // Create new planet (user is guaranteed to exist via middleware)
-    return { id: 2, name: input.name }
-  })
+    return { id: 2, name: input.name };
+  });
 
 export const router = {
   listPlanet,
   createPlanet,
-}
+};
 ```
 
 ---
 
 ---
+
 url: /docs/advanced/publish-client-to-npm.md
 description: >-
-  How to publish your oRPC client to NPM for users to consume your APIs as an
-  SDK.
----
+How to publish your oRPC client to NPM for users to consume your APIs as an
+SDK.
 
+---

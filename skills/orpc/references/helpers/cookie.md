@@ -3,19 +3,19 @@
 The Cookie helpers provide functions to set and get HTTP cookies.
 
 ```ts twoslash
-import { deleteCookie, getCookie, setCookie } from '@orpc/server/helpers'
+import { deleteCookie, getCookie, setCookie } from "@orpc/server/helpers";
 
-const reqHeaders = new Headers()
-const resHeaders = new Headers()
+const reqHeaders = new Headers();
+const resHeaders = new Headers();
 
-setCookie(resHeaders, 'sessionId', 'abc123', {
+setCookie(resHeaders, "sessionId", "abc123", {
   secure: true,
-  maxAge: 3600
-})
+  maxAge: 3600,
+});
 
-deleteCookie(resHeaders, 'sessionId')
+deleteCookie(resHeaders, "sessionId");
 
-const sessionId = getCookie(reqHeaders, 'sessionId')
+const sessionId = getCookie(reqHeaders, "sessionId");
 ```
 
 ::: info
@@ -27,26 +27,27 @@ Both helpers accept `undefined` as headers for seamless integration with plugins
 Combine cookies with [signing](/docs/helpers/signing) or [encryption](/docs/helpers/encryption) for enhanced security:
 
 ```ts twoslash
-import { getCookie, setCookie, sign, unsign } from '@orpc/server/helpers'
+import { getCookie, setCookie, sign, unsign } from "@orpc/server/helpers";
 
-const secret = 'your-secret-key'
+const secret = "your-secret-key";
 
-const reqHeaders = new Headers()
-const resHeaders = new Headers()
+const reqHeaders = new Headers();
+const resHeaders = new Headers();
 
-setCookie(resHeaders, 'sessionId', await sign('abc123', secret), {
+setCookie(resHeaders, "sessionId", await sign("abc123", secret), {
   httpOnly: true,
   secure: true,
-  maxAge: 3600
-})
+  maxAge: 3600,
+});
 
-const signedSessionId = await unsign(getCookie(reqHeaders, 'sessionId'), secret)
+const signedSessionId = await unsign(getCookie(reqHeaders, "sessionId"), secret);
 ```
 
 ---
 
 ---
+
 url: /docs/plugins/cors.md
 description: CORS Plugin for oRPC
----
 
+---

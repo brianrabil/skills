@@ -5,14 +5,12 @@ The `RethrowHandlerPlugin` allows you to catch and rethrow specific errors that 
 ## Usage
 
 ```ts twoslash
-import { ORPCError } from '@orpc/server'
-import { RPCHandler } from '@orpc/server/fetch'
-import { router } from './shared/planet'
+import { ORPCError } from "@orpc/server";
+import { RPCHandler } from "@orpc/server/fetch";
+import { router } from "./shared/planet";
 
 // ---cut---
-import {
-  experimental_RethrowHandlerPlugin as RethrowHandlerPlugin,
-} from '@orpc/server/plugins'
+import { experimental_RethrowHandlerPlugin as RethrowHandlerPlugin } from "@orpc/server/plugins";
 
 const handler = new RPCHandler(router, {
   plugins: [
@@ -21,11 +19,11 @@ const handler = new RPCHandler(router, {
       filter: (error) => {
         // Example: Rethrow all non-ORPCError errors
         // This allows unhandled exceptions to bubble up to your framework
-        return !(error instanceof ORPCError)
+        return !(error instanceof ORPCError);
       },
     }),
   ],
-})
+});
 ```
 
 ::: info
@@ -35,9 +33,10 @@ The `handler` can be any supported oRPC handler, such as [RPCHandler](/docs/rpc-
 ---
 
 ---
+
 url: /docs/plugins/retry-after.md
 description: >-
-  A plugin for oRPC that automatically retries requests based on server
-  Retry-After headers.
----
+A plugin for oRPC that automatically retries requests based on server
+Retry-After headers.
 
+---

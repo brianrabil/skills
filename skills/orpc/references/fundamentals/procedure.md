@@ -2,28 +2,29 @@
 
 In oRPC, a procedure is like a standard function but comes with built-in support for:
 
-* Input/output validation
-* Middleware
-* Dependency injection
-* Other extensibility features
+- Input/output validation
+- Middleware
+- Dependency injection
+- Other extensibility features
 
 ## Overview
 
 Here's an example of defining a procedure in oRPC:
 
 ```ts
-import { os } from '@orpc/server'
+import { os } from "@orpc/server";
 
 const example = os
   .use(aMiddleware) // Apply middleware
   .input(z.object({ name: z.string() })) // Define input validation
-  .use(aMiddlewareWithInput, input => input.name) // Use middleware with typed input
+  .use(aMiddlewareWithInput, (input) => input.name) // Use middleware with typed input
   .output(z.object({ id: z.number() })) // Define output validation
-  .handler(async ({ input, context }) => { // Define execution logic
-    return { id: 1 }
+  .handler(async ({ input, context }) => {
+    // Define execution logic
+    return { id: 1 };
   })
   .callable() // Make the procedure callable like a regular function
-  .actionable() // Server Action compatibility
+  .actionable(); // Server Action compatibility
 ```
 
 :::info
@@ -43,12 +44,12 @@ By explicitly specifying the `.output` or your `handler's return type`, you enab
 For simple use-case without external libraries, use oRPC's built-in `type` utility. It takes a mapping function as its first argument:
 
 ```ts twoslash
-import { os, type } from '@orpc/server'
+import { os, type } from "@orpc/server";
 
 const example = os
   .input(type<{ value: number }>())
   .output(type<{ value: number }, number>(({ value }) => value))
-  .handler(async ({ input }) => input)
+  .handler(async ({ input }) => input);
 ```
 
 ## Using Middleware
@@ -56,12 +57,14 @@ const example = os
 The `.use` method allows you to pass [middleware](/docs/middleware), which must call `next` to continue execution.
 
 ```ts
-const aMiddleware = os.middleware(async ({ context, next }) => next())
+const aMiddleware = os.middleware(async ({ context, next }) => next());
 
 const example = os
   .use(aMiddleware) // Apply middleware
   .use(async ({ context, next }) => next()) // Inline middleware
-  .handler(async ({ context }) => { /* logic */ })
+  .handler(async ({ context }) => {
+    /* logic */
+  });
 ```
 
 ::: info
@@ -73,8 +76,8 @@ const example = os
 Customize the initial input schema using `.$input`:
 
 ```ts
-const base = os.$input(z.void())
-const base = os.$input<Schema<void, unknown>>()
+const base = os.$input(z.void());
+const base = os.$input<Schema<void, unknown>>();
 ```
 
 Unlike `.input`, the `.$input` method lets you redefine the input schema after its initial configuration. This is useful when you need to enforce a `void` input when no `.input` is specified.
@@ -84,12 +87,14 @@ Unlike `.input`, the `.$input` method lets you redefine the input schema after i
 Each modification to a builder creates a completely new instance, avoiding reference issues. This makes it easy to reuse and extend procedures efficiently.
 
 ```ts
-const pub = os.use(logMiddleware) // Base setup for procedures that publish
-const authed = pub.use(authMiddleware) // Extends 'pub' with authentication
+const pub = os.use(logMiddleware); // Base setup for procedures that publish
+const authed = pub.use(authMiddleware); // Extends 'pub' with authentication
 
-const pubExample = pub.handler(async ({ context }) => { /* logic */ })
+const pubExample = pub.handler(async ({ context }) => {
+  /* logic */
+});
 
-const authedExample = pubExample.use(authMiddleware)
+const authedExample = pubExample.use(authMiddleware);
 ```
 
 This pattern helps prevent duplication while maintaining flexibility.
@@ -97,9 +102,10 @@ This pattern helps prevent duplication while maintaining flexibility.
 ---
 
 ---
+
 url: /learn-and-contribute/mini-orpc/procedure-builder.md
 description: >-
-  Learn how Mini oRPC's procedure builder provides an excellent developer
-  experience for defining type-safe procedures.
----
+Learn how Mini oRPC's procedure builder provides an excellent developer
+experience for defining type-safe procedures.
 
+---

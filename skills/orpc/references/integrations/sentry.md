@@ -41,19 +41,19 @@ deno add npm:@orpc/otel@latest
 To set up OpenTelemetry with oRPC, use the `ORPCInstrumentation` class. This class automatically instruments your oRPC client and server for distributed tracing.
 
 ```ts twoslash
-import * as Sentry from '@sentry/node'
-import { ORPCInstrumentation } from '@orpc/otel'
+import * as Sentry from "@sentry/node";
+import { ORPCInstrumentation } from "@orpc/otel";
 
 Sentry.init({
-  dsn: '...',
+  dsn: "...",
   sendDefaultPii: true,
 
   tracesSampleRate: 1.0, // enable tracing [!code highlight]
 
   openTelemetryInstrumentations: [
     new ORPCInstrumentation(), // [!code highlight]
-  ]
-})
+  ],
+});
 ```
 
 ## Capturing Errors
@@ -61,26 +61,26 @@ Sentry.init({
 Since Sentry does not yet support collecting [OpenTelemetry span events](https://opentelemetry.io/docs/concepts/signals/traces/#span-events), you should capture errors that occur in business logic manually. You can use `interceptors`, `middleware`, or other error handling mechanisms.
 
 ```ts twoslash
-import * as Sentry from '@sentry/node'
-import { os } from '@orpc/server'
+import * as Sentry from "@sentry/node";
+import { os } from "@orpc/server";
 
 export const sentryMiddleware = os.middleware(async ({ next }) => {
   try {
-    return await next()
+    return await next();
+  } catch (error) {
+    Sentry.captureException(error); // [!code highlight]
+    throw error;
   }
-  catch (error) {
-    Sentry.captureException(error) // [!code highlight]
-    throw error
-  }
-})
+});
 
-export const base = os.use(sentryMiddleware)
+export const base = os.use(sentryMiddleware);
 ```
 
 ---
 
 ---
+
 url: /docs/server-action.md
 description: Integrate oRPC procedures with React Server Actions
----
 
+---

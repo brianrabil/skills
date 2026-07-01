@@ -7,9 +7,9 @@ A normal [router](/docs/router) works as a contract router as long as it does no
 If your router includes a [lazy router](/docs/router#lazy-router), you need to fully resolve it to make it compatible with contract.
 
 ```ts
-import { unlazyRouter } from '@orpc/server'
+import { unlazyRouter } from "@orpc/server";
 
-const resolvedRouter = await unlazyRouter(router)
+const resolvedRouter = await unlazyRouter(router);
 ```
 
 ## Minify & Export the Contract Router for the Client
@@ -23,12 +23,12 @@ However, if you're deriving the contract from a [router](/docs/router), importin
 1. **Minify the Contract Router and Export to JSON**
 
    ```ts
-   import fs from 'node:fs'
-   import { minifyContractRouter } from '@orpc/contract'
+   import fs from "node:fs";
+   import { minifyContractRouter } from "@orpc/contract";
 
-   const minifiedRouter = minifyContractRouter(router)
+   const minifiedRouter = minifyContractRouter(router);
 
-   fs.writeFileSync('./contract.json', JSON.stringify(minifiedRouter))
+   fs.writeFileSync("./contract.json", JSON.stringify(minifiedRouter));
    ```
 
    ::: warning
@@ -38,11 +38,11 @@ However, if you're deriving the contract from a [router](/docs/router), importin
 2. **Import the Contract JSON on the Client Side**
 
    ```ts
-   import contract from './contract.json' // [!code highlight]
+   import contract from "./contract.json"; // [!code highlight]
 
    const link = new OpenAPILink(contract as typeof router, {
-     url: 'http://localhost:3000/api',
-   })
+     url: "http://localhost:3000/api",
+   });
    ```
 
    ::: warning
@@ -52,7 +52,8 @@ However, if you're deriving the contract from a [router](/docs/router), importin
 ---
 
 ---
+
 url: /docs/rpc-handler.md
 description: Comprehensive Guide to the RPCHandler in oRPC
----
 
+---

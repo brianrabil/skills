@@ -33,16 +33,16 @@ deno add npm:@orpc/react-query@latest npm:@tanstack/react-query@latest
 Before you begin, ensure you have already configured a [server-side client](/docs/client/server-side) or a [client-side client](/docs/client/client-side).
 
 ```ts twoslash
-import { router } from './shared/planet'
-import { RouterClient } from '@orpc/server'
+import { router } from "./shared/planet";
+import { RouterClient } from "@orpc/server";
 
-declare const client: RouterClient<typeof router>
+declare const client: RouterClient<typeof router>;
 // ---cut---
-import { createORPCReactQueryUtils } from '@orpc/react-query'
+import { createORPCReactQueryUtils } from "@orpc/react-query";
 
-export const orpc = createORPCReactQueryUtils(client)
+export const orpc = createORPCReactQueryUtils(client);
 
-orpc.planet.find.queryOptions({ input: { id: 123 } })
+orpc.planet.find.queryOptions({ input: { id: 123 } });
 //               ^|
 
 //
@@ -54,11 +54,11 @@ Prevent key conflicts by passing a unique base key when creating your utils:
 
 ```ts
 const userORPC = createORPCReactQueryUtils(userClient, {
-  path: ['user']
-})
+  path: ["user"],
+});
 const postORPC = createORPCReactQueryUtils(postClient, {
-  path: ['post']
-})
+  path: ["post"],
+});
 ```
 
 ## Using React Context
@@ -68,22 +68,22 @@ Integrate oRPC React Query utils into your React app with Context:
 1. **Create the Context:**
 
    ```ts twoslash
-   import { router } from './shared/planet'
+   import { router } from "./shared/planet";
    // ---cut---
-   import { createContext, use } from 'react'
-   import { RouterUtils } from '@orpc/react-query'
-   import { RouterClient } from '@orpc/server'
+   import { createContext, use } from "react";
+   import { RouterUtils } from "@orpc/react-query";
+   import { RouterClient } from "@orpc/server";
 
-   type ORPCReactUtils = RouterUtils<RouterClient<typeof router>>
+   type ORPCReactUtils = RouterUtils<RouterClient<typeof router>>;
 
-   export const ORPCContext = createContext<ORPCReactUtils | undefined>(undefined)
+   export const ORPCContext = createContext<ORPCReactUtils | undefined>(undefined);
 
    export function useORPC(): ORPCReactUtils {
-     const orpc = use(ORPCContext)
+     const orpc = use(ORPCContext);
      if (!orpc) {
-       throw new Error('ORPCContext is not set up properly')
+       throw new Error("ORPCContext is not set up properly");
      }
-     return orpc
+     return orpc;
    }
    ```
 
@@ -91,36 +91,37 @@ Integrate oRPC React Query utils into your React app with Context:
 
    ```tsx
    export function App() {
-     const [client] = useState<RouterClient<typeof router>>(() => createORPCClient(link))
-     const [orpc] = useState(() => createORPCReactQueryUtils(client))
+     const [client] = useState<RouterClient<typeof router>>(() => createORPCClient(link));
+     const [orpc] = useState(() => createORPCReactQueryUtils(client));
 
      return (
        <ORPCContext.Provider value={orpc}>
          <YourApp />
        </ORPCContext.Provider>
-     )
+     );
    }
    ```
 
 3. **Use the Utils in Components:**
 
    ```ts twoslash
-   import { router } from './shared/planet'
-   import { RouterClient } from '@orpc/server'
-   import { RouterUtils } from '@orpc/react-query'
-   import { useQuery } from '@tanstack/react-query'
+   import { router } from "./shared/planet";
+   import { RouterClient } from "@orpc/server";
+   import { RouterUtils } from "@orpc/react-query";
+   import { useQuery } from "@tanstack/react-query";
 
-   declare function useORPC(): RouterUtils<RouterClient<typeof router>>
+   declare function useORPC(): RouterUtils<RouterClient<typeof router>>;
    // ---cut---
-   const orpc = useORPC()
+   const orpc = useORPC();
 
-   const query = useQuery(orpc.planet.find.queryOptions({ input: { id: 123 } }))
+   const query = useQuery(orpc.planet.find.queryOptions({ input: { id: 123 } }));
    ```
 
 ---
 
 ---
+
 url: /docs/integrations/tanstack-query-old/solid.md
 description: Seamlessly integrate oRPC with Tanstack Query for Solid
----
 
+---

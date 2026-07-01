@@ -9,20 +9,20 @@ With oRPC, you can establish type-safe communication channels between your main 
 Configure your Web Worker to handle oRPC requests by upgrading it with a message port handler:
 
 ```ts
-import { RPCHandler } from '@orpc/server/message-port'
-import { onError } from '@orpc/server'
+import { RPCHandler } from "@orpc/server/message-port";
+import { onError } from "@orpc/server";
 
 const handler = new RPCHandler(router, {
   interceptors: [
     onError((error) => {
-      console.error(error)
+      console.error(error);
     }),
   ],
-})
+});
 
 handler.upgrade(self, {
   context: {}, // Provide initial context if needed
-})
+});
 ```
 
 ## Main Thread
@@ -30,23 +30,23 @@ handler.upgrade(self, {
 Create a link to communicate with your Web Worker:
 
 ```ts
-import { RPCLink } from '@orpc/client/message-port'
+import { RPCLink } from "@orpc/client/message-port";
 
 export const link = new RPCLink({
-  port: new Worker('some-worker.ts')
-})
+  port: new Worker("some-worker.ts"),
+});
 ```
 
 :::details Using Web Workers in Vite Applications?
 You can leverage [Vite Web Workers feature](https://vite.dev/guide/features.html#web-workers) for streamlined development:
 
 ```ts
-import SomeWorker from './some-worker.ts?worker' // [!code highlight]
-import { RPCLink } from '@orpc/client/message-port'
+import SomeWorker from "./some-worker.ts?worker"; // [!code highlight]
+import { RPCLink } from "@orpc/client/message-port";
 
 export const link = new RPCLink({
-  port: new SomeWorker()
-})
+  port: new SomeWorker(),
+});
 ```
 
 :::
@@ -58,7 +58,8 @@ This only shows how to configure the link. For full client examples, see [Client
 ---
 
 ---
+
 url: /docs/adapters/websocket.md
 description: How to use oRPC over WebSocket?
----
 
+---

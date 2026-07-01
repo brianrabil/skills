@@ -9,7 +9,7 @@ Customize serialization by creating your own `StandardOpenAPICustomJsonSerialize
 1. **Define Your Custom Serializer**
 
    ```ts twoslash
-   import type { StandardOpenAPICustomJsonSerializer } from '@orpc/openapi-client/standard'
+   import type { StandardOpenAPICustomJsonSerializer } from "@orpc/openapi-client/standard";
 
    export class User {
      constructor(
@@ -25,33 +25,33 @@ Customize serialization by creating your own `StandardOpenAPICustomJsonSerialize
          name: this.name,
          email: this.email,
          age: this.age,
-       }
+       };
      }
    }
 
    export const userSerializer: StandardOpenAPICustomJsonSerializer = {
-     condition: data => data instanceof User,
-     serialize: data => data.toJSON(),
-   }
+     condition: (data) => data instanceof User,
+     serialize: (data) => data.toJSON(),
+   };
    ```
 
 2. **Use Your Custom Serializer**
 
    ```ts twoslash
-   import type { StandardOpenAPICustomJsonSerializer } from '@orpc/openapi-client/standard'
-   import { OpenAPIHandler } from '@orpc/openapi/fetch'
-   import { OpenAPIGenerator } from '@orpc/openapi'
+   import type { StandardOpenAPICustomJsonSerializer } from "@orpc/openapi-client/standard";
+   import { OpenAPIHandler } from "@orpc/openapi/fetch";
+   import { OpenAPIGenerator } from "@orpc/openapi";
 
-   declare const router: Record<never, never>
-   declare const userSerializer: StandardOpenAPICustomJsonSerializer
+   declare const router: Record<never, never>;
+   declare const userSerializer: StandardOpenAPICustomJsonSerializer;
    // ---cut---
    const handler = new OpenAPIHandler(router, {
      customJsonSerializers: [userSerializer],
-   })
+   });
 
    const generator = new OpenAPIGenerator({
      customJsonSerializers: [userSerializer],
-   })
+   });
    ```
 
    ::: info
@@ -61,9 +61,10 @@ Customize serialization by creating your own `StandardOpenAPICustomJsonSerialize
 ---
 
 ---
+
 url: /docs/openapi/plugins/openapi-reference.md
 description: >-
-  A plugin that serves API reference documentation and the OpenAPI specification
-  for your API.
----
+A plugin that serves API reference documentation and the OpenAPI specification
+for your API.
 
+---

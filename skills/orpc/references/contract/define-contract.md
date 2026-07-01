@@ -35,9 +35,9 @@ deno add npm:@orpc/contract@latest
 A procedure contract in oRPC is similar to a standard [procedure](/docs/procedure) definition, but with extraneous APIs removed to better support contract-first development.
 
 ```ts twoslash
-import * as z from 'zod'
+import * as z from "zod";
 // ---cut---
-import { oc } from '@orpc/contract'
+import { oc } from "@orpc/contract";
 
 export const exampleContract = oc
   .input(
@@ -52,7 +52,7 @@ export const exampleContract = oc
       name: z.string(),
       age: z.number().int().min(0),
     }),
-  )
+  );
 ```
 
 ## Contract Router
@@ -65,7 +65,7 @@ export const routerContract = {
   nested: {
     example: exampleContract,
   },
-}
+};
 ```
 
 ## Full Example
@@ -73,14 +73,14 @@ export const routerContract = {
 Below is a complete example demonstrating how to define a contract for a simple "Planet" service. This example extracted from our [Getting Started](/docs/getting-started) guide.
 
 ```ts twoslash
-import * as z from 'zod'
-import { oc } from '@orpc/contract'
+import * as z from "zod";
+import { oc } from "@orpc/contract";
 // ---cut---
 export const PlanetSchema = z.object({
   id: z.number().int().min(1),
   name: z.string(),
   description: z.string().optional(),
-})
+});
 
 export const listPlanetContract = oc
   .input(
@@ -89,15 +89,11 @@ export const listPlanetContract = oc
       cursor: z.number().int().min(0).default(0),
     }),
   )
-  .output(z.array(PlanetSchema))
+  .output(z.array(PlanetSchema));
 
-export const findPlanetContract = oc
-  .input(PlanetSchema.pick({ id: true }))
-  .output(PlanetSchema)
+export const findPlanetContract = oc.input(PlanetSchema.pick({ id: true })).output(PlanetSchema);
 
-export const createPlanetContract = oc
-  .input(PlanetSchema.omit({ id: true }))
-  .output(PlanetSchema)
+export const createPlanetContract = oc.input(PlanetSchema.omit({ id: true })).output(PlanetSchema);
 
 export const contract = {
   planet: {
@@ -105,7 +101,7 @@ export const contract = {
     find: findPlanetContract,
     create: createPlanetContract,
   },
-}
+};
 ```
 
 ## Utilities
@@ -113,13 +109,13 @@ export const contract = {
 ### Infer Contract Router Input
 
 ```ts twoslash
-import type { contract } from './shared/planet'
+import type { contract } from "./shared/planet";
 // ---cut---
-import type { InferContractRouterInputs } from '@orpc/contract'
+import type { InferContractRouterInputs } from "@orpc/contract";
 
-export type Inputs = InferContractRouterInputs<typeof contract>
+export type Inputs = InferContractRouterInputs<typeof contract>;
 
-type FindPlanetInput = Inputs['planet']['find']
+type FindPlanetInput = Inputs["planet"]["find"];
 ```
 
 This snippet automatically extracts the expected input types for each procedure in the router.
@@ -127,13 +123,13 @@ This snippet automatically extracts the expected input types for each procedure 
 ### Infer Contract Router Output
 
 ```ts twoslash
-import type { contract } from './shared/planet'
+import type { contract } from "./shared/planet";
 // ---cut---
-import type { InferContractRouterOutputs } from '@orpc/contract'
+import type { InferContractRouterOutputs } from "@orpc/contract";
 
-export type Outputs = InferContractRouterOutputs<typeof contract>
+export type Outputs = InferContractRouterOutputs<typeof contract>;
 
-type FindPlanetOutput = Outputs['planet']['find']
+type FindPlanetOutput = Outputs["planet"]["find"];
 ```
 
 Similarly, this utility infers the output types, ensuring that your application correctly handles the results from each procedure.
@@ -141,9 +137,10 @@ Similarly, this utility infers the output types, ensuring that your application 
 ---
 
 ---
+
 url: /docs/openapi/advanced/disabling-output-validation.md
 description: >-
-  Learn how to disable output validation in oRPC procedures for improved
-  performance while maintaining OpenAPI specification generation.
----
+Learn how to disable output validation in oRPC procedures for improved
+performance while maintaining OpenAPI specification generation.
 
+---

@@ -15,22 +15,22 @@ Other adapters may remove or change options to keep things simple.
 
 `RPCHandler` natively serializes and deserializes the following JavaScript types:
 
-* **string**
-* **number** (including `NaN`)
-* **boolean**
-* **null**
-* **undefined**
-* **Date** (including `Invalid Date`)
-* **BigInt**
-* **RegExp**
-* **URL**
-* **Record (object)**
-* **Array**
-* **Set**
-* **Map**
-* **Blob** (unsupported in `AsyncIteratorObject`)
-* **File** (unsupported in `AsyncIteratorObject`)
-* **AsyncIteratorObject** (only at the root level; powers the [Event Iterator](/docs/event-iterator))
+- **string**
+- **number** (including `NaN`)
+- **boolean**
+- **null**
+- **undefined**
+- **Date** (including `Invalid Date`)
+- **BigInt**
+- **RegExp**
+- **URL**
+- **Record (object)**
+- **Array**
+- **Set**
+- **Map**
+- **Blob** (unsupported in `AsyncIteratorObject`)
+- **File** (unsupported in `AsyncIteratorObject`)
+- **AsyncIteratorObject** (only at the root level; powers the [Event Iterator](/docs/event-iterator))
 
 :::tip
 You can extend the list of supported types by [creating a custom serializer](/docs/advanced/rpc-json-serializer#extending-native-data-types).
@@ -39,32 +39,30 @@ You can extend the list of supported types by [creating a custom serializer](/do
 ## Setup and Integration
 
 ```ts
-import { RPCHandler } from '@orpc/server/fetch' // or '@orpc/server/node'
-import { CORSPlugin } from '@orpc/server/plugins'
-import { onError } from '@orpc/server'
+import { RPCHandler } from "@orpc/server/fetch"; // or '@orpc/server/node'
+import { CORSPlugin } from "@orpc/server/plugins";
+import { onError } from "@orpc/server";
 
 const handler = new RPCHandler(router, {
-  plugins: [
-    new CORSPlugin()
-  ],
+  plugins: [new CORSPlugin()],
   interceptors: [
     onError((error) => {
-      console.error(error)
-    })
+      console.error(error);
+    }),
   ],
-})
+});
 
 export default async function fetch(request: Request) {
   const { matched, response } = await handler.handle(request, {
-    prefix: '/rpc',
-    context: {} // Provide initial context if required
-  })
+    prefix: "/rpc",
+    context: {}, // Provide initial context if required
+  });
 
   if (matched) {
-    return response
+    return response;
   }
 
-  return new Response('Not Found', { status: 404 })
+  return new Response("Not Found", { status: 404 });
 }
 ```
 
@@ -74,8 +72,8 @@ You can filter a procedure from matching by using the `filter` option:
 
 ```ts
 const handler = new RPCHandler(router, {
-  filter: ({ contract, path }) => !contract['~orpc'].route.tags?.includes('internal'),
-})
+  filter: ({ contract, path }) => !contract["~orpc"].route.tags?.includes("internal"),
+});
 ```
 
 ## Default Plugins
@@ -128,15 +126,16 @@ Interceptors can be used to intercept and modify the lifecycle at various stages
 
 :::info
 
-* The Server-side Procedure Client is a [Server-Side Client](/docs/client/server-side), and `clientInterceptors` are the same as [Server-Side Client Interceptors](/docs/client/server-side#lifecycle).
-* Some `RPCHandler` implementations may omit the `Request/Response encoder` when it's not required.
+- The Server-side Procedure Client is a [Server-Side Client](/docs/client/server-side), and `clientInterceptors` are the same as [Server-Side Client Interceptors](/docs/client/server-side#lifecycle).
+- Some `RPCHandler` implementations may omit the `Request/Response encoder` when it's not required.
 
 :::
 
 ---
 
 ---
+
 url: /docs/advanced/rpc-json-serializer.md
 description: Extend or override the standard RPC JSON serializer.
----
 
+---

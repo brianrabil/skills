@@ -33,11 +33,11 @@ deno add npm:@orpc/trpc@latest
 By converting a [tRPC router](https://trpc.io/docs/server/routers) to an [oRPC router](/docs/router), you can utilize most oRPC features, including OpenAPI specification generation and request handling.
 
 ```ts
-import { ORPCMeta, toORPCRouter } from '@orpc/trpc'
+import { ORPCMeta, toORPCRouter } from "@orpc/trpc";
 
-export const t = initTRPC.context<Context>().meta<ORPCMeta>().create()
+export const t = initTRPC.context<Context>().meta<ORPCMeta>().create();
 
-const orpcRouter = toORPCRouter(trpcRouter)
+const orpcRouter = toORPCRouter(trpcRouter);
 ```
 
 ::: warning
@@ -45,11 +45,11 @@ Ensure you set the `.meta` type to `ORPCMeta` when creating your tRPC builder. T
 
 ```ts
 const example = t.procedure
-  .meta({ route: { path: '/hello', summary: 'Hello procedure' } }) // [!code highlight]
+  .meta({ route: { path: "/hello", summary: "Hello procedure" } }) // [!code highlight]
   .input(z.object({ name: z.string() }))
   .query(({ input }) => {
-    return `Hello, ${input.name}!`
-  })
+    return `Hello, ${input.name}!`;
+  });
 ```
 
 :::
@@ -63,14 +63,14 @@ const openAPIGenerator = new OpenAPIGenerator({
     new ValibotToJsonSchemaConverter(), // <-- if you use Valibot
     new ArkTypeToJsonSchemaConverter(), // <-- if you use ArkType
   ],
-})
+});
 
 const spec = await openAPIGenerator.generate(orpcRouter, {
   info: {
-    title: 'My App',
-    version: '0.0.0',
+    title: "My App",
+    version: "0.0.0",
   },
-})
+});
 ```
 
 ::: info
@@ -84,18 +84,18 @@ const handler = new OpenAPIHandler(orpcRouter, {
   plugins: [new CORSPlugin()],
   interceptors: [
     onError((error) => {
-      console.error(error)
+      console.error(error);
     }),
   ],
-})
+});
 
 export async function fetch(request: Request) {
   const { matched, response } = await handler.handle(request, {
-    prefix: '/api',
-    context: {} // Add initial context if needed
-  })
+    prefix: "/api",
+    context: {}, // Add initial context if needed
+  });
 
-  return response ?? new Response('Not Found', { status: 404 })
+  return response ?? new Response("Not Found", { status: 404 });
 }
 ```
 
@@ -112,25 +112,26 @@ const handler = new OpenAPIHandler(orpcRouter, {
   interceptors: [
     onError((error) => {
       if (
-        error instanceof ORPCError
-        && error.cause instanceof TRPCError
-        && error.cause.cause instanceof ZodError
+        error instanceof ORPCError &&
+        error.cause instanceof TRPCError &&
+        error.cause.cause instanceof ZodError
       ) {
-        throw new ORPCError('INPUT_VALIDATION_FAILED', {
+        throw new ORPCError("INPUT_VALIDATION_FAILED", {
           status: 422,
           data: error.cause.cause.flatten(),
           cause: error.cause.cause,
-        })
+        });
       }
-    })
+    }),
   ],
-})
+});
 ```
 
 ---
 
 ---
+
 url: /docs/advanced/validation-errors.md
 description: Learn about oRPC's built-in validation errors and how to customize them.
----
 
+---

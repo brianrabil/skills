@@ -20,10 +20,10 @@ Fortunately, oRPC provides both a [server-side client](/docs/client/server-side)
 
 ```ts
 // Use this for server-side calls
-const orpc = createRouterClient(router)
+const orpc = createRouterClient(router);
 
 // Fallback to this for client-side calls
-const orpc: RouterClient<typeof router> = createORPCClient(someLink)
+const orpc: RouterClient<typeof router> = createORPCClient(someLink);
 ```
 
 But how? A naive `typeof window === 'undefined'` check works, but exposes your router logic to the client. We need a hack that ensures server‑only code never reaches the browser.
@@ -35,34 +35,34 @@ We'll use `globalThis` to share the server client without bundling it into clien
 ::: code-group
 
 ```ts [lib/orpc.ts]
-import type { RouterClient } from '@orpc/server'
-import { RPCLink } from '@orpc/client/fetch'
-import { createORPCClient } from '@orpc/client'
+import type { RouterClient } from "@orpc/server";
+import { RPCLink } from "@orpc/client/fetch";
+import { createORPCClient } from "@orpc/client";
 
 declare global {
-  var $client: RouterClient<typeof router> | undefined
+  var $client: RouterClient<typeof router> | undefined;
 }
 
 const link = new RPCLink({
   url: () => {
-    if (typeof window === 'undefined') {
-      throw new Error('RPCLink is not allowed on the server side.')
+    if (typeof window === "undefined") {
+      throw new Error("RPCLink is not allowed on the server side.");
     }
 
-    return `${window.location.origin}/rpc`
+    return `${window.location.origin}/rpc`;
   },
-})
+});
 
 /**
  * Fallback to client-side client if server-side client is not available.
  */
-export const client: RouterClient<typeof router> = globalThis.$client ?? createORPCClient(link)
+export const client: RouterClient<typeof router> = globalThis.$client ?? createORPCClient(link);
 ```
 
 ```ts [lib/orpc.server.ts]
-import 'server-only'
+import "server-only";
 
-import { createRouterClient } from '@orpc/server'
+import { createRouterClient } from "@orpc/server";
 
 globalThis.$client = createRouterClient(router, {
   /**
@@ -75,7 +75,7 @@ globalThis.$client = createRouterClient(router, {
   context: async () => ({
     headers: await headers(), // provide headers if initial context required
   }),
-})
+});
 ```
 
 :::
@@ -86,35 +86,36 @@ When you use [OpenAPILink](/docs/openapi/client/openapi-link), its `JsonifiedCli
 ::: code-group
 
 ```ts [lib/orpc.ts]
-import type { RouterClient } from '@orpc/server'
-import type { JsonifiedClient } from '@orpc/openapi-client'
-import { OpenAPILink } from '@orpc/openapi-client/fetch'
-import { createORPCClient } from '@orpc/client'
+import type { RouterClient } from "@orpc/server";
+import type { JsonifiedClient } from "@orpc/openapi-client";
+import { OpenAPILink } from "@orpc/openapi-client/fetch";
+import { createORPCClient } from "@orpc/client";
 
 declare global {
-  var $client: JsonifiedClient<RouterClient<typeof router>> | undefined
+  var $client: JsonifiedClient<RouterClient<typeof router>> | undefined;
 }
 
 const link = new OpenAPILink(contract, {
   url: () => {
-    if (typeof window === 'undefined') {
-      throw new Error('OpenAPILink is not allowed on the server side.')
+    if (typeof window === "undefined") {
+      throw new Error("OpenAPILink is not allowed on the server side.");
     }
 
-    return `${window.location.origin}/api`
+    return `${window.location.origin}/api`;
   },
-})
+});
 
 /**
  * Fallback to client-side client if server-side client is not available.
  */
-export const client: JsonifiedClient<RouterClient<typeof router>> = globalThis.$client ?? createORPCClient(link)
+export const client: JsonifiedClient<RouterClient<typeof router>> =
+  globalThis.$client ?? createORPCClient(link);
 ```
 
 ```ts [lib/orpc.server.ts]
-import 'server-only'
+import "server-only";
 
-import { createJsonifiedRouterClient } from '@orpc/openapi'
+import { createJsonifiedRouterClient } from "@orpc/openapi";
 
 globalThis.$client = createJsonifiedRouterClient(router, {
   /**
@@ -127,7 +128,7 @@ globalThis.$client = createJsonifiedRouterClient(router, {
   context: async () => ({
     headers: await headers(), // provide headers if initial context required
   }),
-})
+});
 ```
 
 :::
@@ -140,13 +141,13 @@ Finally, ensure `lib/orpc.server.ts` is imported before any other code on the se
 export async function register() {
   // Conditionally import if facing runtime compatibility issues
   // if (process.env.NEXT_RUNTIME === "nodejs") {
-  await import('./lib/orpc.server')
+  await import("./lib/orpc.server");
   // }
 }
 ```
 
 ```ts [app/layout.tsx]
-import '../lib/orpc.server' // for pre-rendering
+import "../lib/orpc.server"; // for pre-rendering
 
 // Rest of the code
 ```
@@ -164,22 +165,24 @@ oRPC doesn't restrict you to any specific approach for optimizing SSR - you can 
 :::
 
 ```ts [lib/orpc.server.ts]
-import 'server-only'
+import "server-only";
 
-import { createORPCClient } from '@orpc/client'
-import { RPCLink } from '@orpc/client/fetch'
-import type { RouterClient } from '@orpc/server'
-import { handler } from '@/app/rpc/[[...rest]]/route'
+import { createORPCClient } from "@orpc/client";
+import { RPCLink } from "@orpc/client/fetch";
+import type { RouterClient } from "@orpc/server";
+import { handler } from "@/app/rpc/[[...rest]]/route";
 
 const link = new RPCLink({
-  url: 'http://placeholder',
+  url: "http://placeholder",
   method: inferRPCMethodFromRouter(router),
   plugins: [
     new DedupeRequestsPlugin({
-      groups: [{
-        condition: () => true,
-        context: {},
-      }],
+      groups: [
+        {
+          condition: () => true,
+          context: {},
+        },
+      ],
     }),
   ],
   fetch: async (request) => {
@@ -187,13 +190,13 @@ const link = new RPCLink({
       context: {
         headers: await headers(), // Provide headers if needed
       },
-    })
+    });
 
-    return response ?? new Response('Not Found', { status: 404 })
+    return response ?? new Response("Not Found", { status: 404 });
   },
-})
+});
 
-globalThis.$client = createORPCClient<RouterClient<typeof router>>(link)
+globalThis.$client = createORPCClient<RouterClient<typeof router>>(link);
 ```
 
 ## Using the client
@@ -202,15 +205,15 @@ The `client` requires no special handling, just use it like regular clients.
 
 ```tsx
 export default async function PlanetListPage() {
-  const planets = await client.planet.list({ limit: 10 })
+  const planets = await client.planet.list({ limit: 10 });
 
   return (
     <div>
-      {planets.map(planet => (
+      {planets.map((planet) => (
         <div key={planet.id}>{planet.name}</div>
       ))}
     </div>
-  )
+  );
 }
 ```
 
@@ -228,15 +231,15 @@ export default function PlanetListPage() {
     orpc.planet.list.queryOptions({
       input: { limit: 10 },
     }),
-  )
+  );
 
   return (
     <div>
-      {planets.map(planet => (
+      {planets.map((planet) => (
         <div key={planet.id}>{planet.name}</div>
       ))}
     </div>
-  )
+  );
 }
 ```
 
@@ -247,9 +250,10 @@ Above example uses suspense hooks, you might need to wrap your app within `<Susp
 ---
 
 ---
+
 url: /learn-and-contribute/mini-orpc/overview.md
 description: >-
-  A brief introduction to Mini oRPC, a simplified version of oRPC designed for
-  learning purposes.
----
+A brief introduction to Mini oRPC, a simplified version of oRPC designed for
+learning purposes.
 
+---

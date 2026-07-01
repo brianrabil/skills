@@ -2,9 +2,9 @@
 
 This comparison table helps you understand how oRPC differs from other popular TypeScript RPC and REST solutions.
 
-* ✅ First-class, built-in support
-* 🟡 Lacks features, or requires third-party integrations
-* 🛑 Not supported or not documented
+- ✅ First-class, built-in support
+- 🟡 Lacks features, or requires third-party integrations
+- 🛑 Not supported or not documented
 
 | Feature                                                                                                                      | oRPC docs                                                                                    | oRPC | tRPC | ts-rest | Hono |
 | ---------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ---- | ---- | ------- | ---- |
@@ -38,7 +38,8 @@ This comparison table helps you understand how oRPC differs from other popular T
 ---
 
 ---
+
 url: /docs/plugins/compression.md
 description: A plugin for oRPC that compresses response bodies.
----
 
+---

@@ -37,10 +37,10 @@ deno add npm:@orpc/experimental-pino@latest npm:pino@latest
 To set up Pino with oRPC, use the `LoggingHandlerPlugin` class. This plugin automatically instruments your handler with structured logging, request tracking, and error monitoring.
 
 ```ts
-import { LoggingHandlerPlugin } from '@orpc/experimental-pino'
-import pino from 'pino'
+import { LoggingHandlerPlugin } from "@orpc/experimental-pino";
+import pino from "pino";
 
-const logger = pino()
+const logger = pino();
 
 const handler = new RPCHandler(router, {
   plugins: [
@@ -51,7 +51,7 @@ const handler = new RPCHandler(router, {
       logRequestAbort: true, // Log when requests are aborted (disabled by default)
     }),
   ],
-})
+});
 ```
 
 ::: info
@@ -72,20 +72,18 @@ npm run dev | npx pino-pretty
 You can access the logger from the context object using the `getLogger` function:
 
 ```ts
-import { getLogger, LoggerContext } from '@orpc/experimental-pino'
+import { getLogger, LoggerContext } from "@orpc/experimental-pino";
 
 interface ORPCContext extends LoggerContext {} // [!code highlight]
 
-const procedure = os
-  .$context<ORPCContext>()
-  .handler(({ context }) => {
-    const logger = getLogger(context) // [!code highlight]
+const procedure = os.$context<ORPCContext>().handler(({ context }) => {
+  const logger = getLogger(context); // [!code highlight]
 
-    logger?.info('Processing request')
-    logger?.debug({ userId: 123 }, 'User data')
+  logger?.info("Processing request");
+  logger?.debug({ userId: 123 }, "User data");
 
-    return { success: true }
-  })
+  return { success: true };
+});
 ```
 
 ## Providing Custom Logger per Request
@@ -96,47 +94,48 @@ You can provide a custom logger instance for specific requests by passing it thr
 import {
   CONTEXT_LOGGER_SYMBOL,
   LoggerContext,
-  LoggingHandlerPlugin
-} from '@orpc/experimental-pino'
+  LoggingHandlerPlugin,
+} from "@orpc/experimental-pino";
 
-const logger = pino()
-const httpLogger = pinoHttp({ logger })
+const logger = pino();
+const httpLogger = pinoHttp({ logger });
 
 interface ORPCContext extends LoggerContext {} // [!code highlight]
 
 const router = {
-  ping: os.$context<ORPCContext>().handler(() => 'pong')
-}
+  ping: os.$context<ORPCContext>().handler(() => "pong"),
+};
 
 const handler = new RPCHandler(router, {
   plugins: [
     new LoggingHandlerPlugin({ logger }), // [!code highlight]
   ],
-})
+});
 
 const server = createServer(async (req, res) => {
-  httpLogger(req, res)
+  httpLogger(req, res);
 
   const { matched } = await handler.handle(req, res, {
-    prefix: '/api',
+    prefix: "/api",
     context: {
       [CONTEXT_LOGGER_SYMBOL]: req.log, // [!code highlight]
     },
-  })
+  });
 
   if (!matched) {
-    res.statusCode = 404
-    res.end('Not Found')
+    res.statusCode = 404;
+    res.end("Not Found");
   }
-})
+});
 ```
 
 ---
 
 ---
+
 url: /docs/playgrounds.md
 description: >-
-  Interactive development environments for exploring and testing oRPC
-  functionality.
----
+Interactive development environments for exploring and testing oRPC
+functionality.
 
+---

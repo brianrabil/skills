@@ -15,15 +15,15 @@ If you're using `RPCHandler/Link`, you can temporarily add support for binary da
 :::
 
 ```ts
-import { RPCLink } from '@orpc/client/fetch'
+import { RPCLink } from "@orpc/client/fetch";
 
 const link = new RPCLink({
-  url: 'http://localhost:3000/rpc',
+  url: "http://localhost:3000/rpc",
   headers: async ({ context }) => ({
-    'x-api-key': context?.something ?? ''
-  })
+    "x-api-key": context?.something ?? "",
+  }),
   // fetch: <-- polyfill fetch if needed
-})
+});
 ```
 
 ::: info
@@ -38,7 +38,7 @@ If you're using [Expo](https://expo.dev/), you can use the [`expo/fetch`](https:
 export const link = new RPCLink({
   url: `http://localhost:3000/rpc`,
   async fetch(request, init) {
-    const { fetch } = await import('expo/fetch')
+    const { fetch } = await import("expo/fetch");
 
     const resp = await fetch(request.url, {
       body: await request.blob(),
@@ -46,17 +46,18 @@ export const link = new RPCLink({
       method: request.method,
       signal: request.signal,
       ...init,
-    })
+    });
 
-    return resp
+    return resp;
   },
-})
+});
 ```
 
 ---
 
 ---
+
 url: /docs/integrations/react-swr.md
 description: Integrate oRPC with React SWR for efficient data fetching and caching.
----
 
+---

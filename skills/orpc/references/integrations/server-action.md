@@ -7,12 +7,12 @@ React [Server Actions](https://react.dev/reference/rsc/server-functions) let cli
 Define your procedure with `.actionable` for Server Action support.
 
 ```ts twoslash
-import { onError, onSuccess, os } from '@orpc/server'
-import * as z from 'zod'
+import { onError, onSuccess, os } from "@orpc/server";
+import * as z from "zod";
 // ---cut---
-'use server'
+("use server");
 
-import { redirect } from 'next/navigation'
+import { redirect } from "next/navigation";
 
 export const ping = os
   .input(z.object({ name: z.string() }))
@@ -20,10 +20,10 @@ export const ping = os
   .actionable({
     context: async () => ({}), // Optional: provide initial context if needed
     interceptors: [
-      onSuccess(async output => redirect(`/some-where`)),
-      onError(async error => console.error(error)),
+      onSuccess(async (output) => redirect(`/some-where`)),
+      onError(async (error) => console.error(error)),
     ],
-  })
+  });
 ```
 
 :::tip
@@ -39,25 +39,25 @@ Special errors such as `redirect`, `notFound`, and similar are **only supported 
 On the client, import and call your procedure as follows:
 
 ```tsx
-'use client'
+"use client";
 
-import { ping } from './actions'
+import { ping } from "./actions";
 
 export function MyComponent() {
-  const [name, setName] = useState('')
+  const [name, setName] = useState("");
 
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
-    const [error, data] = await ping({ name })
-    console.log(error, data)
-  }
+    e.preventDefault();
+    const [error, data] = await ping({ name });
+    console.log(error, data);
+  };
 
   return (
     <form onSubmit={handleSubmit}>
-      <input value={name} onChange={e => setName(e.target.value)} />
+      <input value={name} onChange={(e) => setName(e.target.value)} />
       <button type="submit">Submit</button>
     </form>
-  )
+  );
 }
 ```
 
@@ -68,34 +68,33 @@ This approach seamlessly integrates server-side procedures with client component
 The `.actionable` modifier supports type-safe error handling with a JSON-like error object.
 
 ```ts twoslash
-import { os } from '@orpc/server'
-import * as z from 'zod'
+import { os } from "@orpc/server";
+import * as z from "zod";
 
 export const someAction = os
   .input(z.object({ name: z.string() }))
   .errors({
     SOME_ERROR: {
-      message: 'Some error message',
+      message: "Some error message",
       data: z.object({ some: z.string() }),
     },
   })
   .handler(async ({ input }) => `Hello, ${input.name}`)
-  .actionable()
+  .actionable();
 // ---cut---
-'use client'
+("use client");
 
-const [error, data] = await someAction({ name: 'John' })
+const [error, data] = await someAction({ name: "John" });
 
 if (error) {
   if (error.defined) {
-    console.log(error.data)
+    console.log(error.data);
     //                 ^ Typed error data
   }
   // Handle unknown errors
-}
-else {
+} else {
   // Handle success
-  console.log(data)
+  console.log(data);
 }
 ```
 
@@ -134,50 +133,50 @@ deno add npm:@orpc/react@latest
 The `useServerAction` hook simplifies invoking server actions in React.
 
 ```tsx twoslash
-import * as React from 'react'
-import { os } from '@orpc/server'
-import * as z from 'zod'
+import * as React from "react";
+import { os } from "@orpc/server";
+import * as z from "zod";
 
 export const someAction = os
   .input(z.object({ name: z.string() }))
   .errors({
     SOME_ERROR: {
-      message: 'Some error message',
+      message: "Some error message",
       data: z.object({ some: z.string() }),
     },
   })
   .handler(async ({ input }) => `Hello, ${input.name}`)
-  .actionable()
+  .actionable();
 // ---cut---
-'use client'
+("use client");
 
-import { useServerAction } from '@orpc/react/hooks'
-import { isDefinedError, onError } from '@orpc/client'
+import { useServerAction } from "@orpc/react/hooks";
+import { isDefinedError, onError } from "@orpc/client";
 
 export function MyComponent() {
   const { execute, data, error, status } = useServerAction(someAction, {
     interceptors: [
       onError((error) => {
         if (isDefinedError(error)) {
-          console.error(error.data)
+          console.error(error.data);
           //                   ^ Typed error data
         }
       }),
     ],
-  })
+  });
 
   const action = async (form: FormData) => {
-    const name = form.get('name') as string
-    execute({ name })
-  }
+    const name = form.get("name") as string;
+    execute({ name });
+  };
 
   return (
     <form action={action}>
       <input type="text" name="name" required />
       <button type="submit">Submit</button>
-      {status === 'pending' && <p>Loading...</p>}
+      {status === "pending" && <p>Loading...</p>}
     </form>
-  )
+  );
 }
 ```
 
@@ -186,30 +185,30 @@ export function MyComponent() {
 The `useOptimisticServerAction` hook enables optimistic UI updates while a server action executes. This provides immediate visual feedback to users before the server responds.
 
 ```tsx
-import { useOptimisticServerAction } from '@orpc/react/hooks'
-import { onSuccessDeferred } from '@orpc/react'
+import { useOptimisticServerAction } from "@orpc/react/hooks";
+import { onSuccessDeferred } from "@orpc/react";
 
 export function MyComponent() {
-  const [todos, setTodos] = useState<Todo[]>([])
+  const [todos, setTodos] = useState<Todo[]>([]);
   const { execute, optimisticState } = useOptimisticServerAction(someAction, {
     optimisticPassthrough: todos,
     optimisticReducer: (currentState, newTodo) => [...currentState, newTodo],
     interceptors: [
       onSuccessDeferred(({ data }) => {
-        setTodos(prevTodos => [...prevTodos, data])
+        setTodos((prevTodos) => [...prevTodos, data]);
       }),
     ],
-  })
+  });
 
   const handleSubmit = (form: FormData) => {
-    const todo = form.get('todo') as string
-    execute({ todo })
-  }
+    const todo = form.get("todo") as string;
+    execute({ todo });
+  };
 
   return (
     <div>
       <ul>
-        {optimisticState.map(todo => (
+        {optimisticState.map((todo) => (
           <li key={todo.todo}>{todo.todo}</li>
         ))}
       </ul>
@@ -218,7 +217,7 @@ export function MyComponent() {
         <button type="submit">Add Todo</button>
       </form>
     </div>
-  )
+  );
 }
 ```
 
@@ -231,7 +230,7 @@ The `onSuccessDeferred` interceptor defers execution, useful for updating states
 The `createFormAction` utility accepts a [procedure](/docs/procedure) and returns a function to handle form submissions. It uses [Bracket Notation](/docs/openapi/bracket-notation) to deserialize form data.
 
 ```tsx
-import { createFormAction } from '@orpc/react'
+import { createFormAction } from "@orpc/react";
 
 const dosomething = os
   .input(
@@ -240,20 +239,20 @@ const dosomething = os
         name: z.string(),
         age: z.coerce.number(),
       }),
-    })
+    }),
   )
   .handler(({ input }) => {
-    console.log('Form action called!')
-    console.log(input)
-  })
+    console.log("Form action called!");
+    console.log(input);
+  });
 
 export const redirectSomeWhereForm = createFormAction(dosomething, {
   interceptors: [
     onSuccess(async () => {
-      redirect('/some-where')
+      redirect("/some-where");
     }),
   ],
-})
+});
 
 export function MyComponent() {
   return (
@@ -262,7 +261,7 @@ export function MyComponent() {
       <input type="number" name="user[age]" required />
       <button type="submit">Submit</button>
     </form>
-  )
+  );
 }
 ```
 
@@ -277,45 +276,48 @@ When using `createFormAction`, any `ORPCError` with a status of `401`, `403`, or
 The `@orpc/react` package re-exports [Form Data Helpers](/docs/helpers/form-data) for seamless form data parsing and validation error handling with [bracket notation](/docs/openapi/bracket-notation) support.
 
 ```tsx
-import { getIssueMessage, parseFormData } from '@orpc/react'
+import { getIssueMessage, parseFormData } from "@orpc/react";
 
 export function MyComponent() {
-  const { execute, data, error, status } = useServerAction(someAction)
+  const { execute, data, error, status } = useServerAction(someAction);
 
   return (
-    <form action={(form) => { execute(parseFormData(form)) }}>
+    <form
+      action={(form) => {
+        execute(parseFormData(form));
+      }}
+    >
       <label>
         Name:
         <input name="user[name]" type="text" />
-        <span>{getIssueMessage(error, 'user[name]')}</span>
+        <span>{getIssueMessage(error, "user[name]")}</span>
       </label>
 
       <label>
         Age:
         <input name="user[age]" type="number" />
-        <span>{getIssueMessage(error, 'user[age]')}</span>
+        <span>{getIssueMessage(error, "user[age]")}</span>
       </label>
 
       <label>
         Images:
         <input name="images[]" type="file" multiple />
-        <span>{getIssueMessage(error, 'images[]')}</span>
+        <span>{getIssueMessage(error, "images[]")}</span>
       </label>
 
-      <button disabled={status === 'pending'}>
-        Submit
-      </button>
+      <button disabled={status === "pending"}>Submit</button>
     </form>
-  )
+  );
 }
 ```
 
 ---
 
 ---
+
 url: /learn-and-contribute/mini-orpc/server-side-client.md
 description: >-
-  Learn how to turn a procedure into a callable function in Mini oRPC, enabling
-  server-side client functionality.
----
+Learn how to turn a procedure into a callable function in Mini oRPC, enabling
+server-side client functionality.
 
+---

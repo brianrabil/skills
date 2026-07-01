@@ -7,12 +7,14 @@ This guide explains how to create custom oRPC plugins for handlers and links.
 In oRPC, a plugin is a collection of `interceptors` that can work together or independently.
 
 ```ts
-export class ResponseHeadersPlugin<T extends ResponseHeadersPluginContext> implements StandardHandlerPlugin<T> {
+export class ResponseHeadersPlugin<
+  T extends ResponseHeadersPluginContext,
+> implements StandardHandlerPlugin<T> {
   init(options: StandardHandlerOptions<T>): void {
-    options.rootInterceptors ??= []
+    options.rootInterceptors ??= [];
 
     options.rootInterceptors.push(async (interceptorOptions) => {
-      const resHeaders = interceptorOptions.context.resHeaders ?? new Headers()
+      const resHeaders = interceptorOptions.context.resHeaders ?? new Headers();
 
       const result = await interceptorOptions.next({
         ...interceptorOptions,
@@ -20,23 +22,21 @@ export class ResponseHeadersPlugin<T extends ResponseHeadersPluginContext> imple
           ...interceptorOptions.context,
           resHeaders,
         },
-      })
+      });
 
       if (!result.matched) {
-        return result
+        return result;
       }
 
-      const responseHeaders = clone(result.response.headers)
+      const responseHeaders = clone(result.response.headers);
 
       for (const [key, value] of resHeaders) {
         if (Array.isArray(responseHeaders[key])) {
-          responseHeaders[key].push(value)
-        }
-        else if (responseHeaders[key] !== undefined) {
-          responseHeaders[key] = [responseHeaders[key], value]
-        }
-        else {
-          responseHeaders[key] = value
+          responseHeaders[key].push(value);
+        } else if (responseHeaders[key] !== undefined) {
+          responseHeaders[key] = [responseHeaders[key], value];
+        } else {
+          responseHeaders[key] = value;
         }
       }
 
@@ -46,8 +46,8 @@ export class ResponseHeadersPlugin<T extends ResponseHeadersPluginContext> imple
           ...result.response,
           headers: responseHeaders,
         },
-      }
-    })
+      };
+    });
   }
 }
 ```
@@ -80,19 +80,19 @@ The [Strict Get Method Plugin](/docs/plugins/strict-get-method) ([Source Code](h
 
 ```ts
 export class ExamplePlugin<T extends Context> implements StandardHandlerPlugin<T> {
-  order = 10 // [!code highlight]
+  order = 10; // [!code highlight]
 
   init(options: StandardHandlerOptions<T>): void {
-    options.rootInterceptors ??= []
-    options.clientInterceptors ??= []
+    options.rootInterceptors ??= [];
+    options.clientInterceptors ??= [];
 
     options.rootInterceptors.push(async ({ next }) => {
-      return await next()
-    })
+      return await next();
+    });
 
     options.clientInterceptors.push(async ({ next }) => {
-      return await next()
-    })
+      return await next();
+    });
   }
 }
 ```
@@ -106,7 +106,8 @@ In most cases, you **should not** define the `order` property unless you need yo
 ---
 
 ---
+
 url: /docs/plugins/client-retry.md
 description: A plugin for oRPC that enables retrying client calls when errors occur.
----
 
+---

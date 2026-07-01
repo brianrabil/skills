@@ -15,9 +15,9 @@ This example calls the `planet.create` procedure, with `/rpc` as the prefix:
 ```ts
 const router = {
   planet: {
-    create: os.handler(() => {}) // [!code highlight]
-  }
-}
+    create: os.handler(() => {}), // [!code highlight]
+  },
+};
 ```
 
 ## Input
@@ -31,17 +31,20 @@ By default, [RPCHandler](/docs/rpc-handler) in the [HTTP Adapter](/docs/adapters
 ### Input in URL Query
 
 ```ts
-const url = new URL('https://example.com/rpc/planet/create')
+const url = new URL("https://example.com/rpc/planet/create");
 
-url.searchParams.append('data', JSON.stringify({
-  json: {
-    name: 'Earth',
-    detached_at: '2022-01-01T00:00:00.000Z'
-  },
-  meta: [[1, 'detached_at']]
-}))
+url.searchParams.append(
+  "data",
+  JSON.stringify({
+    json: {
+      name: "Earth",
+      detached_at: "2022-01-01T00:00:00.000Z",
+    },
+    meta: [[1, "detached_at"]],
+  }),
+);
 
-const response = await fetch(url)
+const response = await fetch(url);
 ```
 
 ### Input in Request Body
@@ -61,25 +64,31 @@ curl -X POST https://example.com/rpc/planet/create \
 ### Input with File
 
 ```ts
-const form = new FormData()
+const form = new FormData();
 
-form.set('data', JSON.stringify({
-  json: {
-    name: 'Earth',
-    thumbnail: {},
-    images: [{}, {}]
-  },
-  meta: [[1, 'detached_at']],
-  maps: [['images', 0], ['images', 1]]
-}))
+form.set(
+  "data",
+  JSON.stringify({
+    json: {
+      name: "Earth",
+      thumbnail: {},
+      images: [{}, {}],
+    },
+    meta: [[1, "detached_at"]],
+    maps: [
+      ["images", 0],
+      ["images", 1],
+    ],
+  }),
+);
 
-form.set('0', new Blob([''], { type: 'image/png' }))
-form.set('1', new Blob([''], { type: 'image/png' }))
+form.set("0", new Blob([""], { type: "image/png" }));
+form.set("1", new Blob([""], { type: "image/png" }));
 
-const response = await fetch('https://example.com/rpc/planet/create', {
-  method: 'POST',
-  body: form
-})
+const response = await fetch("https://example.com/rpc/planet/create", {
+  method: "POST",
+  body: form,
+});
 ```
 
 ## Success Response
@@ -124,8 +133,8 @@ An error response has an HTTP status code between `400-599` and returns an `ORPC
 
 The `meta` field describes native data in the format `[type: number, ...path: (string | number)[]]`.
 
-* **type**: Data type (see [Supported Types](#supported-types)).
-* **path**: Path to the data inside `json`.
+- **type**: Data type (see [Supported Types](#supported-types)).
+- **path**: Path to the data inside `json`.
 
 ### Supported Types
 
@@ -147,7 +156,8 @@ The `maps` field is used with `FormData` to map a file or blob to a specific pat
 ---
 
 ---
+
 url: /docs/client/rpc-link.md
 description: Details on using RPCLink in oRPC clients.
----
 
+---

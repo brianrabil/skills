@@ -9,38 +9,38 @@ Fastify parses common request content types by default. oRPC will use the parsed
 ## Basic
 
 ```ts
-import Fastify from 'fastify'
-import { RPCHandler } from '@orpc/server/fastify'
-import { onError } from '@orpc/server'
+import Fastify from "fastify";
+import { RPCHandler } from "@orpc/server/fastify";
+import { onError } from "@orpc/server";
 
 const handler = new RPCHandler(router, {
   interceptors: [
     onError((error) => {
-      console.error(error)
-    })
-  ]
-})
+      console.error(error);
+    }),
+  ],
+});
 
-const fastify = Fastify()
+const fastify = Fastify();
 
-fastify.addContentTypeParser('*', (request, payload, done) => {
+fastify.addContentTypeParser("*", (request, payload, done) => {
   // Fully utilize oRPC feature by allowing any content type
   // And let oRPC parse the body manually by passing `undefined`
-  done(null, undefined)
-})
+  done(null, undefined);
+});
 
-fastify.all('/rpc/*', async (req, reply) => {
+fastify.all("/rpc/*", async (req, reply) => {
   const { matched } = await handler.handle(req, reply, {
-    prefix: '/rpc',
-    context: {} // Provide initial context if needed
-  })
+    prefix: "/rpc",
+    context: {}, // Provide initial context if needed
+  });
 
   if (!matched) {
-    reply.status(404).send('Not found')
+    reply.status(404).send("Not found");
   }
-})
+});
 
-fastify.listen({ port: 3000 }).then(() => console.log('Server running on http://localhost:3000'))
+fastify.listen({ port: 3000 }).then(() => console.log("Server running on http://localhost:3000"));
 ```
 
 ::: info
@@ -50,7 +50,8 @@ The `handler` can be any supported oRPC handler, such as [RPCHandler](/docs/rpc-
 ---
 
 ---
+
 url: /docs/file-upload-download.md
 description: Learn how to upload and download files using oRPC.
----
 
+---

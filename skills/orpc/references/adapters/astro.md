@@ -7,27 +7,27 @@
 ::: code-group
 
 ```ts [pages/rpc/[...rest].ts]
-import { RPCHandler } from '@orpc/server/fetch'
-import { onError } from '@orpc/server'
+import { RPCHandler } from "@orpc/server/fetch";
+import { onError } from "@orpc/server";
 
 const handler = new RPCHandler(router, {
   interceptors: [
     onError((error) => {
-      console.error(error)
+      console.error(error);
     }),
   ],
-})
+});
 
-export const prerender = false
+export const prerender = false;
 
 export const ALL: APIRoute = async ({ request }) => {
   const { response } = await handler.handle(request, {
-    prefix: '/rpc',
+    prefix: "/rpc",
     context: {},
-  })
+  });
 
-  return response ?? new Response('Not found', { status: 404 })
-}
+  return response ?? new Response("Not found", { status: 404 });
+};
 ```
 
 :::
@@ -39,9 +39,10 @@ The `handler` can be any supported oRPC handler, such as [RPCHandler](/docs/rpc-
 ---
 
 ---
+
 url: /docs/helpers/base64url.md
 description: >-
-  Functions to encode and decode base64url strings, a URL-safe variant of base64
-  encoding.
----
+Functions to encode and decode base64url strings, a URL-safe variant of base64
+encoding.
 
+---

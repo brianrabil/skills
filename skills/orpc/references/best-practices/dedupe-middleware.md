@@ -17,9 +17,9 @@ Redundant middleware execution can hurt performance, especially if the middlewar
 Use the `context` to track middleware execution and prevent duplication. For example:
 
 ```ts twoslash
-import { os } from '@orpc/server'
+import { os } from "@orpc/server";
 
-declare function connectDb(): Promise<'a_fake_db'>
+declare function connectDb(): Promise<"a_fake_db">;
 // ---cut---
 const dbProvider = os
   .$context<{ db?: Awaited<ReturnType<typeof connectDb>> }>()
@@ -27,36 +27,36 @@ const dbProvider = os
     /**
      * If db already exists, skip the connection.
      */
-    const db = context.db ?? await connectDb() // [!code highlight]
+    const db = context.db ?? (await connectDb()); // [!code highlight]
 
-    return next({ context: { db } })
-  })
+    return next({ context: { db } });
+  });
 ```
 
 Now `dbProvider` middleware can be safely applied multiple times without duplicating the database connection:
 
 ```ts twoslash
-import { call, os } from '@orpc/server'
+import { call, os } from "@orpc/server";
 
-declare function connectDb(): Promise<'a_fake_db'>
+declare function connectDb(): Promise<"a_fake_db">;
 const dbProvider = os
   .$context<{ db?: Awaited<ReturnType<typeof connectDb>> }>()
   .middleware(async ({ context, next }) => {
-    const db = context.db ?? await connectDb()
+    const db = context.db ?? (await connectDb());
 
-    return next({ context: { db } })
-  })
+    return next({ context: { db } });
+  });
 // ---cut---
-const foo = os.use(dbProvider).handler(({ context }) => 'Hello World')
+const foo = os.use(dbProvider).handler(({ context }) => "Hello World");
 
 const bar = os.use(dbProvider).handler(({ context }) => {
   /**
    * Now when you call foo, the dbProvider middleware no need to connect to the database again.
    */
-  const result = call(foo, 'input', { context }) // [!code highlight]
+  const result = call(foo, "input", { context }); // [!code highlight]
 
-  return 'Hello World'
-})
+  return "Hello World";
+});
 
 /**
  * Now even when `dbProvider` is applied multiple times, it still only connects to the database once.
@@ -65,12 +65,12 @@ const router = os
   .use(dbProvider) // [!code highlight]
   .use(({ next }) => {
     // Additional middleware logic
-    return next()
+    return next();
   })
   .router({
     foo,
     bar,
-  })
+  });
 ```
 
 ## Built-in Dedupe Middleware
@@ -82,29 +82,68 @@ Deduplication occurs only if the router middlewares is a **subset** of the **lea
 :::
 
 ```ts
-const router = os.use(logging).use(dbProvider).router({
-  // ✅ Deduplication occurs:
-  ping: os.use(logging).use(dbProvider).use(auth).handler(({ context }) => 'ping'),
-  pong: os.use(logging).use(dbProvider).handler(({ context }) => 'pong'),
+const router = os
+  .use(logging)
+  .use(dbProvider)
+  .router({
+    // ✅ Deduplication occurs:
+    ping: os
+      .use(logging)
+      .use(dbProvider)
+      .use(auth)
+      .handler(({ context }) => "ping"),
+    pong: os
+      .use(logging)
+      .use(dbProvider)
+      .handler(({ context }) => "pong"),
 
-  // ⛔ Deduplication does not occur:
-  diff_subset: os.use(logging).handler(({ context }) => 'ping'),
-  diff_order: os.use(dbProvider).use(logging).handler(({ context }) => 'pong'),
-  diff_leading: os.use(monitor).use(logging).use(dbProvider).handler(({ context }) => 'bar'),
-})
+    // ⛔ Deduplication does not occur:
+    diff_subset: os.use(logging).handler(({ context }) => "ping"),
+    diff_order: os
+      .use(dbProvider)
+      .use(logging)
+      .handler(({ context }) => "pong"),
+    diff_leading: os
+      .use(monitor)
+      .use(logging)
+      .use(dbProvider)
+      .handler(({ context }) => "bar"),
+  });
 
 // --- equivalent to ---
 
 const router = {
   // ✅ Deduplication occurs:
-  ping: os.use(logging).use(dbProvider).use(auth).handler(({ context }) => 'ping'),
-  pong: os.use(logging).use(dbProvider).handler(({ context }) => 'pong'),
+  ping: os
+    .use(logging)
+    .use(dbProvider)
+    .use(auth)
+    .handler(({ context }) => "ping"),
+  pong: os
+    .use(logging)
+    .use(dbProvider)
+    .handler(({ context }) => "pong"),
 
   // ⛔ Deduplication does not occur:
-  diff_subset: os.use(logging).use(dbProvider).use(logging).handler(({ context }) => 'ping'),
-  diff_order: os.use(logging).use(dbProvider).use(dbProvider).use(logging).handler(({ context }) => 'pong'),
-  diff_leading: os.use(logging).use(dbProvider).use(monitor).use(logging).use(dbProvider).handler(({ context }) => 'bar'),
-}
+  diff_subset: os
+    .use(logging)
+    .use(dbProvider)
+    .use(logging)
+    .handler(({ context }) => "ping"),
+  diff_order: os
+    .use(logging)
+    .use(dbProvider)
+    .use(dbProvider)
+    .use(logging)
+    .handler(({ context }) => "pong"),
+  diff_leading: os
+    .use(logging)
+    .use(dbProvider)
+    .use(monitor)
+    .use(logging)
+    .use(dbProvider)
+    .handler(({ context }) => "bar"),
+};
 ```
 
 ### Configuration
@@ -112,7 +151,7 @@ const router = {
 Disable middleware deduplication by setting `dedupeLeadingMiddlewares` to `false` in `.$config`:
 
 ```ts
-const base = os.$config({ dedupeLeadingMiddlewares: false })
+const base = os.$config({ dedupeLeadingMiddlewares: false });
 ```
 
 :::warning
@@ -122,9 +161,10 @@ The deduplication behavior is safe unless you want to apply middleware multiple 
 ---
 
 ---
+
 url: /docs/plugins/dedupe-requests.md
 description: >-
-  Prevents duplicate requests by deduplicating similar ones to reduce server
-  load.
----
+Prevents duplicate requests by deduplicating similar ones to reduce server
+load.
 
+---

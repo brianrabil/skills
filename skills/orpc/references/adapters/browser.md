@@ -13,32 +13,32 @@ The browser extension [Message Passing API](https://developer.chrome.com/docs/ex
 ::: code-group
 
 ```ts [server]
-import { RPCHandler } from '@orpc/server/message-port'
-import { onError } from '@orpc/server'
+import { RPCHandler } from "@orpc/server/message-port";
+import { onError } from "@orpc/server";
 
 const handler = new RPCHandler(router, {
   interceptors: [
     onError((error) => {
-      console.error(error)
+      console.error(error);
     }),
   ],
-})
+});
 
 browser.runtime.onConnect.addListener((port) => {
   handler.upgrade(port, {
     context: {}, // provide initial context if needed
-  })
-})
+  });
+});
 ```
 
 ```ts [client]
-import { RPCLink } from '@orpc/client/message-port'
+import { RPCLink } from "@orpc/client/message-port";
 
-const port = browser.runtime.connect()
+const port = browser.runtime.connect();
 
 const link = new RPCLink({
   port,
-})
+});
 ```
 
 :::
@@ -54,42 +54,42 @@ To enable communication between two window contexts (e.g. parent and popup), one
 ::: code-group
 
 ```ts [opener]
-import { RPCHandler } from '@orpc/server/message-port'
-import { onError } from '@orpc/server'
+import { RPCHandler } from "@orpc/server/message-port";
+import { onError } from "@orpc/server";
 
 const handler = new RPCHandler(router, {
   interceptors: [
     onError((error) => {
-      console.error(error)
+      console.error(error);
     }),
   ],
-})
+});
 
-window.addEventListener('message', (event) => {
+window.addEventListener("message", (event) => {
   if (event.data instanceof MessagePort) {
     handler.upgrade(event.data, {
       context: {}, // Optional context
-    })
+    });
 
-    event.data.start()
+    event.data.start();
   }
-})
+});
 
-window.open('/example/popup', 'popup', 'width=680,height=520')
+window.open("/example/popup", "popup", "width=680,height=520");
 ```
 
 ```ts [popup]
-import { RPCLink } from '@orpc/client/message-port'
+import { RPCLink } from "@orpc/client/message-port";
 
-const { port1: serverPort, port2: clientPort } = new MessageChannel()
+const { port1: serverPort, port2: clientPort } = new MessageChannel();
 
-window.opener.postMessage(serverPort, '*', [serverPort])
+window.opener.postMessage(serverPort, "*", [serverPort]);
 
 const link = new RPCLink({
   port: clientPort,
-})
+});
 
-clientPort.start()
+clientPort.start();
 ```
 
 :::
@@ -103,64 +103,64 @@ To work around this, you can use a **relay pattern** typically an additional con
 ::: code-group
 
 ```ts [relay]
-window.addEventListener('message', (event) => {
+window.addEventListener("message", (event) => {
   if (event.data instanceof MessagePort) {
-    const port = browser.runtime.connect()
+    const port = browser.runtime.connect();
 
     // Relay `message` and `close/disconnect` events between the MessagePort and runtime.Port
 
-    event.data.addEventListener('message', (event) => {
-      port.postMessage(event.data)
-    })
+    event.data.addEventListener("message", (event) => {
+      port.postMessage(event.data);
+    });
 
-    event.data.addEventListener('close', () => {
-      port.disconnect()
-    })
+    event.data.addEventListener("close", () => {
+      port.disconnect();
+    });
 
     port.onMessage.addListener((message) => {
-      event.data.postMessage(message)
-    })
+      event.data.postMessage(message);
+    });
 
     port.onDisconnect.addListener(() => {
-      event.data.close()
-    })
+      event.data.close();
+    });
 
-    event.data.start()
+    event.data.start();
   }
-})
+});
 ```
 
 ```ts [server]
-import { RPCHandler } from '@orpc/server/message-port'
-import { onError } from '@orpc/server'
+import { RPCHandler } from "@orpc/server/message-port";
+import { onError } from "@orpc/server";
 
 const handler = new RPCHandler(router, {
   interceptors: [
     onError((error) => {
-      console.error(error)
+      console.error(error);
     }),
   ],
-})
+});
 
 browser.runtime.onConnect.addListener((port) => {
   handler.upgrade(port, {
     context: {}, // provide initial context if needed
-  })
-})
+  });
+});
 ```
 
 ```ts [client]
-import { RPCLink } from '@orpc/client/message-port'
+import { RPCLink } from "@orpc/client/message-port";
 
-const { port1: serverPort, port2: clientPort } = new MessageChannel()
+const { port1: serverPort, port2: clientPort } = new MessageChannel();
 
-window.postMessage(serverPort, '*', [serverPort])
+window.postMessage(serverPort, "*", [serverPort]);
 
 const link = new RPCLink({
   port: clientPort,
-})
+});
 
-clientPort.start()
+clientPort.start();
 ```
 
 :::
@@ -168,9 +168,10 @@ clientPort.start()
 ---
 
 ---
+
 url: /docs/advanced/building-custom-plugins.md
 description: >-
-  Create powerful custom plugins to extend oRPC handlers and links with
-  interceptors.
----
+Create powerful custom plugins to extend oRPC handlers and links with
+interceptors.
 
+---

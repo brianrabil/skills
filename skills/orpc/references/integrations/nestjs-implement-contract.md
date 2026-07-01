@@ -46,8 +46,8 @@ oRPC is an ESM-only library. Therefore, your NestJS application must be configur
 
 2. **Node.js Environment**:
 
-   * **Node.js 22+**: Recommended, as it allows `require()` of ESM modules natively.
-   * **Older Node.js versions**: Alternatively, use a bundler to compile ESM modules (including `@orpc/nest`) to CommonJS.
+   - **Node.js 22+**: Recommended, as it allows `require()` of ESM modules natively.
+   - **Older Node.js versions**: Alternatively, use a bundler to compile ESM modules (including `@orpc/nest`) to CommonJS.
 
    ::: warning
    By default, NestJS bundler ([Webpack](https://webpack.js.org/) or [SWC](https://swc.rs/)) might not compile `node_modules`. You may need to adjust your bundler configs to include `@orpc/nest` for compilation.
@@ -60,19 +60,19 @@ Before implementation, define your oRPC contract. This process is consistent wit
 ::: details Example Contract
 
 ```ts
-import { oc, populateContractRouterPaths } from '@orpc/contract'
-import * as z from 'zod'
+import { oc, populateContractRouterPaths } from "@orpc/contract";
+import * as z from "zod";
 
 export const PlanetSchema = z.object({
   id: z.number().int().min(1),
   name: z.string(),
   description: z.string().optional(),
-})
+});
 
 export const listPlanetContract = oc
   .route({
-    method: 'GET',
-    path: '/planets' // Path is required for NestJS implementation
+    method: "GET",
+    path: "/planets", // Path is required for NestJS implementation
   })
   .input(
     z.object({
@@ -80,23 +80,23 @@ export const listPlanetContract = oc
       cursor: z.number().int().min(0).default(0),
     }),
   )
-  .output(z.array(PlanetSchema))
+  .output(z.array(PlanetSchema));
 
 export const findPlanetContract = oc
   .route({
-    method: 'GET',
-    path: '/planets/{id}' // Path is required
+    method: "GET",
+    path: "/planets/{id}", // Path is required
   })
   .input(PlanetSchema.pick({ id: true }))
-  .output(PlanetSchema)
+  .output(PlanetSchema);
 
 export const createPlanetContract = oc
   .route({
-    method: 'POST',
-    path: '/planets' // Path is required
+    method: "POST",
+    path: "/planets", // Path is required
   })
   .input(PlanetSchema.omit({ id: true }))
-  .output(PlanetSchema)
+  .output(PlanetSchema);
 
 /**
  * populateContractRouterPaths is completely optional,
@@ -110,7 +110,7 @@ export const contract = populateContractRouterPaths({
     find: findPlanetContract,
     create: createPlanetContract,
   },
-})
+});
 ```
 
 :::
@@ -131,7 +131,7 @@ Aside from [oRPC Path Parameters](/docs/openapi/routing#path-parameters), regula
 ## Implement Your Contract
 
 ```ts
-import { Implement, implement, ORPCError } from '@orpc/nest'
+import { Implement, implement, ORPCError } from "@orpc/nest";
 
 @Controller()
 export class PlanetController {
@@ -143,8 +143,8 @@ export class PlanetController {
     return implement(contract.planet.list).handler(({ input }) => {
       // Implement logic here
 
-      return []
-    })
+      return [];
+    });
   }
 
   /**
@@ -155,25 +155,25 @@ export class PlanetController {
     return {
       list: implement(contract.planet.list).handler(({ input }) => {
         // Implement logic here
-        return []
+        return [];
       }),
       find: implement(contract.planet.find).handler(({ input }) => {
         // Implement logic here
         return {
           id: 1,
-          name: 'Earth',
-          description: 'The planet Earth',
-        }
+          name: "Earth",
+          description: "The planet Earth",
+        };
       }),
       create: implement(contract.planet.create).handler(({ input }) => {
         // Implement logic here
         return {
           id: 1,
-          name: 'Earth',
-          description: 'The planet Earth',
-        }
+          name: "Earth",
+          description: "The planet Earth",
+        };
       }),
-    }
+    };
   }
 
   // other handlers...
@@ -188,21 +188,21 @@ The `@Implement` decorator functions similarly to NestJS built-in HTTP method de
 
 By default, NestJS parses request bodies for `application/json` and `application/x-www-form-urlencoded` content types. However:
 
-* NestJS `urlencoded` parser does not support [Bracket Notation](/docs/openapi/bracket-notation) like in standard oRPC parsers.
-* In some edge cases like uploading a file with `application/json` content type, the NestJS parser does not treat it as a file, instead it parses the body as a JSON string.
+- NestJS `urlencoded` parser does not support [Bracket Notation](/docs/openapi/bracket-notation) like in standard oRPC parsers.
+- In some edge cases like uploading a file with `application/json` content type, the NestJS parser does not treat it as a file, instead it parses the body as a JSON string.
 
 Therefore, we **recommend** disabling the NestJS body parser:
 
 ```ts
-import { NestFactory } from '@nestjs/core'
-import { AppModule } from './app.module'
+import { NestFactory } from "@nestjs/core";
+import { AppModule } from "./app.module";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bodyParser: false, // [!code highlight]
-  })
+  });
 
-  await app.listen(process.env.PORT ?? 3000)
+  await app.listen(process.env.PORT ?? 3000);
 }
 ```
 
@@ -224,16 +224,16 @@ pnpm add @mnigos/platform-hono @hono/node-server hono
 Then pass the adapter to `NestFactory.create`:
 
 ```ts
-import { HonoAdapter } from '@mnigos/platform-hono'
-import { NestFactory } from '@nestjs/core'
-import { AppModule } from './app.module'
+import { HonoAdapter } from "@mnigos/platform-hono";
+import { NestFactory } from "@nestjs/core";
+import { AppModule } from "./app.module";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, new HonoAdapter(), {
     bodyParser: false,
-  })
+  });
 
-  await app.listen(process.env.PORT ?? 3000)
+  await app.listen(process.env.PORT ?? 3000);
 }
 ```
 
@@ -246,30 +246,29 @@ parameters. Internally, oRPC reads the Hono `Request` and returns a Hono-native
 Configure the `@orpc/nest` module by importing `ORPCModule` in your NestJS application:
 
 ```ts
-import { Module } from '@nestjs/common'
-import { REQUEST } from '@nestjs/core'
-import { onError, ORPCError, ORPCModule } from '@orpc/nest'
-import { Request } from 'express' // if you use express adapter
-import {
-  experimental_RethrowHandlerPlugin as RethrowHandlerPlugin,
-} from '@orpc/server/plugins'
+import { Module } from "@nestjs/common";
+import { REQUEST } from "@nestjs/core";
+import { onError, ORPCError, ORPCModule } from "@orpc/nest";
+import { Request } from "express"; // if you use express adapter
+import { experimental_RethrowHandlerPlugin as RethrowHandlerPlugin } from "@orpc/server/plugins";
 
-declare module '@orpc/nest' {
+declare module "@orpc/nest" {
   /**
    * Extend oRPC global context to make it type-safe inside your handlers/middlewares
    */
   interface ORPCGlobalContext {
-    request: Request
+    request: Request;
   }
 }
 
 @Module({
   imports: [
-    ORPCModule.forRootAsync({ // or use .forRoot for static config
+    ORPCModule.forRootAsync({
+      // or use .forRoot for static config
       useFactory: (request: Request) => ({
         interceptors: [
           onError((error) => {
-            console.error(error)
+            console.error(error);
           }),
         ],
         context: { request }, // oRPC context, accessible from middlewares, etc.
@@ -280,9 +279,9 @@ declare module '@orpc/nest' {
             filter: (error) => {
               // Rethrow all non-ORPCError errors
               // This allows unhandled exceptions to bubble up to NestJS global exception filters
-              return !(error instanceof ORPCError)
+              return !(error instanceof ORPCError);
             },
-          })
+          }),
         ], // most oRPC plugins are compatible
       }),
       inject: [REQUEST],
@@ -294,8 +293,8 @@ export class AppModule {}
 
 ::: info
 
-* **`interceptors`** - [Server-side client interceptors](/docs/client/server-side#lifecycle) for intercepting input, output, and errors.
-* **`eventIteratorKeepAliveInterval`** - Keep-alive interval for event streams (see [Event Iterator Keep Alive](/docs/rpc-handler#event-iterator-keep-alive))
+- **`interceptors`** - [Server-side client interceptors](/docs/client/server-side#lifecycle) for intercepting input, output, and errors.
+- **`eventIteratorKeepAliveInterval`** - Keep-alive interval for event streams (see [Event Iterator Keep Alive](/docs/rpc-handler#event-iterator-keep-alive))
 
 :::
 
@@ -304,20 +303,20 @@ export class AppModule {}
 When you implement oRPC contracts in NestJS using `@orpc/nest`, the resulting API endpoints are OpenAPI compatible. This allows you to use an OpenAPI-compatible client link, such as [OpenAPILink](/docs/openapi/client/openapi-link), to interact with your API in a type-safe way.
 
 ```typescript
-import type { JsonifiedClient } from '@orpc/openapi-client'
-import type { ContractRouterClient } from '@orpc/contract'
-import { createORPCClient } from '@orpc/client'
-import { OpenAPILink } from '@orpc/openapi-client/fetch'
+import type { JsonifiedClient } from "@orpc/openapi-client";
+import type { ContractRouterClient } from "@orpc/contract";
+import { createORPCClient } from "@orpc/client";
+import { OpenAPILink } from "@orpc/openapi-client/fetch";
 
 const link = new OpenAPILink(contract, {
-  url: 'http://localhost:3000',
+  url: "http://localhost:3000",
   headers: () => ({
-    'x-api-key': 'my-api-key',
+    "x-api-key": "my-api-key",
   }),
   // fetch: <-- polyfill fetch if needed
-})
+});
 
-const client: JsonifiedClient<ContractRouterClient<typeof contract>> = createORPCClient(link)
+const client: JsonifiedClient<ContractRouterClient<typeof contract>> = createORPCClient(link);
 ```
 
 ::: info
@@ -331,10 +330,10 @@ Please refer to the [OpenAPILink](/docs/openapi/client/openapi-link) documentati
 By default, oRPC sends the response directly without returning it to the NestJS handler. However, you may want to preserve the return behavior for compatibility with certain NestJS features or third-party libraries.
 
 ```ts
-import { Module } from '@nestjs/common'
-import { ORPCModule } from '@orpc/nest'
-import { Response } from 'express' // if you use express adapter
-import { isObject } from '@orpc/shared' // checks if value is a plain object (not a class instance)
+import { Module } from "@nestjs/common";
+import { ORPCModule } from "@orpc/nest";
+import { Response } from "express"; // if you use express adapter
+import { isObject } from "@orpc/shared"; // checks if value is a plain object (not a class instance)
 
 @Module({
   imports: [
@@ -342,24 +341,24 @@ import { isObject } from '@orpc/shared' // checks if value is a plain object (no
       sendResponseInterceptors: [
         async ({ response, standardResponse, next }) => {
           if (
-            standardResponse.status < 200
-            || standardResponse.status >= 300
-            || !(isObject(standardResponse.body) || Array.isArray(standardResponse.body))
+            standardResponse.status < 200 ||
+            standardResponse.status >= 300 ||
+            !(isObject(standardResponse.body) || Array.isArray(standardResponse.body))
           ) {
             // Only object and array are valid to return as response body
             // the rest should fallback to default oRPC behavior
-            return next()
+            return next();
           }
 
-          const expressResponse = response as Response
-          expressResponse.status(standardResponse.status)
+          const expressResponse = response as Response;
+          expressResponse.status(standardResponse.status);
           for (const [key, value] of Object.entries(standardResponse.headers)) {
             if (value !== undefined) {
-              expressResponse.setHeader(key, value)
+              expressResponse.setHeader(key, value);
             }
           }
 
-          return standardResponse.body
+          return standardResponse.body;
         },
       ],
     }),
@@ -371,7 +370,8 @@ export class AppModule {}
 ---
 
 ---
+
 url: /docs/openapi/input-output-structure.md
 description: Control how input and output data is structured in oRPC
----
 
+---

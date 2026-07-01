@@ -5,24 +5,24 @@
 ## Basic
 
 ```ts [app/routes/rpc.$.ts]
-import { RPCHandler } from '@orpc/server/fetch'
-import { onError } from '@orpc/server'
+import { RPCHandler } from "@orpc/server/fetch";
+import { onError } from "@orpc/server";
 
 const handler = new RPCHandler(router, {
   interceptors: [
     onError((error) => {
-      console.error(error)
+      console.error(error);
     }),
   ],
-})
+});
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const { response } = await handler.handle(request, {
-    prefix: '/rpc',
-    context: {} // Provide initial context if needed
-  })
+    prefix: "/rpc",
+    context: {}, // Provide initial context if needed
+  });
 
-  return response ?? new Response('Not Found', { status: 404 })
+  return response ?? new Response("Not Found", { status: 404 });
 }
 ```
 
@@ -33,7 +33,8 @@ The `handler` can be any supported oRPC handler, such as [RPCHandler](/docs/rpc-
 ---
 
 ---
+
 url: /docs/plugins/request-headers.md
 description: Request Headers Plugin for oRPC
----
 
+---

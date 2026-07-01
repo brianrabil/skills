@@ -19,11 +19,13 @@ This documentation assumes you are already familiar with [Tanstack Query](https:
 Use `.queryOptions` to configure queries. Use it with hooks like `useQuery`, `useSuspenseQuery`, or `prefetchQuery`.
 
 ```ts
-const query = useQuery(orpc.planet.find.queryOptions({
-  input: { id: 123 }, // Specify input if needed
-  context: { cache: true }, // Provide client context if needed
-  // additional options...
-}))
+const query = useQuery(
+  orpc.planet.find.queryOptions({
+    input: { id: 123 }, // Specify input if needed
+    context: { cache: true }, // Provide client context if needed
+    // additional options...
+  }),
+);
 ```
 
 ## Infinite Query Options Utility
@@ -35,13 +37,15 @@ The `input` parameter must be a function that accepts the page parameter and ret
 :::
 
 ```ts
-const query = useInfiniteQuery(orpc.planet.list.infiniteOptions({
-  input: (pageParam: number | undefined) => ({ limit: 10, offset: pageParam }),
-  context: { cache: true }, // Provide client context if needed
-  initialPageParam: undefined,
-  getNextPageParam: lastPage => lastPage.nextPageParam,
-  // additional options...
-}))
+const query = useInfiniteQuery(
+  orpc.planet.list.infiniteOptions({
+    input: (pageParam: number | undefined) => ({ limit: 10, offset: pageParam }),
+    context: { cache: true }, // Provide client context if needed
+    initialPageParam: undefined,
+    getNextPageParam: (lastPage) => lastPage.nextPageParam,
+    // additional options...
+  }),
+);
 ```
 
 ## Mutation Options
@@ -49,12 +53,14 @@ const query = useInfiniteQuery(orpc.planet.list.infiniteOptions({
 Use `.mutationOptions` to create options for mutations. Use it with hooks like `useMutation`.
 
 ```ts
-const mutation = useMutation(orpc.planet.create.mutationOptions({
-  context: { cache: true }, // Provide client context if needed
-  // additional options...
-}))
+const mutation = useMutation(
+  orpc.planet.create.mutationOptions({
+    context: { cache: true }, // Provide client context if needed
+    // additional options...
+  }),
+);
 
-mutation.mutate({ name: 'Earth' })
+mutation.mutate({ name: "Earth" });
 ```
 
 ## Query/Mutation Key
@@ -66,22 +72,22 @@ The `.key` accepts partial deep input, there's no need to supply full input.
 :::
 
 ```ts
-const queryClient = useQueryClient()
+const queryClient = useQueryClient();
 
 // Invalidate all planet queries
 queryClient.invalidateQueries({
   queryKey: orpc.planet.key(),
-})
+});
 
 // Invalidate only regular (non-infinite) planet queries
 queryClient.invalidateQueries({
-  queryKey: orpc.planet.key({ type: 'query' })
-})
+  queryKey: orpc.planet.key({ type: "query" }),
+});
 
 // Invalidate the planet find query with id 123
 queryClient.invalidateQueries({
-  queryKey: orpc.planet.find.key({ input: { id: 123 } })
-})
+  queryKey: orpc.planet.find.key({ input: { id: 123 } }),
+});
 ```
 
 ## Calling Procedure Clients
@@ -89,7 +95,7 @@ queryClient.invalidateQueries({
 Use `.call` to call a procedure client directly. It's an alias for corresponding procedure client.
 
 ```ts
-const result = orpc.planet.find.call({ id: 123 })
+const result = orpc.planet.find.call({ id: 123 });
 ```
 
 ## Error Handling
@@ -97,17 +103,19 @@ const result = orpc.planet.find.call({ id: 123 })
 Easily manage type-safe errors using our built-in `isDefinedError` helper.
 
 ```ts
-import { isDefinedError } from '@orpc/client'
+import { isDefinedError } from "@orpc/client";
 
-const mutation = useMutation(orpc.planet.create.mutationOptions({
-  onError: (error) => {
-    if (isDefinedError(error)) {
-      // Handle the error here
-    }
-  }
-}))
+const mutation = useMutation(
+  orpc.planet.create.mutationOptions({
+    onError: (error) => {
+      if (isDefinedError(error)) {
+        // Handle the error here
+      }
+    },
+  }),
+);
 
-mutation.mutate({ name: 'Earth' })
+mutation.mutate({ name: "Earth" });
 
 if (mutation.error && isDefinedError(mutation.error)) {
   // Handle the error here
@@ -124,8 +132,8 @@ The `skipToken` symbol offers a type-safe alternative to the `disabled` option w
 const query = useQuery(
   orpc.planet.list.queryOptions({
     input: search ? { search } : skipToken, // [!code highlight]
-  })
-)
+  }),
+);
 
 const query = useInfiniteQuery(
   orpc.planet.list.infiniteOptions({
@@ -133,15 +141,16 @@ const query = useInfiniteQuery(
       ? (offset: number | undefined) => ({ limit: 10, offset, search }) // [!code highlight]
       : skipToken, // [!code highlight]
     initialPageParam: undefined,
-    getNextPageParam: lastPage => lastPage.nextPageParam,
-  })
-)
+    getNextPageParam: (lastPage) => lastPage.nextPageParam,
+  }),
+);
 ```
 
 ---
 
 ---
+
 url: /docs/integrations/tanstack-query.md
 description: Seamlessly integrate oRPC with Tanstack Query
----
 
+---

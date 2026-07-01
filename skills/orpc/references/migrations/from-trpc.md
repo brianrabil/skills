@@ -66,90 +66,87 @@ Initialization is an optional step in oRPC. You can use `os` directly without in
 ::: code-group
 
 ```ts [orpc/base.ts]
-import { ORPCError, os } from '@orpc/server'
+import { ORPCError, os } from "@orpc/server";
 
 export async function createRPCContext(opts: { headers: Headers }) {
-  const session = await auth()
+  const session = await auth();
 
   return {
     headers: opts.headers,
     session,
-  }
+  };
 }
 
-const o = os.$context<Awaited<ReturnType<typeof createRPCContext>>>()
+const o = os.$context<Awaited<ReturnType<typeof createRPCContext>>>();
 
 const timingMiddleware = o.middleware(async ({ next, path }) => {
-  const start = Date.now()
+  const start = Date.now();
 
   try {
-    return await next()
+    return await next();
+  } finally {
+    console.log(`[oRPC] ${path} took ${Date.now() - start}ms to execute`);
   }
-  finally {
-    console.log(`[oRPC] ${path} took ${Date.now() - start}ms to execute`)
-  }
-})
+});
 
-export const publicProcedure = o.use(timingMiddleware)
+export const publicProcedure = o.use(timingMiddleware);
 
 export const protectedProcedure = publicProcedure.use(({ context, next }) => {
   if (!context.session?.user) {
-    throw new ORPCError('UNAUTHORIZED')
+    throw new ORPCError("UNAUTHORIZED");
   }
 
   return next({
     context: {
-      session: { ...context.session, user: context.session.user }
-    }
-  })
-})
+      session: { ...context.session, user: context.session.user },
+    },
+  });
+});
 ```
 
 ```ts [trpc/base.ts]
-import { initTRPC, TRPCError } from '@trpc/server'
-import superjson from 'superjson'
+import { initTRPC, TRPCError } from "@trpc/server";
+import superjson from "superjson";
 
 export async function createRPCContext(opts: { headers: Headers }) {
-  const session = await auth()
+  const session = await auth();
 
   return {
     headers: opts.headers,
     session,
-  }
+  };
 }
 
 const t = initTRPC.context<typeof createRPCContext>().create({
   transformer: superjson,
-})
+});
 
-export const createTRPCRouter = t.router
+export const createTRPCRouter = t.router;
 
 const timingMiddleware = t.middleware(async ({ next, path }) => {
-  const start = Date.now()
+  const start = Date.now();
 
-  const result = await next()
+  const result = await next();
 
-  const end = Date.now()
-  console.log(`[tRPC] ${path} took ${end - start}ms to execute`)
+  const end = Date.now();
+  console.log(`[tRPC] ${path} took ${end - start}ms to execute`);
 
-  return result
-})
+  return result;
+});
 
-export const publicProcedure = t.procedure.use(timingMiddleware)
+export const publicProcedure = t.procedure.use(timingMiddleware);
 
-export const protectedProcedure = t.procedure
-  .use(timingMiddleware)
-  .use(({ ctx, next }) => {
-    if (!ctx.session?.user) {
-      throw new TRPCError({ code: 'UNAUTHORIZED' })
-    }
+export const protectedProcedure = t.procedure.use(timingMiddleware).use(({ ctx, next }) => {
+  if (!ctx.session?.user) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
 
-    return next({
-      ctx: {
-        session: { ...ctx.session, user: ctx.session.user },
-      },
-    })
-  })
+  return next({
+    ctx: {
+      session: { ...ctx.session, user: ctx.session.user },
+    },
+  });
+});
 ```
 
 :::
@@ -174,23 +171,25 @@ export const planetRouter = {
       return {
         planets: [
           {
-            name: 'Earth',
+            name: "Earth",
             distanceFromSun: 149.6,
-          }
+          },
         ],
         nextCursor: input.cursor + 1,
-      }
+      };
     }),
 
   create: protectedProcedure
-    .input(z.object({
-      name: z.string().min(1),
-      distanceFromSun: z.number().positive()
-    }))
+    .input(
+      z.object({
+        name: z.string().min(1),
+        distanceFromSun: z.number().positive(),
+      }),
+    )
     .handler(async ({ context, input }) => {
       // Logic here
     }),
-}
+};
 ```
 
 ```ts [trpc/routers/planet.ts]
@@ -203,23 +202,25 @@ export const planetRouter = createTRPCRouter({
       return {
         planets: [
           {
-            name: 'Earth',
+            name: "Earth",
             distanceFromSun: 149.6,
-          }
+          },
         ],
         nextCursor: input.cursor + 1,
-      }
+      };
     }),
 
   create: protectedProcedure
-    .input(z.object({
-      name: z.string().min(1),
-      distanceFromSun: z.number().positive()
-    }))
+    .input(
+      z.object({
+        name: z.string().min(1),
+        distanceFromSun: z.number().positive(),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
       // Logic here
     }),
-})
+});
 ```
 
 :::
@@ -235,19 +236,19 @@ The main router structure is similar between tRPC and oRPC, except in oRPC you d
 ::: code-group
 
 ```ts [orpc/routers/index.ts]
-import { planetRouter } from './planet'
+import { planetRouter } from "./planet";
 
 export const appRouter = {
   planet: planetRouter,
-}
+};
 ```
 
 ```ts [trpc/routers/index.ts]
-import { planetRouter } from './planet'
+import { planetRouter } from "./planet";
 
 export const appRouter = createTRPCRouter({
   planet: planetRouter,
-})
+});
 ```
 
 :::
@@ -261,20 +262,20 @@ Learn more about oRPC [Router](/docs/router).
 ::: code-group
 
 ```ts [orpc]
-throw new ORPCError('BAD_REQUEST', {
-  message: 'Invalid input',
-  data: 'some data',
-  cause: validationError
-})
+throw new ORPCError("BAD_REQUEST", {
+  message: "Invalid input",
+  data: "some data",
+  cause: validationError,
+});
 ```
 
 ```ts [trpc]
 throw new TRPCError({
-  code: 'BAD_REQUEST',
-  message: 'Invalid input',
-  data: 'some data',
-  cause: validationError
-})
+  code: "BAD_REQUEST",
+  message: "Invalid input",
+  data: "some data",
+  cause: validationError,
+});
 ```
 
 :::
@@ -290,53 +291,50 @@ This example assumes you're using [Next.js](https://nextjs.org/). If you're usin
 ::: code-group
 
 ```ts [app/api/orpc/[[...rest]]/route.ts]
-import { RPCHandler } from '@orpc/server/fetch'
+import { RPCHandler } from "@orpc/server/fetch";
 
 const handler = new RPCHandler(appRouter, {
   interceptors: [
     async ({ next }) => {
       try {
-        return await next()
+        return await next();
+      } catch (error) {
+        console.error(error);
+        throw error;
       }
-      catch (error) {
-        console.error(error)
-        throw error
-      }
-    }
-  ]
-})
+    },
+  ],
+});
 
 async function handleRequest(request: Request) {
   const { response } = await handler.handle(request, {
-    prefix: '/api/orpc',
-    context: await createORPCContext(request)
-  })
+    prefix: "/api/orpc",
+    context: await createORPCContext(request),
+  });
 
-  return response ?? new Response('Not found', { status: 404 })
+  return response ?? new Response("Not found", { status: 404 });
 }
 
-export const GET = handleRequest
-export const POST = handleRequest
+export const GET = handleRequest;
+export const POST = handleRequest;
 ```
 
 ```ts [app/api/trpc/[trpc]/route.ts]
-import { fetchRequestHandler } from '@trpc/server/adapters/fetch'
+import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 
 function handler(req: Request) {
   return fetchRequestHandler({
-    endpoint: '/api/trpc',
+    endpoint: "/api/trpc",
     req,
     router: appRouter,
     createContext: () => createTRPCContext(req),
     onError: ({ path, error }) => {
-      console.error(
-        `❌ tRPC failed on ${path ?? '<no-path>'}: ${error.message}`
-      )
-    }
-  })
+      console.error(`❌ tRPC failed on ${path ?? "<no-path>"}: ${error.message}`);
+    },
+  });
 }
 
-export { handler as GET, handler as POST }
+export { handler as GET, handler as POST };
 ```
 
 :::
@@ -346,40 +344,40 @@ export { handler as GET, handler as POST }
 ::: code-group
 
 ```ts [orpc/client.ts]
-import { createORPCClient, onError } from '@orpc/client'
-import { RPCLink } from '@orpc/client/fetch'
-import { RouterClient } from '@orpc/server'
+import { createORPCClient, onError } from "@orpc/client";
+import { RPCLink } from "@orpc/client/fetch";
+import { RouterClient } from "@orpc/server";
 
 const link = new RPCLink({
-  url: 'http://localhost:3000/api/orpc',
+  url: "http://localhost:3000/api/orpc",
   interceptors: [
     onError((error) => {
-      console.error(error)
-    })
+      console.error(error);
+    }),
   ],
-})
+});
 
-export const client: RouterClient<typeof appRouter> = createORPCClient(link)
+export const client: RouterClient<typeof appRouter> = createORPCClient(link);
 
 // ---------------- Usage ----------------
 
-const { planets } = await client.planet.list({ cursor: 0 })
+const { planets } = await client.planet.list({ cursor: 0 });
 ```
 
 ```ts [trpc/client.ts]
-import { createTRPCProxyClient, httpLink } from '@trpc/client'
+import { createTRPCProxyClient, httpLink } from "@trpc/client";
 
 export const client = createTRPCProxyClient<typeof appRouter>({
   links: [
     httpLink({
-      url: 'http://localhost:3000/api/trpc'
-    })
-  ]
-})
+      url: "http://localhost:3000/api/trpc",
+    }),
+  ],
+});
 
 // ---------------- Usage ----------------
 
-const { planets } = await client.planet.list.query({ cursor: 0 })
+const { planets } = await client.planet.list.query({ cursor: 0 });
 ```
 
 :::
@@ -395,45 +393,51 @@ The oRPC TanStack Query integration is similar to tRPC, but simpler - you can us
 ::: code-group
 
 ```ts [orpc/tanstack-query.ts]
-import { createTanstackQueryUtils } from '@orpc/tanstack-query'
+import { createTanstackQueryUtils } from "@orpc/tanstack-query";
 
-export const orpc = createTanstackQueryUtils(client)
+export const orpc = createTanstackQueryUtils(client);
 
 // ---------------- Usage in React Components ----------------
 
-const query = useQuery(orpc.planet.list.queryOptions({
-  input: { cursor: 0 },
-}))
+const query = useQuery(
+  orpc.planet.list.queryOptions({
+    input: { cursor: 0 },
+  }),
+);
 
-const infinite = useInfiniteQuery(orpc.planet.list.infiniteOptions({
-  input: (page: number) => ({ cursor: page }),
-  initialPageParam: 0,
-  getNextPageParam: lastPage => lastPage.nextCursor,
-}))
+const infinite = useInfiniteQuery(
+  orpc.planet.list.infiniteOptions({
+    input: (page: number) => ({ cursor: page }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+  }),
+);
 
-const mutation = useMutation(orpc.planet.create.mutationOptions())
+const mutation = useMutation(orpc.planet.create.mutationOptions());
 ```
 
 ```ts [trpc/tanstack-query.ts]
-import { createTRPCContext } from '@trpc/tanstack-react-query'
+import { createTRPCContext } from "@trpc/tanstack-react-query";
 
-export const { TRPCProvider, useTRPC, useTRPCClient } = createTRPCContext<typeof appRouter>()
+export const { TRPCProvider, useTRPC, useTRPCClient } = createTRPCContext<typeof appRouter>();
 
 // ---------------- Usage in React Components ----------------
 
-const trpc = useTRPC()
+const trpc = useTRPC();
 
-const query = useQuery(trpc.planet.list.queryOptions({ cursor: 0 }))
+const query = useQuery(trpc.planet.list.queryOptions({ cursor: 0 }));
 
-const infinite = useInfiniteQuery(trpc.planet.list.infiniteQueryOptions(
-  {},
-  {
-    initialCursor: 0,
-    getNextPageParam: lastPage => lastPage.nextCursor,
-  }
-))
+const infinite = useInfiniteQuery(
+  trpc.planet.list.infiniteQueryOptions(
+    {},
+    {
+      initialCursor: 0,
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    },
+  ),
+);
 
-const mutation = useMutation(trpc.planet.create.mutationOptions())
+const mutation = useMutation(trpc.planet.create.mutationOptions());
 ```
 
 :::
@@ -445,7 +449,8 @@ Learn more about oRPC [TanStack Query Integration](/docs/integrations/tanstack-q
 ---
 
 ---
+
 url: /docs/best-practices/monorepo-setup.md
 description: The most efficient way to set up a monorepo with oRPC
----
 
+---

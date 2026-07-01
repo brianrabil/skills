@@ -4,8 +4,8 @@ In JavaScript, you can throw any value, but it's best to throw only `Error` inst
 
 ```ts
 // eslint-disable-next-line no-throw-literal
-throw 'error' // ✗ avoid
-throw new Error('error') // ✓ recommended
+throw "error"; // ✗ avoid
+throw new Error("error"); // ✓ recommended
 ```
 
 :::info
@@ -17,9 +17,10 @@ oRPC treats thrown `Error` instances as best practice by default, as recommended
 Customize oRPC's behavior by setting `throwableError` in the `Registry`:
 
 ```ts
-declare module '@orpc/server' { // or '@orpc/contract', or '@orpc/client'
+declare module "@orpc/server" {
+  // or '@orpc/contract', or '@orpc/client'
   interface Registry {
-    throwableError: Error // [!code highlight]
+    throwableError: Error; // [!code highlight]
   }
 }
 ```
@@ -32,15 +33,14 @@ Avoid using `any` or `unknown` for `throwableError` because doing so prevents th
 If you configure `throwableError` as `null | undefined | {}`, adjust your code to check the `isSuccess` property instead of `error`:
 
 ```ts
-const { error, data, isSuccess } = await safe(client('input'))
+const { error, data, isSuccess } = await safe(client("input"));
 
 if (!isSuccess) {
   if (isDefinedError(error)) {
     // handle type-safe error
   }
   // handle other errors
-}
-else {
+} else {
   // handle success
 }
 ```
@@ -54,7 +54,8 @@ If you use ESLint, enable the [no-throw-literal](https://eslint.org/docs/rules/n
 ---
 
 ---
+
 url: /docs/adapters/nuxt.md
 description: Use oRPC inside an Nuxt.js project
----
 
+---

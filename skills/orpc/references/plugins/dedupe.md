@@ -5,12 +5,12 @@ The **Dedupe Requests Plugin** prevents redundant requests by deduplicating simi
 ## Usage
 
 ```ts
-import { DedupeRequestsPlugin } from '@orpc/client/plugins'
+import { DedupeRequestsPlugin } from "@orpc/client/plugins";
 
 const link = new RPCLink({
   plugins: [
     new DedupeRequestsPlugin({
-      filter: ({ request }) => request.method === 'GET', // Filters requests to dedupe
+      filter: ({ request }) => request.method === "GET", // Filters requests to dedupe
       groups: [
         {
           condition: () => true,
@@ -19,7 +19,7 @@ const link = new RPCLink({
       ],
     }),
   ],
-})
+});
 ```
 
 ::: info
@@ -41,26 +41,26 @@ Here's an example that deduplicates requests based on the `cache` control:
 
 ```ts
 interface ClientContext {
-  cache?: RequestCache
+  cache?: RequestCache;
 }
 
 const link = new RPCLink<ClientContext>({
-  url: 'http://localhost:3000/rpc',
+  url: "http://localhost:3000/rpc",
   method: ({ context }) => {
     if (context?.cache) {
-      return 'GET'
+      return "GET";
     }
 
-    return 'POST'
+    return "POST";
   },
   plugins: [
     new DedupeRequestsPlugin({
-      filter: ({ request }) => request.method === 'GET', // Filters requests to dedupe
+      filter: ({ request }) => request.method === "GET", // Filters requests to dedupe
       groups: [
         {
-          condition: ({ context }) => context?.cache === 'force-cache',
+          condition: ({ context }) => context?.cache === "force-cache",
           context: {
-            cache: 'force-cache',
+            cache: "force-cache",
           },
         },
         {
@@ -71,11 +71,12 @@ const link = new RPCLink<ClientContext>({
       ],
     }),
   ],
-  fetch: (request, init, { context }) => globalThis.fetch(request, {
-    ...init,
-    cache: context?.cache,
-  }),
-})
+  fetch: (request, init, { context }) =>
+    globalThis.fetch(request, {
+      ...init,
+      cache: context?.cache,
+    }),
+});
 ```
 
 Now, calls with `cache=force-cache` will be sent with `cache=force-cache`, whether they're deduplicated or executed individually.
@@ -83,7 +84,8 @@ Now, calls with `cache=force-cache` will be sent with `cache=force-cache`, wheth
 ---
 
 ---
+
 url: /docs/contract-first/define-contract.md
 description: Learn how to define a contract for contract-first development in oRPC
----
 
+---

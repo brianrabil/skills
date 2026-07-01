@@ -7,32 +7,32 @@
 ::: code-group
 
 ```ts [src/routes/rpc/[...rest]/+server.ts]
-import { error } from '@sveltejs/kit'
-import { RPCHandler } from '@orpc/server/fetch'
-import { onError } from '@orpc/server'
+import { error } from "@sveltejs/kit";
+import { RPCHandler } from "@orpc/server/fetch";
+import { onError } from "@orpc/server";
 
 const handler = new RPCHandler(router, {
   interceptors: [
     onError((error) => {
-      console.error(error)
+      console.error(error);
     }),
   ],
-})
+});
 
 const handle: RequestHandler = async ({ request }) => {
   const { response } = await handler.handle(request, {
-    prefix: '/rpc',
-    context: {} // Provide initial context if needed
-  })
+    prefix: "/rpc",
+    context: {}, // Provide initial context if needed
+  });
 
-  return response ?? new Response('Not Found', { status: 404 })
-}
+  return response ?? new Response("Not Found", { status: 404 });
+};
 
-export const GET = handle
-export const POST = handle
-export const PUT = handle
-export const PATCH = handle
-export const DELETE = handle
+export const GET = handle;
+export const POST = handle;
+export const PUT = handle;
+export const PATCH = handle;
+export const DELETE = handle;
 ```
 
 :::
@@ -48,52 +48,52 @@ To reduce HTTP requests and improve latency during SSR, you can utilize [Svelte'
 ::: code-group
 
 ```ts [src/lib/orpc.ts]
-import type { RouterClient } from '@orpc/server'
-import { RPCLink } from '@orpc/client/fetch'
-import { createORPCClient } from '@orpc/client'
+import type { RouterClient } from "@orpc/server";
+import { RPCLink } from "@orpc/client/fetch";
+import { createORPCClient } from "@orpc/client";
 
 declare global {
-  var $client: RouterClient<typeof router> | undefined
+  var $client: RouterClient<typeof router> | undefined;
 }
 
 const link = new RPCLink({
   url: () => {
-    if (typeof window === 'undefined') {
-      throw new Error('This link is not allowed on the server side.')
+    if (typeof window === "undefined") {
+      throw new Error("This link is not allowed on the server side.");
     }
 
-    return `${window.location.origin}/rpc`
+    return `${window.location.origin}/rpc`;
   },
-})
+});
 
-export const client: RouterClient<typeof router> = globalThis.$client ?? createORPCClient(link)
+export const client: RouterClient<typeof router> = globalThis.$client ?? createORPCClient(link);
 ```
 
 ```ts [src/lib/orpc.server.ts]
-import type { RouterClient } from '@orpc/server'
-import { createORPCClient } from '@orpc/client'
-import { RPCLink } from '@orpc/client/fetch'
-import { getRequestEvent } from '$app/server'
+import type { RouterClient } from "@orpc/server";
+import { createORPCClient } from "@orpc/client";
+import { RPCLink } from "@orpc/client/fetch";
+import { getRequestEvent } from "$app/server";
 
-if (typeof window !== 'undefined') {
-  throw new Error('This file should only be imported on the server')
+if (typeof window !== "undefined") {
+  throw new Error("This file should only be imported on the server");
 }
 
 const link = new RPCLink({
   url: async () => {
-    return `${getRequestEvent().url.origin}/rpc`
+    return `${getRequestEvent().url.origin}/rpc`;
   },
   async fetch(request, init) {
-    return getRequestEvent().fetch(request, init)
+    return getRequestEvent().fetch(request, init);
   },
-})
+});
 
-const serverClient: RouterClient<typeof router> = createORPCClient(link)
-globalThis.$client = serverClient
+const serverClient: RouterClient<typeof router> = createORPCClient(link);
+globalThis.$client = serverClient;
 ```
 
 ```ts [src/hooks.server.ts]
-import './lib/orpc.server'
+import "./lib/orpc.server";
 // ...
 ```
 
@@ -102,7 +102,8 @@ import './lib/orpc.server'
 ---
 
 ---
+
 url: /docs/integrations/tanstack-query-old/basic.md
 description: Seamlessly integrate oRPC with Tanstack Query
----
 
+---

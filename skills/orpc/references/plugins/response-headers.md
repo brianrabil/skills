@@ -5,26 +5,26 @@ The Response Headers Plugin allows you to set response headers in oRPC. It injec
 ## Context Setup
 
 ```ts twoslash
-import { os } from '@orpc/server'
+import { os } from "@orpc/server";
 // ---cut---
-import { setCookie } from '@orpc/server/helpers'
-import { ResponseHeadersPluginContext } from '@orpc/server/plugins'
+import { setCookie } from "@orpc/server/helpers";
+import { ResponseHeadersPluginContext } from "@orpc/server/plugins";
 
 interface ORPCContext extends ResponseHeadersPluginContext {}
 
-const base = os.$context<ORPCContext>()
+const base = os.$context<ORPCContext>();
 
 const example = base
   .use(({ context, next }) => {
-    context.resHeaders?.set('x-custom-header', 'value')
-    return next()
+    context.resHeaders?.set("x-custom-header", "value");
+    return next();
   })
   .handler(({ context }) => {
-    setCookie(context.resHeaders, 'session_id', 'abc123', {
+    setCookie(context.resHeaders, "session_id", "abc123", {
       secure: true,
-      maxAge: 3600
-    })
-  })
+      maxAge: 3600,
+    });
+  });
 ```
 
 ::: info
@@ -39,13 +39,11 @@ Combine with [Cookie Helpers](/docs/helpers/cookie) for streamlined cookie manag
 ## Handler Setup
 
 ```ts
-import { ResponseHeadersPlugin } from '@orpc/server/plugins'
+import { ResponseHeadersPlugin } from "@orpc/server/plugins";
 
 const handler = new RPCHandler(router, {
-  plugins: [
-    new ResponseHeadersPlugin()
-  ],
-})
+  plugins: [new ResponseHeadersPlugin()],
+});
 ```
 
 ::: info
@@ -55,10 +53,11 @@ The `handler` can be any supported oRPC handler, such as [RPCHandler](/docs/rpc-
 ---
 
 ---
+
 url: /docs/plugins/response-validation.md
 description: >-
-  A plugin that validates server responses against the contract schema to ensure
-  that the data returned from your server matches the expected types defined in
-  your contract.
----
+A plugin that validates server responses against the contract schema to ensure
+that the data returned from your server matches the expected types defined in
+your contract.
 
+---

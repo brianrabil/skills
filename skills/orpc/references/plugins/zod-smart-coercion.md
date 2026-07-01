@@ -35,15 +35,13 @@ deno add npm:@orpc/zod@latest
 ## Setup
 
 ```ts
-import { OpenAPIHandler } from '@orpc/openapi/fetch'
-import { ZodSmartCoercionPlugin } from '@orpc/zod' // <-- zod v3
-import {
-  experimental_ZodSmartCoercionPlugin as ZodSmartCoercionPlugin
-} from '@orpc/zod/zod4' // <-- zod v4
+import { OpenAPIHandler } from "@orpc/openapi/fetch";
+import { ZodSmartCoercionPlugin } from "@orpc/zod"; // <-- zod v3
+import { experimental_ZodSmartCoercionPlugin as ZodSmartCoercionPlugin } from "@orpc/zod/zod4"; // <-- zod v4
 
 const handler = new OpenAPIHandler(router, {
-  plugins: [new ZodSmartCoercionPlugin()]
-})
+  plugins: [new ZodSmartCoercionPlugin()],
+});
 ```
 
 :::warning
@@ -59,8 +57,8 @@ Zod Smart Coercion converts data only when:
 
 For example:
 
-* If the input is `'true'` but the schema does not expect a boolean, no conversion occurs.
-* If the schema accepts both boolean and string, `'true'` will not be coerced to a boolean.
+- If the input is `'true'` but the schema does not expect a boolean, no conversion occurs.
+- If the schema accepts both boolean and string, `'true'` will not be coerced to a boolean.
 
 ### Conversion Rules
 
@@ -69,22 +67,22 @@ For example:
 Converts string representations of boolean values:
 
 ```ts
-const raw = 'true' // Input
-const coerced = true // Output
+const raw = "true"; // Input
+const coerced = true; // Output
 ```
 
 Supported values:
 
-* `'true'`, `'on'`, `'t'` → `true`
-* `'false'`, `'off'`, `'f'` → `false`
+- `'true'`, `'on'`, `'t'` → `true`
+- `'false'`, `'off'`, `'f'` → `false`
 
 #### Number
 
 Converts numeric strings:
 
 ```ts
-const raw = '42' // Input
-const coerced = 42 // Output
+const raw = "42"; // Input
+const coerced = 42; // Output
 ```
 
 #### BigInt
@@ -92,8 +90,8 @@ const coerced = 42 // Output
 Converts strings representing valid BigInt values:
 
 ```ts
-const raw = '12345678901234567890' // Input
-const coerced = 12345678901234567890n // Output
+const raw = "12345678901234567890"; // Input
+const coerced = 12345678901234567890n; // Output
 ```
 
 #### Date
@@ -101,22 +99,22 @@ const coerced = 12345678901234567890n // Output
 Converts valid date strings into Date objects:
 
 ```ts
-const raw = '2024-11-27T00:00:00.000Z' // Input
-const coerced = new Date('2024-11-27T00:00:00.000Z') // Output
+const raw = "2024-11-27T00:00:00.000Z"; // Input
+const coerced = new Date("2024-11-27T00:00:00.000Z"); // Output
 ```
 
 Supported formats:
 
-* Full ISO date-time (e.g., `2024-11-27T00:00:00.000Z`)
-* Date only (e.g., `2024-11-27`)
+- Full ISO date-time (e.g., `2024-11-27T00:00:00.000Z`)
+- Date only (e.g., `2024-11-27`)
 
 #### RegExp
 
 Converts strings representing regular expressions:
 
 ```ts
-const raw = '/^abc$/i' // Input
-const coerced = /^abc$/i // Output
+const raw = "/^abc$/i"; // Input
+const coerced = /^abc$/i; // Output
 ```
 
 #### URL
@@ -124,8 +122,8 @@ const coerced = /^abc$/i // Output
 Converts valid URL strings into URL objects:
 
 ```ts
-const raw = 'https://example.com' // Input
-const coerced = new URL('https://example.com') // Output
+const raw = "https://example.com"; // Input
+const coerced = new URL("https://example.com"); // Output
 ```
 
 #### Set
@@ -133,8 +131,8 @@ const coerced = new URL('https://example.com') // Output
 Converts arrays into Set objects, removing duplicates:
 
 ```ts
-const raw = ['apple', 'banana', 'apple'] // Input
-const coerced = new Set(['apple', 'banana']) // Output
+const raw = ["apple", "banana", "apple"]; // Input
+const coerced = new Set(["apple", "banana"]); // Output
 ```
 
 #### Map
@@ -143,13 +141,12 @@ Converts arrays of key-value pairs into Map objects:
 
 ```ts
 const raw = [
-  ['key1', 'value1'],
-  ['key2', 'value2']
-] // Input
+  ["key1", "value1"],
+  ["key2", "value2"],
+]; // Input
 
 const coerced = new Map([
-  ['key1', 'value1'],
-  ['key2', 'value2']
-]) // Output
+  ["key1", "value1"],
+  ["key2", "value2"],
+]); // Output
 ```
-

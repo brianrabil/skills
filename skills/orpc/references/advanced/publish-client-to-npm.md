@@ -19,19 +19,19 @@ In this guide, we'll use [pnpm](https://pnpm.io/) as the package manager and [ts
 First, create a `src/index.ts` file to set up and export your client.
 
 ```ts [src/index.ts]
-import { createORPCClient } from '@orpc/client'
-import { RPCLink } from '@orpc/client/fetch'
-import type { ContractRouterClient } from '@orpc/contract'
+import { createORPCClient } from "@orpc/client";
+import { RPCLink } from "@orpc/client/fetch";
+import type { ContractRouterClient } from "@orpc/contract";
 
 export function createMyApi(apiKey: string): ContractRouterClient<typeof contract> {
   const link = new RPCLink({
-    url: 'https://example.com/rpc',
+    url: "https://example.com/rpc",
     headers: {
-      'x-api-key': apiKey,
-    }
-  })
+      "x-api-key": apiKey,
+    },
+  });
 
-  return createORPCClient(link)
+  return createORPCClient(link);
 }
 ```
 
@@ -94,11 +94,11 @@ pnpm add "<package-name>"
 ```
 
 ```ts [example.ts]
-import { createMyApi } from '<package-name>'
+import { createMyApi } from "<package-name>";
 
-const myApi = createMyApi('your-api-key')
+const myApi = createMyApi("your-api-key");
 
-const output = await myApi.someMethod('input')
+const output = await myApi.someMethod("input");
 ```
 
 ::: info
@@ -108,7 +108,8 @@ This client includes all oRPC client features, so you can use it with any suppor
 ---
 
 ---
+
 url: /docs/helpers/publisher.md
 description: Listen and publish events with resuming support in oRPC
----
 
+---

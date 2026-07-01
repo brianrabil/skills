@@ -13,20 +13,20 @@ npm install -D @hey-api/openapi-ts
 ```
 
 ```ts [openapi-ts.config.ts]
-import { defineConfig } from '@hey-api/openapi-ts'
+import { defineConfig } from "@hey-api/openapi-ts";
 
 export default defineConfig({
-  input: 'https://get.heyapi.dev/hey-api/backend',
-  output: 'src/client',
+  input: "https://get.heyapi.dev/hey-api/backend",
+  output: "src/client",
   plugins: [
     {
-      name: 'orpc',
+      name: "orpc",
       validator: {
-        input: 'zod',
+        input: "zod",
       },
     },
   ],
-})
+});
 ```
 
 Then run:
@@ -43,14 +43,15 @@ For more details about configuration options and plugin behavior, see the [Hey A
 
 Once the contract is generated, what you do next depends on how you want to use it:
 
-* Implement the contract on your own server with [Implement Contract](/docs/contract-first/implement-contract).
-* Create a type-safe client with [OpenAPILink](/docs/openapi/client/openapi-link).
-* Use the generated contract as a reference alongside [Define Contract](/docs/contract-first/define-contract) to better understand its structure.
+- Implement the contract on your own server with [Implement Contract](/docs/contract-first/implement-contract).
+- Create a type-safe client with [OpenAPILink](/docs/openapi/client/openapi-link).
+- Use the generated contract as a reference alongside [Define Contract](/docs/contract-first/define-contract) to better understand its structure.
 
 ---
 
 ---
+
 url: /docs/openapi/client/openapi-link.md
 description: Details on using OpenAPILink in oRPC clients.
----
 
+---

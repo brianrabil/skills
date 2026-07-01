@@ -7,44 +7,44 @@
 ::: code-group
 
 ```ts [src/routes/rpc/[...rest].ts]
-import type { APIEvent } from '@solidjs/start/server'
-import { RPCHandler } from '@orpc/server/fetch'
-import { onError } from '@orpc/server'
+import type { APIEvent } from "@solidjs/start/server";
+import { RPCHandler } from "@orpc/server/fetch";
+import { onError } from "@orpc/server";
 
 const handler = new RPCHandler(router, {
   interceptors: [
     onError((error) => {
-      console.error(error)
+      console.error(error);
     }),
   ],
-})
+});
 
 async function handle({ request }: APIEvent) {
   const { response } = await handler.handle(request, {
-    prefix: '/rpc',
-    context: {} // Provide initial context if needed
-  })
+    prefix: "/rpc",
+    context: {}, // Provide initial context if needed
+  });
 
-  return response ?? new Response('Not Found', { status: 404 })
+  return response ?? new Response("Not Found", { status: 404 });
 }
 
-export const HEAD = handle
-export const GET = handle
-export const POST = handle
-export const PUT = handle
-export const PATCH = handle
-export const DELETE = handle
+export const HEAD = handle;
+export const GET = handle;
+export const POST = handle;
+export const PUT = handle;
+export const PATCH = handle;
+export const DELETE = handle;
 ```
 
 ```ts [src/routes/rpc/index.ts]
-import { POST as handle } from './[...rest]'
+import { POST as handle } from "./[...rest]";
 
-export const HEAD = handle
-export const GET = handle
-export const POST = handle
-export const PUT = handle
-export const PATCH = handle
-export const DELETE = handle
+export const HEAD = handle;
+export const GET = handle;
+export const POST = handle;
+export const PUT = handle;
+export const PATCH = handle;
+export const DELETE = handle;
 ```
 
 :::
@@ -58,13 +58,13 @@ The `handler` can be any supported oRPC handler, such as [RPCHandler](/docs/rpc-
 On the client, use `getRequestEvent` to provide a headers function that works seamlessly with SSR. This enables usage in both server and browser environments.
 
 ```ts
-import { RPCLink } from '@orpc/client/fetch'
-import { getRequestEvent } from 'solid-js/web'
+import { RPCLink } from "@orpc/client/fetch";
+import { getRequestEvent } from "solid-js/web";
 
 const link = new RPCLink({
-  url: `${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'}/rpc`,
+  url: `${typeof window !== "undefined" ? window.location.origin : "http://localhost:3000"}/rpc`,
   headers: () => getRequestEvent()?.request.headers ?? {},
-})
+});
 ```
 
 :::info
@@ -78,40 +78,40 @@ To reduce HTTP requests and improve latency during SSR, you can utilize a [Serve
 ::: code-group
 
 ```ts [src/lib/orpc.ts]
-if (typeof window === 'undefined') {
-  await import('./orpc.server')
+if (typeof window === "undefined") {
+  await import("./orpc.server");
 }
 
-import type { RouterClient } from '@orpc/server'
-import { RPCLink } from '@orpc/client/fetch'
-import { createORPCClient } from '@orpc/client'
+import type { RouterClient } from "@orpc/server";
+import { RPCLink } from "@orpc/client/fetch";
+import { createORPCClient } from "@orpc/client";
 
 declare global {
-  var $client: RouterClient<typeof router> | undefined
+  var $client: RouterClient<typeof router> | undefined;
 }
 
 const link = new RPCLink({
   url: () => {
-    if (typeof window === 'undefined') {
-      throw new Error('RPCLink is not allowed on the server side.')
+    if (typeof window === "undefined") {
+      throw new Error("RPCLink is not allowed on the server side.");
     }
 
-    return `${window.location.origin}/rpc`
+    return `${window.location.origin}/rpc`;
   },
-})
+});
 
 /**
  * Fallback to client-side client if server-side client is not available.
  */
-export const client: RouterClient<typeof router> = globalThis.$client ?? createORPCClient(link)
+export const client: RouterClient<typeof router> = globalThis.$client ?? createORPCClient(link);
 ```
 
 ```ts [src/lib/orpc.server.ts]
-import { createRouterClient } from '@orpc/server'
-import { getRequestEvent } from 'solid-js/web'
+import { createRouterClient } from "@orpc/server";
+import { getRequestEvent } from "solid-js/web";
 
-if (typeof window !== 'undefined') {
-  throw new Error('This file should not be imported in the browser')
+if (typeof window !== "undefined") {
+  throw new Error("This file should not be imported in the browser");
 }
 
 globalThis.$client = createRouterClient(router, {
@@ -123,13 +123,13 @@ globalThis.$client = createRouterClient(router, {
    * For per-request context, use middleware context or pass a function as the initial context.
    */
   context: async () => {
-    const headers = getRequestEvent()?.request.headers
+    const headers = getRequestEvent()?.request.headers;
 
     return {
       headers, // provide headers if initial context required
-    }
+    };
   },
-})
+});
 ```
 
 :::
@@ -137,10 +137,11 @@ globalThis.$client = createRouterClient(router, {
 ---
 
 ---
+
 url: /docs/plugins/strict-get-method.md
 description: >-
-  Enhance security by ensuring only procedures explicitly marked to accept `GET`
-  requests can be called using the HTTP `GET` method for RPC Protocol. This
-  helps prevent certain types of Cross-Site Request Forgery (CSRF) attacks.
----
+Enhance security by ensuring only procedures explicitly marked to accept `GET`
+requests can be called using the HTTP `GET` method for RPC Protocol. This
+helps prevent certain types of Cross-Site Request Forgery (CSRF) attacks.
 
+---

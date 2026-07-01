@@ -13,38 +13,38 @@ oRPC offers built-in support for common Message Port implementations, enabling e
 Message Ports work by establishing two endpoints that can communicate with each other:
 
 ```ts [bridge]
-const channel = new MessageChannel()
-const serverPort = channel.port1
-const clientPort = channel.port2
+const channel = new MessageChannel();
+const serverPort = channel.port1;
+const clientPort = channel.port2;
 ```
 
 ```ts [server]
-import { RPCHandler } from '@orpc/server/message-port'
-import { onError } from '@orpc/server'
+import { RPCHandler } from "@orpc/server/message-port";
+import { onError } from "@orpc/server";
 
 const handler = new RPCHandler(router, {
   interceptors: [
     onError((error) => {
-      console.error(error)
+      console.error(error);
     }),
   ],
-})
+});
 
 handler.upgrade(serverPort, {
   context: {}, // Provide initial context if needed
-})
+});
 
-serverPort.start()
+serverPort.start();
 ```
 
 ```ts [client]
-import { RPCLink } from '@orpc/client/message-port'
+import { RPCLink } from "@orpc/client/message-port";
 
 const link = new RPCLink({
   port: clientPort,
-})
+});
 
-clientPort.start()
+clientPort.start();
 ```
 
 :::info
@@ -60,20 +60,20 @@ By default, oRPC serializes request/response messages to string/binary data befo
 ```ts [handler]
 const handler = new RPCHandler(router, {
   experimental_transfer: (message, port) => {
-    const transfer = deepFindTransferableObjects(message) // implement your own logic
-    return transfer.length ? transfer : null // only enable when needed
-  }
-})
+    const transfer = deepFindTransferableObjects(message); // implement your own logic
+    return transfer.length ? transfer : null; // only enable when needed
+  },
+});
 ```
 
 ```ts [link]
 const link = new RPCLink({
   port: clientPort,
   experimental_transfer: (message) => {
-    const transfer = deepFindTransferableObjects(message) // implement your own logic
-    return transfer.length ? transfer : null // only enable when needed
-  }
-})
+    const transfer = deepFindTransferableObjects(message); // implement your own logic
+    return transfer.length ? transfer : null; // only enable when needed
+  },
+});
 ```
 
 :::
@@ -89,7 +89,8 @@ The `transfer` option run after [RPC JSON Serializer](/docs/advanced/rpc-json-se
 ---
 
 ---
+
 url: /docs/metadata.md
 description: Enhance your procedures with metadata.
----
 
+---

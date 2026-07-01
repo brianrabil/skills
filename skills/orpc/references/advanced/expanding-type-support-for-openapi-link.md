@@ -13,33 +13,35 @@ Beyond JSON limitations, outputs containing `Blob` or `File` types (outside the 
 :::
 
 ```ts
-const contract = oc.output(z.object({
-  date: z.coerce.date<Date>(), // [!code highlight]
-  bigint: z.coerce.bigint<bigint>(), // [!code highlight]
-}))
+const contract = oc.output(
+  z.object({
+    date: z.coerce.date<Date>(), // [!code highlight]
+    bigint: z.coerce.bigint<bigint>(), // [!code highlight]
+  }),
+);
 
 const procedure = implement(contract).handler(() => ({
   date: new Date(),
   bigint: 123n,
-}))
+}));
 ```
 
 On the client side, you'll receive the output like this:
 
 ```ts
 const beforeValidation = {
-  date: '2025-09-01T07:24:39.000Z',
-  bigint: '123'
-}
+  date: "2025-09-01T07:24:39.000Z",
+  bigint: "123",
+};
 ```
 
 Since your output schema contains coercion logic, the Response Validation Plugin will convert the data to the desired type after validation.
 
 ```ts
 const afterValidation = {
-  date: new Date('2025-09-01T07:24:39.000Z'),
-  bigint: 123n
-}
+  date: new Date("2025-09-01T07:24:39.000Z"),
+  bigint: 123n,
+};
 ```
 
 ::: warning
@@ -70,7 +72,8 @@ After understanding how it works and expanding schemas with coercion logic, you 
 ---
 
 ---
+
 url: /docs/adapters/express.md
 description: Use oRPC inside an Express.js project
----
 
+---

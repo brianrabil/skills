@@ -9,57 +9,50 @@ This guide covers the basics. For a simpler setup, consider using the [OpenAPI R
 ## Basic Example
 
 ```ts
-import { createServer } from 'node:http'
-import { OpenAPIGenerator } from '@orpc/openapi'
-import { OpenAPIHandler } from '@orpc/openapi/node'
-import { CORSPlugin } from '@orpc/server/plugins'
-import { ZodSmartCoercionPlugin, ZodToJsonSchemaConverter } from '@orpc/zod'
+import { createServer } from "node:http";
+import { OpenAPIGenerator } from "@orpc/openapi";
+import { OpenAPIHandler } from "@orpc/openapi/node";
+import { CORSPlugin } from "@orpc/server/plugins";
+import { ZodSmartCoercionPlugin, ZodToJsonSchemaConverter } from "@orpc/zod";
 
 const openAPIHandler = new OpenAPIHandler(router, {
-  plugins: [
-    new CORSPlugin(),
-    new ZodSmartCoercionPlugin(),
-  ],
-})
+  plugins: [new CORSPlugin(), new ZodSmartCoercionPlugin()],
+});
 
 const openAPIGenerator = new OpenAPIGenerator({
-  schemaConverters: [
-    new ZodToJsonSchemaConverter(),
-  ],
-})
+  schemaConverters: [new ZodToJsonSchemaConverter()],
+});
 
 const server = createServer(async (req, res) => {
   const { matched } = await openAPIHandler.handle(req, res, {
-    prefix: '/api',
-  })
+    prefix: "/api",
+  });
 
   if (matched) {
-    return
+    return;
   }
 
-  if (req.url === '/spec.json') {
+  if (req.url === "/spec.json") {
     const spec = await openAPIGenerator.generate(router, {
       info: {
-        title: 'My Playground',
-        version: '1.0.0',
+        title: "My Playground",
+        version: "1.0.0",
       },
-      servers: [
-        { url: '/api' }, /** Should use absolute URLs in production */
-      ],
+      servers: [{ url: "/api" } /** Should use absolute URLs in production */],
       security: [{ bearerAuth: [] }],
       components: {
         securitySchemes: {
           bearerAuth: {
-            type: 'http',
-            scheme: 'bearer',
+            type: "http",
+            scheme: "bearer",
           },
         },
       },
-    })
+    });
 
-    res.writeHead(200, { 'Content-Type': 'application/json' })
-    res.end(JSON.stringify(spec))
-    return
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(spec));
+    return;
   }
 
   const html = `
@@ -89,15 +82,15 @@ const server = createServer(async (req, res) => {
         </script>
       </body>
     </html>
-  `
+  `;
 
-  res.writeHead(200, { 'Content-Type': 'text/html' })
-  res.end(html)
-})
+  res.writeHead(200, { "Content-Type": "text/html" });
+  res.end(html);
+});
 
 server.listen(3000, () => {
-  console.log('Playground is available at http://localhost:3000')
-})
+  console.log("Playground is available at http://localhost:3000");
+});
 ```
 
 Access the playground at `http://localhost:3000` to view your API client.
@@ -105,7 +98,8 @@ Access the playground at `http://localhost:3000` to view your API client.
 ---
 
 ---
+
 url: /docs/integrations/sentry.md
 description: Integrate oRPC with Sentry for error tracking and performance monitoring.
----
 
+---

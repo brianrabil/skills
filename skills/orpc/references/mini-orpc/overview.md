@@ -10,15 +10,16 @@ The complete Mini oRPC implementation is available in our GitHub repository: [Mi
 
 Before you begin, ensure you have a solid understanding of [TypeScript](https://www.typescriptlang.org/). Please review the following resources:
 
-* [TypeScript Generics Handbook](https://www.typescriptlang.org/docs/handbook/2/generics.html)
-* [How Theo Deals with Unsafe Packages](https://www.youtube.com/watch?v=JfZPz6PWGtA)
+- [TypeScript Generics Handbook](https://www.typescriptlang.org/docs/handbook/2/generics.html)
+- [How Theo Deals with Unsafe Packages](https://www.youtube.com/watch?v=JfZPz6PWGtA)
 
 You can also practice TypeScript at [typehero.dev](https://typehero.dev/).
 
 ---
 
 ---
+
 url: /docs/integrations/pinia-colada.md
 description: Seamlessly integrate oRPC with Pinia Colada
----
 
+---

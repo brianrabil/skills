@@ -34,8 +34,8 @@ Bracket Notation encodes structured data in formats with limited syntax, like UR
 
 ## Limitations
 
-* **Empty Arrays:** Cannot be represented; arrays must have at least one element.
-* **Empty Objects:** Cannot be represented. Objects with empty or numeric keys may be interpreted as arrays, so ensure objects include at least one non-empty, non-numeric key.
+- **Empty Arrays:** Cannot be represented; arrays must have at least one element.
+- **Empty Objects:** Cannot be represented. Objects with empty or numeric keys may be interpreted as arrays, so ensure objects include at least one non-empty, non-numeric key.
 
 ## Examples
 
@@ -107,7 +107,8 @@ This form data is parsed as:
 ---
 
 ---
+
 url: /docs/adapters/browser.md
 description: Type-safe communication between browser scripts using Message Port Adapter
----
 
+---

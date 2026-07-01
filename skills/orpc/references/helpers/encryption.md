@@ -7,15 +7,15 @@ Encryption secures data content but has performance trade-offs compared to [sign
 :::
 
 ```ts twoslash
-import { decrypt, encrypt } from '@orpc/server/helpers'
+import { decrypt, encrypt } from "@orpc/server/helpers";
 
-const secret = 'your-encryption-key'
-const sensitiveData = 'user-email@example.com'
+const secret = "your-encryption-key";
+const sensitiveData = "user-email@example.com";
 
-const encryptedData = await encrypt(sensitiveData, secret)
+const encryptedData = await encrypt(sensitiveData, secret);
 // 'Rq7wF8...' (base64url encoded, unreadable)
 
-const decryptedData = await decrypt(encryptedData, secret)
+const decryptedData = await decrypt(encryptedData, secret);
 // 'user-email@example.com'
 ```
 
@@ -26,7 +26,8 @@ The `decrypt` helper accepts `undefined` or `null` as encrypted value and return
 ---
 
 ---
+
 url: /docs/error-handling.md
 description: Manage errors in oRPC using both traditional and type‑safe strategies.
----
 
+---

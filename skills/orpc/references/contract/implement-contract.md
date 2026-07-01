@@ -33,11 +33,11 @@ deno add npm:@orpc/server@latest
 The `implement` function converts your contract into an implementer instance. This instance compatible with the original `os` from `@orpc/server` provides a type-safe interface to define your procedures and supports features like [Middleware](/docs/middleware) and [Context](/docs/context).
 
 ```ts twoslash
-import { contract } from './shared/planet'
+import { contract } from "./shared/planet";
 // ---cut---
-import { implement } from '@orpc/server'
+import { implement } from "@orpc/server";
 
-const os = implement(contract) // fully replaces the os from @orpc/server
+const os = implement(contract); // fully replaces the os from @orpc/server
 ```
 
 ## Implementing Procedures
@@ -45,16 +45,15 @@ const os = implement(contract) // fully replaces the os from @orpc/server
 Define a procedure by attaching a `.handler` to its corresponding contract, ensuring it adheres to the contract's specifications.
 
 ```ts twoslash
-import { contract } from './shared/planet'
-import { implement } from '@orpc/server'
+import { contract } from "./shared/planet";
+import { implement } from "@orpc/server";
 
-const os = implement(contract)
+const os = implement(contract);
 // ---cut---
-export const listPlanet = os.planet.list
-  .handler(({ input }) => {
-    // Your logic for listing planets
-    return []
-  })
+export const listPlanet = os.planet.list.handler(({ input }) => {
+  // Your logic for listing planets
+  return [];
+});
 ```
 
 ## Building the Router
@@ -62,13 +61,14 @@ export const listPlanet = os.planet.list
 To assemble your API, create a router at the root level using `.router`. This ensures that the entire router is type-checked and enforces the contract at runtime.
 
 ```ts
-const router = os.router({ // <-- Essential for full contract enforcement
+const router = os.router({
+  // <-- Essential for full contract enforcement
   planet: {
     list: listPlanet,
     find: findPlanet,
     create: createPlanet,
   },
-})
+});
 ```
 
 ## Full Implementation Example
@@ -76,25 +76,22 @@ const router = os.router({ // <-- Essential for full contract enforcement
 Below is a complete implementation of the contract defined in the [previous section](/docs/contract-first/define-contract).
 
 ```ts twoslash
-import { contract } from './shared/planet'
-import { implement } from '@orpc/server'
+import { contract } from "./shared/planet";
+import { implement } from "@orpc/server";
 // ---cut---
-const os = implement(contract)
+const os = implement(contract);
 
-export const listPlanet = os.planet.list
-  .handler(({ input }) => {
-    return []
-  })
+export const listPlanet = os.planet.list.handler(({ input }) => {
+  return [];
+});
 
-export const findPlanet = os.planet.find
-  .handler(({ input }) => {
-    return { id: 123, name: 'Planet X' }
-  })
+export const findPlanet = os.planet.find.handler(({ input }) => {
+  return { id: 123, name: "Planet X" };
+});
 
-export const createPlanet = os.planet.create
-  .handler(({ input }) => {
-    return { id: 123, name: 'Planet X' }
-  })
+export const createPlanet = os.planet.create.handler(({ input }) => {
+  return { id: 123, name: "Planet X" };
+});
 
 export const router = os.router({
   planet: {
@@ -102,13 +99,14 @@ export const router = os.router({
     find: findPlanet,
     create: createPlanet,
   },
-})
+});
 ```
 
 ---
 
 ---
+
 url: /docs/openapi/integrations/implement-contract-in-nest.md
 description: Seamlessly implement oRPC contracts in your NestJS projects.
----
 
+---

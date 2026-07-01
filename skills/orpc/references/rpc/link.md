@@ -12,28 +12,28 @@ Other adapters may remove or change options to keep things simple.
 Before using RPCLink, make sure your server is set up with [RPCHandler](/docs/rpc-handler) or any API that follows the [RPC Protocol](/docs/advanced/rpc-protocol).
 
 ```ts
-import { onError } from '@orpc/client'
-import { RPCLink } from '@orpc/client/fetch'
+import { onError } from "@orpc/client";
+import { RPCLink } from "@orpc/client/fetch";
 
 const link = new RPCLink({
-  url: 'http://localhost:3000/rpc',
+  url: "http://localhost:3000/rpc",
   headers: () => ({
-    'x-api-key': 'my-api-key'
+    "x-api-key": "my-api-key",
   }),
   fetch: (request, init) => {
     return globalThis.fetch(request, {
       ...init,
-      credentials: 'include', // Include cookies for cross-origin requests
-    })
+      credentials: "include", // Include cookies for cross-origin requests
+    });
   },
   interceptors: [
     onError((error) => {
-      console.error(error)
-    })
+      console.error(error);
+    }),
   ],
-})
+});
 
-export const client: RouterClient<typeof router> = createORPCClient(link)
+export const client: RouterClient<typeof router> = createORPCClient(link);
 ```
 
 ## Using Client Context
@@ -41,28 +41,25 @@ export const client: RouterClient<typeof router> = createORPCClient(link)
 Client context lets you pass extra information when calling procedures and dynamically modify RPCLink's behavior.
 
 ```ts twoslash
-import { router } from './shared/planet'
-import { RouterClient } from '@orpc/server'
-import { createORPCClient } from '@orpc/client'
-import { RPCLink } from '@orpc/client/fetch'
+import { router } from "./shared/planet";
+import { RouterClient } from "@orpc/server";
+import { createORPCClient } from "@orpc/client";
+import { RPCLink } from "@orpc/client/fetch";
 
 interface ClientContext {
-  something?: string
+  something?: string;
 }
 
 const link = new RPCLink<ClientContext>({
-  url: 'http://localhost:3000/rpc',
+  url: "http://localhost:3000/rpc",
   headers: async ({ context }) => ({
-    'x-api-key': context?.something ?? ''
-  })
-})
+    "x-api-key": context?.something ?? "",
+  }),
+});
 
-const client: RouterClient<typeof router, ClientContext> = createORPCClient(link)
+const client: RouterClient<typeof router, ClientContext> = createORPCClient(link);
 
-const result = await client.planet.list(
-  { limit: 10 },
-  { context: { something: 'value' } }
-)
+const result = await client.planet.list({ limit: 10 }, { context: { something: "value" } });
 ```
 
 :::info
@@ -78,37 +75,38 @@ By default, [RPCHandler](/docs/rpc-handler) in the [HTTP Adapter](/docs/adapters
 :::
 
 ```ts twoslash
-import { RPCLink } from '@orpc/client/fetch'
+import { RPCLink } from "@orpc/client/fetch";
 
 interface ClientContext {
-  cache?: RequestCache
+  cache?: RequestCache;
 }
 
 const link = new RPCLink<ClientContext>({
-  url: 'http://localhost:3000/rpc',
+  url: "http://localhost:3000/rpc",
   method: ({ context }, path) => {
     // Use GET for cached responses
     if (context?.cache) {
-      return 'GET'
+      return "GET";
     }
 
     // Use GET for rendering requests
-    if (typeof window === 'undefined') {
-      return 'GET'
+    if (typeof window === "undefined") {
+      return "GET";
     }
 
     // Use GET for read-like operations
     if (path.at(-1)?.match(/^(?:get|find|list|search)(?:[A-Z].*)?$/)) {
-      return 'GET'
+      return "GET";
     }
 
-    return 'POST'
+    return "POST";
   },
-  fetch: (request, init, { context }) => globalThis.fetch(request, {
-    ...init,
-    cache: context?.cache,
-  }),
-})
+  fetch: (request, init, { context }) =>
+    globalThis.fetch(request, {
+      ...init,
+      cache: context?.cache,
+    }),
+});
 ```
 
 ::: details Automatically use method specified in contract?
@@ -116,12 +114,12 @@ const link = new RPCLink<ClientContext>({
 By using `inferRPCMethodFromContractRouter`, the `RPCLink` automatically uses the method specified in the contract when sending requests.
 
 ```ts
-import { inferRPCMethodFromContractRouter } from '@orpc/contract'
+import { inferRPCMethodFromContractRouter } from "@orpc/contract";
 
 const link = new RPCLink({
-  url: 'http://localhost:3000/rpc',
+  url: "http://localhost:3000/rpc",
   method: inferRPCMethodFromContractRouter(contract),
-})
+});
 ```
 
 ::: info
@@ -135,13 +133,13 @@ You can define `url` as a function, ensuring compatibility with environments tha
 ```ts
 const link = new RPCLink({
   url: () => {
-    if (typeof window === 'undefined') {
-      throw new Error('RPCLink is not allowed on the server side.')
+    if (typeof window === "undefined") {
+      throw new Error("RPCLink is not allowed on the server side.");
     }
 
-    return `${window.location.origin}/rpc`
+    return `${window.location.origin}/rpc`;
   },
-})
+});
 ```
 
 ## SSE Like Behavior
@@ -178,7 +176,8 @@ Interceptors can be used to intercept and modify the lifecycle at various stages
 ---
 
 ---
+
 url: /docs/openapi/scalar.md
 description: Create a beautiful API client for your oRPC effortlessly.
----
 
+---

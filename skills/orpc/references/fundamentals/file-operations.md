@@ -13,29 +13,30 @@ For downloading files, we recommend using **lazy file** libraries like [@mjackso
 ## Example
 
 ```ts twoslash
-import { os } from '@orpc/server'
-import * as z from 'zod'
+import { os } from "@orpc/server";
+import * as z from "zod";
 // ---cut---
 const example = os
   .input(z.file())
   .output(z.object({ anyFieldName: z.instanceof(File) }))
   .handler(async ({ input }) => {
-    const file = input
+    const file = input;
 
-    console.log(file.name)
+    console.log(file.name);
 
     return {
-      anyFieldName: new File(['Hello World'], 'hello.txt', { type: 'text/plain' }),
-    }
-  })
+      anyFieldName: new File(["Hello World"], "hello.txt", { type: "text/plain" }),
+    };
+  });
 ```
 
 ---
 
 ---
+
 url: /docs/helpers/form-data.md
 description: >-
-  Utilities for parsing form data and handling validation errors with bracket
-  notation support.
----
+Utilities for parsing form data and handling validation errors with bracket
+notation support.
 
+---

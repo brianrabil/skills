@@ -33,16 +33,16 @@ deno add npm:@orpc/svelte-query@latest npm:@tanstack/svelte-query@latest
 Before you begin, ensure you have already configured a [server-side client](/docs/client/server-side) or a [client-side client](/docs/client/client-side).
 
 ```ts twoslash
-import { router } from './shared/planet'
-import { RouterClient } from '@orpc/server'
+import { router } from "./shared/planet";
+import { RouterClient } from "@orpc/server";
 
-declare const client: RouterClient<typeof router>
+declare const client: RouterClient<typeof router>;
 // ---cut---
-import { createORPCSvelteQueryUtils } from '@orpc/svelte-query'
+import { createORPCSvelteQueryUtils } from "@orpc/svelte-query";
 
-export const orpc = createORPCSvelteQueryUtils(client)
+export const orpc = createORPCSvelteQueryUtils(client);
 
-orpc.planet.find.queryOptions({ input: { id: 123 } })
+orpc.planet.find.queryOptions({ input: { id: 123 } });
 //               ^|
 
 //
@@ -54,17 +54,18 @@ Prevent key conflicts by passing a unique base key when creating your utils:
 
 ```ts
 const userORPC = createORPCSvelteQueryUtils(userClient, {
-  path: ['user']
-})
+  path: ["user"],
+});
 const postORPC = createORPCSvelteQueryUtils(postClient, {
-  path: ['post']
-})
+  path: ["post"],
+});
 ```
 
 ---
 
 ---
+
 url: /docs/integrations/tanstack-query-old/vue.md
 description: Seamlessly integrate oRPC with Tanstack Query for Vue
----
 
+---

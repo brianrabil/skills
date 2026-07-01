@@ -33,16 +33,16 @@ deno add npm:@orpc/vue-query@latest npm:@tanstack/vue-query@latest
 Before you begin, ensure you have already configured a [server-side client](/docs/client/server-side) or a [client-side client](/docs/client/client-side).
 
 ```ts twoslash
-import { router } from './shared/planet'
-import { RouterClient } from '@orpc/server'
+import { router } from "./shared/planet";
+import { RouterClient } from "@orpc/server";
 
-declare const client: RouterClient<typeof router>
+declare const client: RouterClient<typeof router>;
 // ---cut---
-import { createORPCVueQueryUtils } from '@orpc/vue-query'
+import { createORPCVueQueryUtils } from "@orpc/vue-query";
 
-export const orpc = createORPCVueQueryUtils(client)
+export const orpc = createORPCVueQueryUtils(client);
 
-orpc.planet.find.queryOptions({ input: { id: 123 } })
+orpc.planet.find.queryOptions({ input: { id: 123 } });
 //               ^|
 
 //
@@ -54,17 +54,18 @@ Prevent key conflicts by passing a unique base key when creating your utils:
 
 ```ts
 const userORPC = createORPCVueQueryUtils(userClient, {
-  path: ['user']
-})
+  path: ["user"],
+});
 const postORPC = createORPCVueQueryUtils(postClient, {
-  path: ['post']
-})
+  path: ["post"],
+});
 ```
 
 ---
 
 ---
+
 url: /docs/adapters/tanstack-start.md
 description: Use oRPC inside a TanStack Start project
----
 
+---

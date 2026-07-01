@@ -7,19 +7,19 @@ Signing is faster than [encryption](/docs/helpers/encryption) but users can view
 :::
 
 ```ts twoslash
-import { getSignedValue, sign, unsign } from '@orpc/server/helpers'
+import { getSignedValue, sign, unsign } from "@orpc/server/helpers";
 
-const secret = 'your-secret-key'
-const userData = 'user123'
+const secret = "your-secret-key";
+const userData = "user123";
 
-const signedValue = await sign(userData, secret)
+const signedValue = await sign(userData, secret);
 // 'user123.oneQsU0r5dvwQFHFEjjV1uOI_IR3gZfkYHij3TRauVA'
 // ↑ Original data is visible to users
 
-const verifiedValue = await unsign(signedValue, secret) // 'user123'
+const verifiedValue = await unsign(signedValue, secret); // 'user123'
 
 // Extract value without verification
-const extractedValue = getSignedValue(signedValue) // 'user123'
+const extractedValue = getSignedValue(signedValue); // 'user123'
 ```
 
 ::: info
@@ -29,11 +29,12 @@ The `unsign` and `getSignedValue` helpers accept `undefined` or `null` as signed
 ---
 
 ---
+
 url: /docs/plugins/simple-csrf-protection.md
 description: >-
-  Add basic Cross-Site Request Forgery (CSRF) protection to your oRPC
-  application. It helps ensure that requests to your procedures originate from
-  JavaScript code, not from other sources like standard HTML forms or direct
-  browser navigation.
----
+Add basic Cross-Site Request Forgery (CSRF) protection to your oRPC
+application. It helps ensure that requests to your procedures originate from
+JavaScript code, not from other sources like standard HTML forms or direct
+browser navigation.
 
+---

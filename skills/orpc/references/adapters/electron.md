@@ -7,24 +7,24 @@ Establish type-safe communication between processes in [Electron](https://www.el
 Listen for a port sent from the renderer, then upgrade it:
 
 ```ts
-import { RPCHandler } from '@orpc/server/message-port'
-import { onError } from '@orpc/server'
+import { RPCHandler } from "@orpc/server/message-port";
+import { onError } from "@orpc/server";
 
 const handler = new RPCHandler(router, {
   interceptors: [
     onError((error) => {
-      console.error(error)
+      console.error(error);
     }),
   ],
-})
+});
 
 app.whenReady().then(() => {
-  ipcMain.on('start-orpc-server', async (event) => {
-    const [serverPort] = event.ports
-    handler.upgrade(serverPort)
-    serverPort.start()
-  })
-})
+  ipcMain.on("start-orpc-server", async (event) => {
+    const [serverPort] = event.ports;
+    handler.upgrade(serverPort);
+    serverPort.start();
+  });
+});
 ```
 
 :::info
@@ -36,13 +36,13 @@ Channel `start-orpc-server` is arbitrary. you can use any name that fits your ne
 Receive the port from the renderer and forward it to the main process:
 
 ```ts
-window.addEventListener('message', (event) => {
-  if (event.data === 'start-orpc-client') {
-    const [serverPort] = event.ports
+window.addEventListener("message", (event) => {
+  if (event.data === "start-orpc-client") {
+    const [serverPort] = event.ports;
 
-    ipcRenderer.postMessage('start-orpc-server', null, [serverPort])
+    ipcRenderer.postMessage("start-orpc-server", null, [serverPort]);
   }
-})
+});
 ```
 
 ## Renderer Process
@@ -50,15 +50,15 @@ window.addEventListener('message', (event) => {
 Create a `MessageChannel`, send one port to the preload script, and use the other to initialize the client link:
 
 ```ts
-const { port1: clientPort, port2: serverPort } = new MessageChannel()
+const { port1: clientPort, port2: serverPort } = new MessageChannel();
 
-window.postMessage('start-orpc-client', '*', [serverPort])
+window.postMessage("start-orpc-client", "*", [serverPort]);
 
 const link = new RPCLink({
   port: clientPort,
-})
+});
 
-clientPort.start()
+clientPort.start();
 ```
 
 :::info
@@ -68,7 +68,8 @@ This only shows how to configure the link. For full client examples, see [Client
 ---
 
 ---
+
 url: /docs/adapters/elysia.md
 description: Use oRPC inside an Elysia project
----
 
+---

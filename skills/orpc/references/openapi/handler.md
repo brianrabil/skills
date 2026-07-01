@@ -6,23 +6,23 @@ The `OpenAPIHandler` enables communication with clients over RESTful APIs, adher
 
 `OpenAPIHandler` serializes and deserializes the following JavaScript types:
 
-* **string**
-* **number** (`NaN` → `null`)
-* **boolean**
-* **null**
-* **undefined** (`undefined` in arrays → `null`)
-* **Date** (`Invalid Date` → `null`)
-* **BigInt** (`BigInt` → `string`)
-* **RegExp** (`RegExp` → `string`)
-* **URL** (`URL` → `string`)
-* **Record (object)**
-* **Array**
-* **Set** (`Set` → `array`)
-* **Map** (`Map` → `array`)
-* **Blob** (unsupported in `AsyncIteratorObject`)
-* **File** (unsupported in `AsyncIteratorObject`)
-* **AsyncIteratorObject** (only at the root level; powers the [Event Iterator](/docs/event-iterator))
-* **ReadableStream\<Uint8Array>** (supported only at the root level in `OpenAPIHandler`; not supported by client-side `OpenAPILink` until v2)
+- **string**
+- **number** (`NaN` → `null`)
+- **boolean**
+- **null**
+- **undefined** (`undefined` in arrays → `null`)
+- **Date** (`Invalid Date` → `null`)
+- **BigInt** (`BigInt` → `string`)
+- **RegExp** (`RegExp` → `string`)
+- **URL** (`URL` → `string`)
+- **Record (object)**
+- **Array**
+- **Set** (`Set` → `array`)
+- **Map** (`Map` → `array`)
+- **Blob** (unsupported in `AsyncIteratorObject`)
+- **File** (unsupported in `AsyncIteratorObject`)
+- **AsyncIteratorObject** (only at the root level; powers the [Event Iterator](/docs/event-iterator))
+- **ReadableStream\<Uint8Array>** (supported only at the root level in `OpenAPIHandler`; not supported by client-side `OpenAPILink` until v2)
 
 ::: warning
 If a payload contains `Blob` or `File` outside the root level, it must use `multipart/form-data`. In such cases, oRPC applies [Bracket Notation](/docs/openapi/bracket-notation) and converts other types to strings (exclude `null` and `undefined` will not be represented).
@@ -61,30 +61,30 @@ deno add npm:@orpc/openapi@latest
 ## Setup and Integration
 
 ```ts
-import { OpenAPIHandler } from '@orpc/openapi/fetch' // or '@orpc/server/node'
-import { CORSPlugin } from '@orpc/server/plugins'
-import { onError } from '@orpc/server'
+import { OpenAPIHandler } from "@orpc/openapi/fetch"; // or '@orpc/server/node'
+import { CORSPlugin } from "@orpc/server/plugins";
+import { onError } from "@orpc/server";
 
 const handler = new OpenAPIHandler(router, {
   plugins: [new CORSPlugin()],
   interceptors: [
     onError((error) => {
-      console.error(error)
+      console.error(error);
     }),
   ],
-})
+});
 
 export default async function fetch(request: Request) {
   const { matched, response } = await handler.handle(request, {
-    prefix: '/api',
-    context: {} // Add initial context if needed
-  })
+    prefix: "/api",
+    context: {}, // Add initial context if needed
+  });
 
   if (matched) {
-    return response
+    return response;
   }
 
-  return new Response('Not Found', { status: 404 })
+  return new Response("Not Found", { status: 404 });
 }
 ```
 
@@ -94,8 +94,8 @@ You can filter a procedure from matching by using the `filter` option:
 
 ```ts
 const handler = new OpenAPIHandler(router, {
-  filter: ({ contract, path }) => !contract['~orpc'].route.tags?.includes('internal'),
-})
+  filter: ({ contract, path }) => !contract["~orpc"].route.tags?.includes("internal"),
+});
 ```
 
 ## Lifecycle
@@ -105,7 +105,8 @@ The `OpenAPIHandler` follows the same lifecycle as the [RPCHandler Lifecycle](/d
 ---
 
 ---
+
 url: /docs/openapi/advanced/openapi-json-serializer.md
 description: Extend or override the standard OpenAPI JSON serializer.
----
 
+---

@@ -40,19 +40,22 @@ Interested in support for additional schema libraries? [Let us know](https://git
 You can use any existing `X to JSON Schema` converter to add support for additional schema libraries. For example, if you want to use [Valibot](https://valibot.dev) with oRPC (if not supported), you can create a custom converter to convert Valibot schemas into JSON Schema.
 
 ```ts
-import type { AnySchema } from '@orpc/contract'
-import type { ConditionalSchemaConverter, JSONSchema, SchemaConvertOptions } from '@orpc/openapi'
-import type { ConversionConfig } from '@valibot/to-json-schema'
-import { toJsonSchema } from '@valibot/to-json-schema'
+import type { AnySchema } from "@orpc/contract";
+import type { ConditionalSchemaConverter, JSONSchema, SchemaConvertOptions } from "@orpc/openapi";
+import type { ConversionConfig } from "@valibot/to-json-schema";
+import { toJsonSchema } from "@valibot/to-json-schema";
 
 export class ValibotToJsonSchemaConverter implements ConditionalSchemaConverter {
   condition(schema: AnySchema | undefined): boolean {
-    return schema !== undefined && schema['~standard'].vendor === 'valibot'
+    return schema !== undefined && schema["~standard"].vendor === "valibot";
   }
 
-  convert(schema: AnySchema | undefined, _options: SchemaConvertOptions): [required: boolean, jsonSchema: Exclude<JSONSchema, boolean>] {
+  convert(
+    schema: AnySchema | undefined,
+    _options: SchemaConvertOptions,
+  ): [required: boolean, jsonSchema: Exclude<JSONSchema, boolean>] {
     // Most JSON schema converters do not convert the `required` property separately, so returning `true` is acceptable here.
-    return [true, toJsonSchema(schema as any)]
+    return [true, toJsonSchema(schema as any)];
   }
 }
 ```
@@ -62,19 +65,11 @@ It's recommended to use the built-in converters because the oRPC implementations
 :::
 
 ```ts
-import { OpenAPIGenerator } from '@orpc/openapi'
-import {
-  ZodToJsonSchemaConverter
-} from '@orpc/zod' // <-- zod v3
-import {
-  ZodToJsonSchemaConverter
-} from '@orpc/zod/zod4' // <-- zod v4
-import {
-  experimental_ValibotToJsonSchemaConverter as ValibotToJsonSchemaConverter
-} from '@orpc/valibot'
-import {
-  experimental_ArkTypeToJsonSchemaConverter as ArkTypeToJsonSchemaConverter
-} from '@orpc/arktype'
+import { OpenAPIGenerator } from "@orpc/openapi";
+import { ZodToJsonSchemaConverter } from "@orpc/zod"; // <-- zod v3
+import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4"; // <-- zod v4
+import { experimental_ValibotToJsonSchemaConverter as ValibotToJsonSchemaConverter } from "@orpc/valibot";
+import { experimental_ArkTypeToJsonSchemaConverter as ArkTypeToJsonSchemaConverter } from "@orpc/arktype";
 
 const openAPIGenerator = new OpenAPIGenerator({
   schemaConverters: [
@@ -82,27 +77,23 @@ const openAPIGenerator = new OpenAPIGenerator({
     new ValibotToJsonSchemaConverter(), // <-- if you use Valibot
     new ArkTypeToJsonSchemaConverter(), // <-- if you use ArkType
   ],
-})
+});
 
 const specFromContract = await openAPIGenerator.generate(contract, {
   info: {
-    title: 'My App',
-    version: '0.0.0',
+    title: "My App",
+    version: "0.0.0",
   },
-  servers: [
-    { url: 'https://api.example.com/v1', },
-  ],
-})
+  servers: [{ url: "https://api.example.com/v1" }],
+});
 
 const specFromRouter = await openAPIGenerator.generate(router, {
   info: {
-    title: 'My App',
-    version: '0.0.0',
+    title: "My App",
+    version: "0.0.0",
   },
-  servers: [
-    { url: 'https://api.example.com/v1', },
-  ],
-})
+  servers: [{ url: "https://api.example.com/v1" }],
+});
 ```
 
 :::warning
@@ -118,11 +109,14 @@ const UserSchema = z.object({
   id: z.string(),
   name: z.string(),
   email: z.email(),
-})
+});
 
 const PetSchema = z.object({
-  id: z.string().transform(id => Number(id)).pipe(z.number()),
-})
+  id: z
+    .string()
+    .transform((id) => Number(id))
+    .pipe(z.number()),
+});
 
 const spec = await generator.generate(router, {
   commonSchemas: {
@@ -130,25 +124,25 @@ const spec = await generator.generate(router, {
       schema: UserSchema,
     },
     InputPet: {
-      strategy: 'input',
+      strategy: "input",
       schema: PetSchema,
     },
     OutputPet: {
-      strategy: 'output',
+      strategy: "output",
       schema: PetSchema,
     },
     UndefinedError: {
-      error: 'UndefinedError'
-    }
+      error: "UndefinedError",
+    },
   },
-})
+});
 ```
 
 :::info
 
-* The `strategy` option determines which schema definition to use when input and output types differ (defaults to `input`). This is needed because we cannot use the same `$ref` for both input and output in this case.
+- The `strategy` option determines which schema definition to use when input and output types differ (defaults to `input`). This is needed because we cannot use the same `$ref` for both input and output in this case.
 
-* `UndefinedError` is used for undefined errors, which is very useful when using [Type-Safe Error Handling](/docs/error-handling#type‐safe-error-handling).
+- `UndefinedError` is used for undefined errors, which is very useful when using [Type-Safe Error Handling](/docs/error-handling#type‐safe-error-handling).
 
 :::
 
@@ -158,8 +152,8 @@ You can filter a procedure from the OpenAPI specification using the `filter` opt
 
 ```ts
 const spec = await generator.generate(router, {
-  filter: ({ contract, path }) => !contract['~orpc'].route.tags?.includes('internal'),
-})
+  filter: ({ contract, path }) => !contract["~orpc"].route.tags?.includes("internal"),
+});
 ```
 
 ## Operation Metadata
@@ -169,39 +163,40 @@ You can enrich your API documentation by specifying operation metadata using the
 ```ts
 const ping = os
   .route({
-    operationId: 'ping', // override auto-generated operationId
-    summary: 'the summary',
-    description: 'the description',
+    operationId: "ping", // override auto-generated operationId
+    summary: "the summary",
+    description: "the description",
     deprecated: false,
-    tags: ['tag'],
-    successDescription: 'the success description',
-    spec: { // override entire auto-generated operation object, can also be a callback for extending
-      operationId: 'customOperationId',
-      tags: ['tag'],
-      summary: 'the summary',
+    tags: ["tag"],
+    successDescription: "the success description",
+    spec: {
+      // override entire auto-generated operation object, can also be a callback for extending
+      operationId: "customOperationId",
+      tags: ["tag"],
+      summary: "the summary",
       requestBody: {
         required: true,
         content: {
-          'application/json': {},
-        }
+          "application/json": {},
+        },
       },
       responses: {
         200: {
-          description: 'customSuccessDescription',
+          description: "customSuccessDescription",
           content: {
-            'application/json': {},
+            "application/json": {},
           },
-        }
+        },
       },
-    }
+    },
   })
-  .handler(() => {})
+  .handler(() => {});
 
 // or append tag for entire router
 
-const router = os.tag('planets').router({
+const router = os.tag("planets").router({
   // ...
-})
+});
 ```
 
 ### Customizing Operation Objects
@@ -209,37 +204,40 @@ const router = os.tag('planets').router({
 You can also extend the operation object by defining `route.spec` as a callback, or by using `oo.spec` in errors or middleware:
 
 ```ts
-import { oo } from '@orpc/openapi'
+import { oo } from "@orpc/openapi";
 
 // Using `route.spec` as a callback
 const procedure = os
   .route({
-    spec: spec => ({
+    spec: (spec) => ({
       ...spec,
-      security: [{ 'api-key': [] }],
+      security: [{ "api-key": [] }],
     }),
   })
-  .handler(() => 'Hello, World!')
+  .handler(() => "Hello, World!");
 
 // With errors
 const base = os.errors({
-  UNAUTHORIZED: oo.spec({
-    data: z.any(),
-  }, {
-    security: [{ 'api-key': [] }],
-  })
-})
+  UNAUTHORIZED: oo.spec(
+    {
+      data: z.any(),
+    },
+    {
+      security: [{ "api-key": [] }],
+    },
+  ),
+});
 
 // With middleware
 const requireAuth = oo.spec(
   os.middleware(async ({ next, errors }) => {
-    throw new ORPCError('UNAUTHORIZED')
-    return next()
+    throw new ORPCError("UNAUTHORIZED");
+    return next();
   }),
   {
-    security: [{ 'api-key': [] }],
-  }
-)
+    security: [{ "api-key": [] }],
+  },
+);
 ```
 
 Any [procedure](/docs/procedure) that includes the use above `errors` or `middleware` will automatically have the defined `security` property applied
@@ -257,12 +255,12 @@ The `.spec` helper accepts a callback as its second argument, allowing you to ov
 Zod v4 includes a native `File` schema. oRPC will detect it automatically - no extra setup needed:
 
 ```ts
-import * as z from 'zod'
+import * as z from "zod";
 
 const InputSchema = z.object({
   file: z.file(),
-  image: z.file().mime(['image/png', 'image/jpeg']),
-})
+  image: z.file().mime(["image/png", "image/jpeg"]),
+});
 ```
 
 #### JSON Schema Customization
@@ -270,41 +268,41 @@ const InputSchema = z.object({
 `description` and `examples` metadata are supported out of the box:
 
 ```ts
-import * as z from 'zod'
+import * as z from "zod";
 
-const InputSchema = z.object({
-  name: z.string(),
-}).meta({
-  description: 'User schema',
-  examples: [{ name: 'John' }],
-})
+const InputSchema = z
+  .object({
+    name: z.string(),
+  })
+  .meta({
+    description: "User schema",
+    examples: [{ name: "John" }],
+  });
 ```
 
 For further customization, you can use the `JSON_SCHEMA_REGISTRY`, `JSON_SCHEMA_INPUT_REGISTRY`, and `JSON_SCHEMA_OUTPUT_REGISTRY`:
 
 ```ts
-import * as z from 'zod'
-import {
-  JSON_SCHEMA_REGISTRY,
-} from '@orpc/zod/zod4'
+import * as z from "zod";
+import { JSON_SCHEMA_REGISTRY } from "@orpc/zod/zod4";
 
 export const InputSchema = z.object({
   name: z.string(),
-})
+});
 
 JSON_SCHEMA_REGISTRY.add(InputSchema, {
-  description: 'User schema',
-  examples: [{ name: 'John' }],
+  description: "User schema",
+  examples: [{ name: "John" }],
   // other options...
-})
+});
 
 JSON_SCHEMA_INPUT_REGISTRY.add(InputSchema, {
   // only for .input
-})
+});
 
 JSON_SCHEMA_OUTPUT_REGISTRY.add(InputSchema, {
   // only for .output
-})
+});
 ```
 
 ### Zod v3
@@ -314,14 +312,14 @@ JSON_SCHEMA_OUTPUT_REGISTRY.add(InputSchema, {
 In the [File Upload/Download](/docs/file-upload-download) guide, `z.instanceof` is used to describe file/blob schemas. However, this method prevents oRPC from recognizing file/blob schema. Instead, use the enhanced file schema approach:
 
 ```ts
-import { z } from 'zod/v3'
-import { oz } from '@orpc/zod'
+import { z } from "zod/v3";
+import { oz } from "@orpc/zod";
 
 const InputSchema = z.object({
   file: oz.file(),
-  image: oz.file().type('image/*'),
-  blob: oz.blob()
-})
+  image: oz.file().type("image/*"),
+  blob: oz.blob(),
+});
 ```
 
 #### JSON Schema Customization
@@ -329,29 +327,27 @@ const InputSchema = z.object({
 If Zod alone does not cover your JSON Schema requirements, you can extend or override the generated schema:
 
 ```ts
-import { z } from 'zod/v3'
-import { oz } from '@orpc/zod'
+import { z } from "zod/v3";
+import { oz } from "@orpc/zod";
 
 const InputSchema = oz.openapi(
   z.object({
     name: z.string(),
   }),
   {
-    examples: [
-      { name: 'Earth' },
-      { name: 'Mars' },
-    ],
+    examples: [{ name: "Earth" }, { name: "Mars" }],
     // additional options...
-  }
-)
+  },
+);
 ```
 
 ---
 
 ---
+
 url: /docs/openapi/openapi-to-contract.md
 description: >-
-  Generate an oRPC contract from an existing OpenAPI specification with the Hey
-  API oRPC plugin.
----
+Generate an oRPC contract from an existing OpenAPI specification with the Hey
+API oRPC plugin.
 
+---

@@ -51,24 +51,24 @@ This section requires you to be familiar with [Cloudflare Durable Objects](https
 Simply extend the `DurableIteratorObject` class:
 
 ```ts
-import { DurableIteratorObject } from '@orpc/experimental-durable-iterator/durable-object'
+import { DurableIteratorObject } from "@orpc/experimental-durable-iterator/durable-object";
 
 export class ChatRoom extends DurableIteratorObject<{ message: string }> {
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env, {
-      signingKey: 'secret-key', // Replace with your actual signing key
+      signingKey: "secret-key", // Replace with your actual signing key
       interceptors: [
-        onError(e => console.error(e)), // log error thrown from rpc calls
+        onError((e) => console.error(e)), // log error thrown from rpc calls
       ],
       onSubscribed: (websocket, lastEventId) => {
-        console.log(`WebSocket Ready id=${websocket['~orpc'].deserializeId()}`)
-      }
-    })
+        console.log(`WebSocket Ready id=${websocket["~orpc"].deserializeId()}`);
+      },
+    });
   }
 
   someMethod() {
     // publishEvent method inherited from DurableIteratorObject
-    this.publishEvent({ message: 'Hello, world!' })
+    this.publishEvent({ message: "Hello, world!" });
   }
 }
 ```
@@ -82,40 +82,43 @@ How to use `DurableIteratorObject` without extending it: [see here](https://gith
 Upgrade and validate WebSocket requests to your Durable Object by providing a signing key and the corresponding namespace:
 
 ```ts
-import { upgradeDurableIteratorRequest } from '@orpc/experimental-durable-iterator/durable-object'
+import { upgradeDurableIteratorRequest } from "@orpc/experimental-durable-iterator/durable-object";
 
 export default {
   async fetch(request, env) {
-    const url = new URL(request.url)
+    const url = new URL(request.url);
 
-    if (url.pathname === '/chat-room') {
+    if (url.pathname === "/chat-room") {
       return upgradeDurableIteratorRequest(request, {
-        signingKey: 'secret-key', // Replace with your actual signing key
+        signingKey: "secret-key", // Replace with your actual signing key
         namespace: env.CHAT_ROOM,
-      })
+      });
     }
 
-    return new Response('Not Found', { status: 404 })
+    return new Response("Not Found", { status: 404 });
   },
-} satisfies ExportedHandler<Env>
+} satisfies ExportedHandler<Env>;
 
-export { ChatRoom }
+export { ChatRoom };
 ```
 
 ### Publish Events
 
 Use `publishEvent` to send events to connected clients. Three filtering options are available:
 
-* **`tags`**: Send events only to clients with matching tags
-* **`targets`**: Send events to specific clients (accepts array or filter callback)
-* **`exclude`**: Exclude specific clients from receiving events (accepts array or filter callback)
+- **`tags`**: Send events only to clients with matching tags
+- **`targets`**: Send events to specific clients (accepts array or filter callback)
+- **`exclude`**: Exclude specific clients from receiving events (accepts array or filter callback)
 
 ```ts
-this.publishEvent({ message: 'Hello, world!' }, {
-  tags: ['tag1', 'tag2'],
-  targets: ws => ws['~orpc'].deserializeTokenPayload().att.role === 'admin',
-  exclude: [senderWs],
-})
+this.publishEvent(
+  { message: "Hello, world!" },
+  {
+    tags: ["tag1", "tag2"],
+    targets: (ws) => ws["~orpc"].deserializeTokenPayload().att.role === "admin",
+    exclude: [senderWs],
+  },
+);
 ```
 
 ::: info
@@ -128,14 +131,11 @@ Event resumption is disabled by default. Enable it by configuring `resumeRetenti
 
 ```ts
 export class YourDurableObject extends DurableIteratorObject<{ message: string }> {
-  constructor(
-    ctx: DurableObjectState,
-    env: Env,
-  ) {
+  constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env, {
-      signingKey: 'secret-key',
+      signingKey: "secret-key",
       resumeRetentionSeconds: 60 * 2, // 2 minutes [!code highlight]
-    })
+    });
   }
 }
 ```
@@ -144,9 +144,9 @@ export class YourDurableObject extends DurableIteratorObject<{ message: string }
 This feature controls event IDs automatically, so custom event IDs will be ignored:
 
 ```ts
-import { withEventMeta } from '@orpc/experimental-durable-iterator'
+import { withEventMeta } from "@orpc/experimental-durable-iterator";
 
-this.publishEvent(withEventMeta({ message: 'Hello, world!' }, { id: 'this-will-not-take-effect' }))
+this.publishEvent(withEventMeta({ message: "Hello, world!" }, { id: "this-will-not-take-effect" }));
 ```
 
 :::
@@ -160,37 +160,33 @@ This example assumes your server and Durable Object run in the same environment.
 :::
 
 ```ts
-import { DurableIterator } from '@orpc/experimental-durable-iterator'
+import { DurableIterator } from "@orpc/experimental-durable-iterator";
 
 export const router = {
   onMessage: base.handler(({ context }) => {
-    return new DurableIterator<ChatRoom>('some-room', {
-      tags: ['tag1', 'tag2'],
-      signingKey: 'secret-key', // Replace with your actual signing key
-    })
+    return new DurableIterator<ChatRoom>("some-room", {
+      tags: ["tag1", "tag2"],
+      signingKey: "secret-key", // Replace with your actual signing key
+    });
   }),
 
-  sendMessage: base
-    .input(z.object({ message: z.string() }))
-    .handler(async ({ context, input }) => {
-      const id = context.env.CHAT_ROOM.idFromName('some-room')
-      const stub = context.env.CHAT_ROOM.get(id)
+  sendMessage: base.input(z.object({ message: z.string() })).handler(async ({ context, input }) => {
+    const id = context.env.CHAT_ROOM.idFromName("some-room");
+    const stub = context.env.CHAT_ROOM.get(id);
 
-      await stub.publishEvent(input)
-    }),
-}
+    await stub.publishEvent(input);
+  }),
+};
 ```
 
 Enable Durable Iterator support by adding `DurableIteratorHandlerPlugin` to your handler:
 
 ```ts
-import { DurableIteratorHandlerPlugin } from '@orpc/experimental-durable-iterator'
+import { DurableIteratorHandlerPlugin } from "@orpc/experimental-durable-iterator";
 
 const handler = new RPCHandler(router, {
-  plugins: [
-    new DurableIteratorHandlerPlugin(),
-  ],
-})
+  plugins: [new DurableIteratorHandlerPlugin()],
+});
 ```
 
 ::: warning CORS Policy
@@ -200,11 +196,11 @@ The `DurableIteratorHandlerPlugin` adds an `x-orpc-durable-iterator` header to r
 const handler = new RPCHandler(router, {
   plugins: [
     new CORSPlugin({
-      exposeHeaders: ['x-orpc-durable-iterator'], // [!code highlight]
+      exposeHeaders: ["x-orpc-durable-iterator"], // [!code highlight]
     }),
     new DurableIteratorHandlerPlugin(),
   ],
-})
+});
 ```
 
 :::
@@ -214,19 +210,19 @@ const handler = new RPCHandler(router, {
 On the client side, simply configure the plugin. Usage is identical to [Event Iterator](/docs/client/event-iterator). The `url` in `DurableIteratorLinkPlugin` points to your Durable Object upgrade endpoint:
 
 ```ts
-import { DurableIteratorLinkPlugin } from '@orpc/experimental-durable-iterator/client'
+import { DurableIteratorLinkPlugin } from "@orpc/experimental-durable-iterator/client";
 
 const link = new RPCLink({
-  url: 'http://localhost:3000/rpc',
+  url: "http://localhost:3000/rpc",
   plugins: [
     new DurableIteratorLinkPlugin({
-      url: 'ws://localhost:3000/chat-room',
+      url: "ws://localhost:3000/chat-room",
       interceptors: [
-        onError(e => console.error(e)), // log error thrown from rpc calls
+        onError((e) => console.error(e)), // log error thrown from rpc calls
       ],
     }),
   ],
-})
+});
 ```
 
 ::: info
@@ -236,13 +232,13 @@ const link = new RPCLink({
 ### Example
 
 ```ts
-const iterator = await client.onMessage()
+const iterator = await client.onMessage();
 
 for await (const { message } of iterator) {
-  console.log('Received message:', message)
+  console.log("Received message:", message);
 }
 
-await client.sendMessage({ message: 'Hello, world!' })
+await client.sendMessage({ message: "Hello, world!" });
 ```
 
 ### Auto Refresh Token Before Expiration
@@ -251,14 +247,14 @@ Token auto-refresh is disabled by default. Enable it by configuring `refreshToke
 
 ```ts
 const link = new RPCLink({
-  url: 'http://localhost:3000/rpc',
+  url: "http://localhost:3000/rpc",
   plugins: [
     new DurableIteratorLinkPlugin({
-      url: 'ws://localhost:3000/chat-room',
+      url: "ws://localhost:3000/chat-room",
       refreshTokenBeforeExpireInSeconds: 10 * 60, // 10 minutes [!code highlight]
     }),
   ],
-})
+});
 ```
 
 ::: warning
@@ -270,18 +266,18 @@ Token refresh reuses the existing WebSocket connection if the refreshed token ha
 Like [Event Iterator](/docs/client/event-iterator), you can rely on `signal` or `.return` to stop the iterator.
 
 ```ts
-const controller = new AbortController()
-const iterator = await client.onMessage(undefined, { signal: controller.signal })
+const controller = new AbortController();
+const iterator = await client.onMessage(undefined, { signal: controller.signal });
 
 // Stop the iterator after 1 second
 setTimeout(() => {
-  controller.abort()
+  controller.abort();
   // or
-  iterator.return()
-}, 1000)
+  iterator.return();
+}, 1000);
 
 for await (const { message } of iterator) {
-  console.log('Received message:', message)
+  console.log("Received message:", message);
 }
 ```
 
@@ -290,30 +286,30 @@ for await (const { message } of iterator) {
 Unlike [Cloudflare Durable Objects RPC](https://developers.cloudflare.com/durable-objects/best-practices/create-durable-object-stubs-and-send-requests/) (server-side only), this RPC uses oRPC's built-in system over the same WebSocket connection for fast client-to-Durable Object communication. Define methods that accept a `DurableIteratorWebsocket` instance as the first argument and return an [oRPC Client](/docs/client/server-side):
 
 ```ts
-import { DurableIteratorWebsocket } from '@orpc/experimental-durable-iterator/durable-object'
+import { DurableIteratorWebsocket } from "@orpc/experimental-durable-iterator/durable-object";
 
 export class ChatRoom extends DurableIteratorObject<{ message: string }> {
   singleClient(ws: DurableIteratorWebsocket) {
     return base
       .input(z.object({ message: z.string() }))
       .handler(({ input, context }) => {
-        const tokenPayload = ws['~orpc'].deserializeTokenPayload()
+        const tokenPayload = ws["~orpc"].deserializeTokenPayload();
 
         this.publishEvent(input, {
           exclude: [ws], // exclude the sender
-        })
+        });
       })
-      .callable()
+      .callable();
   }
 
   routerClient(ws: DurableIteratorWebsocket) {
     return {
-      ping: base.handler(() => 'pong').callable(),
+      ping: base.handler(() => "pong").callable(),
       echo: base
         .input(z.object({ text: z.string() }))
         .handler(({ input }) => `Echo: ${input.text}`)
         .callable(),
-    }
+    };
   }
 }
 ```
@@ -321,16 +317,17 @@ export class ChatRoom extends DurableIteratorObject<{ message: string }> {
 ### Server Side Usage
 
 ```ts
-import { DurableIterator } from '@orpc/experimental-durable-iterator'
+import { DurableIterator } from "@orpc/experimental-durable-iterator";
 
 export const onMessage = base.handler(({ context }) => {
-  return new DurableIterator<ChatRoom>('some-room', {
-    signingKey: 'secret-key', // Replace with your actual signing key
-    att: { // Attach additional data to token
-      userId: 'user-123',
+  return new DurableIterator<ChatRoom>("some-room", {
+    signingKey: "secret-key", // Replace with your actual signing key
+    att: {
+      // Attach additional data to token
+      userId: "user-123",
     },
-  }).rpc('singleClient', 'routerClient') // Allowed methods
-})
+  }).rpc("singleClient", "routerClient"); // Allowed methods
+});
 ```
 
 ::: info
@@ -346,29 +343,29 @@ The `att` (attachment) data is visible to clients. Only include non-sensitive me
 Invoke methods defined in `rpc` directly from the client iterator:
 
 ```ts
-const iterator = await client.onMessage()
+const iterator = await client.onMessage();
 
 // Listen for events
 for await (const { message } of iterator) {
-  console.log('Received message:', message)
+  console.log("Received message:", message);
 }
 
 // Call RPC methods
-await iterator.singleClient({ message: 'Hello, world!' })
+await iterator.singleClient({ message: "Hello, world!" });
 
 // Call nested router methods
-const response = await iterator.routerClient.ping()
-console.log(response) // "pong"
+const response = await iterator.routerClient.ping();
+console.log(response); // "pong"
 
-const echoResponse = await iterator.routerClient.echo({ text: 'Hello' })
-console.log(echoResponse) // "Echo: Hello"
+const echoResponse = await iterator.routerClient.echo({ text: "Hello" });
+console.log(echoResponse); // "Echo: Hello"
 ```
 
 ::: info
 [Retry Plugin](/docs/plugins/client-retry) is enabled for all RPC methods. Configure retry attempts using the context:
 
 ```ts
-await iterator.singleClient({ message: 'Hello, world!' }, { context: { retry: 3 } })
+await iterator.singleClient({ message: "Hello, world!" }, { context: { retry: 3 } });
 ```
 
 :::
@@ -378,20 +375,20 @@ await iterator.singleClient({ message: 'Hello, world!' }, { context: { retry: 3 
 This integration supports [Contract First](/docs/contract-first/define-contract). Define an interface that extends `DurableIteratorObject`:
 
 ```ts
-import type { ContractRouterClient } from '@orpc/contract'
-import { oc, type } from '@orpc/contract'
-import type { ClientDurableIterator } from '@orpc/experimental-durable-iterator/client'
-import type { DurableIteratorObject } from '@orpc/experimental-durable-iterator'
+import type { ContractRouterClient } from "@orpc/contract";
+import { oc, type } from "@orpc/contract";
+import type { ClientDurableIterator } from "@orpc/experimental-durable-iterator/client";
+import type { DurableIteratorObject } from "@orpc/experimental-durable-iterator";
 
-export const publishMessageContract = oc.input(z.object({ message: z.string() }))
+export const publishMessageContract = oc.input(z.object({ message: z.string() }));
 
 export interface ChatRoom extends DurableIteratorObject<{ message: string }> {
-  publishMessage(...args: any[]): ContractRouterClient<typeof publishMessageContract>
+  publishMessage(...args: any[]): ContractRouterClient<typeof publishMessageContract>;
 }
 
 export const contract = {
-  onMessage: oc.output(type<ClientDurableIterator<ChatRoom, 'publishMessage'>>()),
-}
+  onMessage: oc.output(type<ClientDurableIterator<ChatRoom, "publishMessage">>()),
+};
 ```
 
 ## Advanced
@@ -402,16 +399,13 @@ Durable Iterator is built on top of the [Hibernation Plugin](/docs/plugins/hiber
 
 ```ts
 export class YourDurableObject extends DurableIteratorObject<{ message: string }> {
-  constructor(
-    ctx: DurableObjectState,
-    env: Env,
-  ) {
+  constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env, {
-      signingKey: 'secret-key',
+      signingKey: "secret-key",
       customJsonSerializers: [], // Custom JSON serializers
       interceptors: [], // Handler interceptors
       plugins: [], // Handler plugins
-    })
+    });
   }
 }
 ```
@@ -419,29 +413,30 @@ export class YourDurableObject extends DurableIteratorObject<{ message: string }
 ### Client-Side Customization
 
 ```ts
-declare module '@orpc/experimental-durable-iterator/client' {
+declare module "@orpc/experimental-durable-iterator/client" {
   interface ClientDurableIteratorRpcContext {
     // Custom client context
   }
 }
 
 const link = new RPCLink({
-  url: 'http://localhost:3000/rpc',
+  url: "http://localhost:3000/rpc",
   plugins: [
     new DurableIteratorLinkPlugin({
-      url: 'ws://localhost:3000/chat-room',
+      url: "ws://localhost:3000/chat-room",
       customJsonSerializers: [], // Custom JSON serializers
       interceptors: [], // Link interceptors
       plugins: [], // Link plugins
     }),
   ],
-})
+});
 ```
 
 ---
 
 ---
+
 url: /docs/client/dynamic-link.md
 description: Dynamically switch between multiple oRPC's links.
----
 
+---

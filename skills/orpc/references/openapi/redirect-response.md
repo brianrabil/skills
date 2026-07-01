@@ -9,18 +9,18 @@ By combining the `successStatus` and `outputStructure` options, you can return a
 ```ts
 const redirect = os
   .route({
-    method: 'GET',
-    path: '/redirect',
+    method: "GET",
+    path: "/redirect",
     successStatus: 307, // [!code highlight]
-    outputStructure: 'detailed' // [!code highlight]
+    outputStructure: "detailed", // [!code highlight]
   })
   .handler(async () => {
     return {
       headers: {
-        location: 'https://orpc.dev', // [!code highlight]
+        location: "https://orpc.dev", // [!code highlight]
       },
-    }
-  })
+    };
+  });
 ```
 
 ## Limitations
@@ -30,7 +30,8 @@ When invoking a redirect procedure with [OpenAPILink](/docs/openapi/client/opena
 ---
 
 ---
+
 url: /docs/adapters/remix.md
 description: Use oRPC inside an Remix project
----
 
+---

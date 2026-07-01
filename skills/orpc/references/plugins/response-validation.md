@@ -9,21 +9,19 @@ This plugin is best suited for [Contract-First Development](/docs/contract-first
 ## Setup
 
 ```ts twoslash
-import { contract } from './shared/planet'
-import { createORPCClient } from '@orpc/client'
-import type { ContractRouterClient } from '@orpc/contract'
+import { contract } from "./shared/planet";
+import { createORPCClient } from "@orpc/client";
+import type { ContractRouterClient } from "@orpc/contract";
 // ---cut---
-import { RPCLink } from '@orpc/client/fetch'
-import { ResponseValidationPlugin } from '@orpc/contract/plugins'
+import { RPCLink } from "@orpc/client/fetch";
+import { ResponseValidationPlugin } from "@orpc/contract/plugins";
 
 const link = new RPCLink({
-  url: 'http://localhost:3000/rpc',
-  plugins: [
-    new ResponseValidationPlugin(contract),
-  ],
-})
+  url: "http://localhost:3000/rpc",
+  plugins: [new ResponseValidationPlugin(contract)],
+});
 
-const client: ContractRouterClient<typeof contract> = createORPCClient(link)
+const client: ContractRouterClient<typeof contract> = createORPCClient(link);
 ```
 
 ::: info
@@ -37,7 +35,7 @@ Schemas that transform data into different types than the expected schema types 
 **Why?** Consider this example schema that accepts a `number` and transforms it into a `string` after validation:
 
 ```ts
-const unsupported = z.number().transform(value => value.toString())
+const unsupported = z.number().transform((value) => value.toString());
 ```
 
 When the server validates output, it transforms the `number` into a `string`. The client receives a `string`, but the `string` no longer matches the original schema, causing validation to fail.
@@ -49,9 +47,10 @@ Beyond response validation, this plugin also serves special purposes such as [Ex
 ---
 
 ---
+
 url: /docs/plugins/rethrow-handler.md
 description: >-
-  A plugin to catch and rethrow specific errors during request handling instead
-  of handling them in the oRPC error flow.
----
+A plugin to catch and rethrow specific errors during request handling instead
+of handling them in the oRPC error flow.
 
+---

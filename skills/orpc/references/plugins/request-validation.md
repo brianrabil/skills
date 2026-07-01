@@ -9,21 +9,19 @@ This plugin is best suited for [Contract-First Development](/docs/contract-first
 ## Setup
 
 ```ts twoslash
-import { contract } from './shared/planet'
-import { createORPCClient } from '@orpc/client'
-import type { ContractRouterClient } from '@orpc/contract'
+import { contract } from "./shared/planet";
+import { createORPCClient } from "@orpc/client";
+import type { ContractRouterClient } from "@orpc/contract";
 // ---cut---
-import { RPCLink } from '@orpc/client/fetch'
-import { RequestValidationPlugin } from '@orpc/contract/plugins'
+import { RPCLink } from "@orpc/client/fetch";
+import { RequestValidationPlugin } from "@orpc/contract/plugins";
 
 const link = new RPCLink({
-  url: 'http://localhost:3000/rpc',
-  plugins: [
-    new RequestValidationPlugin(contract),
-  ],
-})
+  url: "http://localhost:3000/rpc",
+  plugins: [new RequestValidationPlugin(contract)],
+});
 
-const client: ContractRouterClient<typeof contract> = createORPCClient(link)
+const client: ContractRouterClient<typeof contract> = createORPCClient(link);
 ```
 
 ::: info
@@ -35,32 +33,31 @@ The `link` can be any supported oRPC link, such as [RPCLink](/docs/client/rpc-li
 You can simplify your frontend by removing heavy form validation libraries and relying on oRPC's validation errors instead, since input validation runs directly in the browser and is highly performant.
 
 ```tsx
-import { getIssueMessage, parseFormData } from '@orpc/openapi-client/helpers'
+import { getIssueMessage, parseFormData } from "@orpc/openapi-client/helpers";
 
 export function ContactForm() {
-  const [error, setError] = useState()
+  const [error, setError] = useState();
 
   const handleSubmit = async (form: FormData) => {
     try {
-      const output = await client.someProcedure(parseFormData(form))
-      console.log(output)
+      const output = await client.someProcedure(parseFormData(form));
+      console.log(output);
+    } catch (error) {
+      setError(error);
     }
-    catch (error) {
-      setError(error)
-    }
-  }
+  };
 
   return (
     <form action={handleSubmit}>
       <input name="user[name]" type="text" />
-      <span>{getIssueMessage(error, 'user[name]')}</span>
+      <span>{getIssueMessage(error, "user[name]")}</span>
 
       <input name="user[emails][]" type="email" />
-      <span>{getIssueMessage(error, 'user[emails][]')}</span>
+      <span>{getIssueMessage(error, "user[emails][]")}</span>
 
       <button type="submit">Submit</button>
     </form>
-  )
+  );
 }
 ```
 
@@ -71,7 +68,8 @@ This example uses [Form Data Helpers](/docs/helpers/form-data).
 ---
 
 ---
+
 url: /docs/plugins/response-headers.md
 description: Response Headers Plugin for oRPC
----
 
+---

@@ -15,32 +15,31 @@ This plugin is beneficial if your application stores sensitive data (like sessio
 The plugin enforces a simple rule: only procedures explicitly configured with `method: 'GET'` can be invoked via a `GET` request. All other procedures will reject `GET` requests.
 
 ```ts
-import { os } from '@orpc/server'
+import { os } from "@orpc/server";
 
 const ping = os
-  .route({ method: 'GET' }) // [!code highlight]
-  .handler(() => 'pong')
+  .route({ method: "GET" }) // [!code highlight]
+  .handler(() => "pong");
 ```
 
 ## Setup
 
 ```ts twoslash
-import { RPCHandler } from '@orpc/server/fetch'
-import { router } from './shared/planet'
+import { RPCHandler } from "@orpc/server/fetch";
+import { router } from "./shared/planet";
 // ---cut---
-import { StrictGetMethodPlugin } from '@orpc/server/plugins'
+import { StrictGetMethodPlugin } from "@orpc/server/plugins";
 
 const handler = new RPCHandler(router, {
-  plugins: [
-    new StrictGetMethodPlugin()
-  ],
-})
+  plugins: [new StrictGetMethodPlugin()],
+});
 ```
 
 ---
 
 ---
+
 url: /docs/advanced/superjson.md
 description: Replace the default oRPC RPC serializer with SuperJson.
----
 
+---

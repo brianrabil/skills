@@ -13,9 +13,9 @@ Use `customErrorResponseBodyEncoder` in [OpenAPIHandler](/docs/openapi/openapi-h
 ```ts
 const handler = new OpenAPIHandler(router, {
   customErrorResponseBodyEncoder(error) {
-    return error.toJSON()
+    return error.toJSON();
   },
-})
+});
 ```
 
 ::: info
@@ -27,43 +27,45 @@ Return `null` or `undefined` from `customErrorResponseBodyEncoder` to fallback t
 When using [type-safe errors](/docs/error-handling#type‐safe-error-handling), customize the error response format in [OpenAPIGenerator](/docs/openapi/openapi-specification) with `customErrorResponseBodySchema` to match your application's actual error responses.
 
 ```ts
-const generator = new OpenAPIGenerator()
+const generator = new OpenAPIGenerator();
 
 const spec = await generator.generate(router, {
   customErrorResponseBodySchema: (definedErrorDefinitions, status) => {
     const result: Record<any, any> = {
       oneOf: [
         {
-          type: 'object',
+          type: "object",
           properties: {
             defined: { const: false }, // for normal errors
-            code: { type: 'string' },
-            status: { type: 'number' },
-            message: { type: 'string' },
+            code: { type: "string" },
+            status: { type: "number" },
+            message: { type: "string" },
             data: {},
           },
-          required: ['defined', 'code', 'status', 'message'],
+          required: ["defined", "code", "status", "message"],
         },
       ],
-    }
+    };
 
     for (const [code, defaultMessage, dataRequired, dataSchema] of definedErrorDefinitions) {
       result.oneOf.push({
-        type: 'object',
+        type: "object",
         properties: {
           defined: { const: true }, // for typesafe errors
           code: { const: code },
           status: { const: status },
-          message: { type: 'string', default: defaultMessage },
+          message: { type: "string", default: defaultMessage },
           data: dataSchema,
         },
-        required: dataRequired ? ['defined', 'code', 'status', 'message', 'data'] : ['defined', 'code', 'status', 'message'],
-      })
+        required: dataRequired
+          ? ["defined", "code", "status", "message", "data"]
+          : ["defined", "code", "status", "message"],
+      });
     }
 
-    return result
-  }
-})
+    return result;
+  },
+});
 ```
 
 ::: info
@@ -78,12 +80,12 @@ When your backend isn't oRPC or uses a custom error format, you can instruct [Op
 const link = OpenAPILink(contract, {
   customErrorResponseBodyDecoder: (body, response) => {
     if (isORPCErrorJson(body)) {
-      return createORPCErrorFromJson(body)
+      return createORPCErrorFromJson(body);
     }
 
-    return null // default behavior supports any error format
-  }
-})
+    return null; // default behavior supports any error format
+  },
+});
 ```
 
 ::: info
@@ -93,7 +95,8 @@ Return `null` or `undefined` from `customErrorResponseBodyDecoder` to fallback t
 ---
 
 ---
+
 url: /docs/best-practices/dedupe-middleware.md
 description: Enhance oRPC middleware performance by avoiding redundant executions.
----
 
+---

@@ -6,9 +6,9 @@ oRPC is inherently compatible with OpenAPI, but you may need additional configur
 
 ## Prerequisites
 
-* Node.js 18+ (20+ recommended) | Bun | Deno | Cloudflare Workers
-* A package manager: npm | pnpm | yarn | bun | deno
-* A TypeScript project (strict mode recommended)
+- Node.js 18+ (20+ recommended) | Bun | Deno | Cloudflare Workers
+- A package manager: npm | pnpm | yarn | bun | deno
+- A TypeScript project (strict mode recommended)
 
 ## Installation
 
@@ -41,73 +41,75 @@ deno add npm:@orpc/server@latest npm:@orpc/client@latest npm:@orpc/openapi@lates
 This snippet is based on the [Getting Started](/docs/getting-started) guide. Please read it first.
 
 ```ts twoslash
-import type { IncomingHttpHeaders } from 'node:http'
-import { ORPCError, os } from '@orpc/server'
-import * as z from 'zod'
+import type { IncomingHttpHeaders } from "node:http";
+import { ORPCError, os } from "@orpc/server";
+import * as z from "zod";
 
 const PlanetSchema = z.object({
   id: z.number().int().min(1),
   name: z.string(),
   description: z.string().optional(),
-})
+});
 
 export const listPlanet = os
-  .route({ method: 'GET', path: '/planets' })
-  .input(z.object({
-    limit: z.number().int().min(1).max(100).optional(),
-    cursor: z.number().int().min(0).default(0),
-  }))
+  .route({ method: "GET", path: "/planets" })
+  .input(
+    z.object({
+      limit: z.number().int().min(1).max(100).optional(),
+      cursor: z.number().int().min(0).default(0),
+    }),
+  )
   .output(z.array(PlanetSchema))
   .handler(async ({ input }) => {
     // your list code here
-    return [{ id: 1, name: 'name' }]
-  })
+    return [{ id: 1, name: "name" }];
+  });
 
 export const findPlanet = os
-  .route({ method: 'GET', path: '/planets/{id}' })
+  .route({ method: "GET", path: "/planets/{id}" })
   .input(z.object({ id: z.coerce.number().int().min(1) }))
   .output(PlanetSchema)
   .handler(async ({ input }) => {
     // your find code here
-    return { id: 1, name: 'name' }
-  })
+    return { id: 1, name: "name" };
+  });
 
 export const createPlanet = os
   .$context<{ headers: IncomingHttpHeaders }>()
   .use(({ context, next }) => {
-    const user = parseJWT(context.headers.authorization?.split(' ')[1])
+    const user = parseJWT(context.headers.authorization?.split(" ")[1]);
 
     if (user) {
-      return next({ context: { user } })
+      return next({ context: { user } });
     }
 
-    throw new ORPCError('UNAUTHORIZED')
+    throw new ORPCError("UNAUTHORIZED");
   })
-  .route({ method: 'POST', path: '/planets' })
+  .route({ method: "POST", path: "/planets" })
   .input(PlanetSchema.omit({ id: true }))
   .output(PlanetSchema)
   .handler(async ({ input, context }) => {
     // your create code here
-    return { id: 1, name: 'name' }
-  })
+    return { id: 1, name: "name" };
+  });
 
 export const router = {
   planet: {
     list: listPlanet,
     find: findPlanet,
-    create: createPlanet
-  }
-}
+    create: createPlanet,
+  },
+};
 // ---cut-after---
 
-declare function parseJWT(token: string | undefined): { userId: number } | null
+declare function parseJWT(token: string | undefined): { userId: number } | null;
 ```
 
 ### Key Enhancements:
 
-* `.route` defines HTTP methods and paths.
-* `.output` enables automatic OpenAPI spec generation.
-* `z.coerce` ensures correct parameter parsing.
+- `.route` defines HTTP methods and paths.
+- `.output` enables automatic OpenAPI spec generation.
+- `z.coerce` ensures correct parameter parsing.
 
 For handling headers, queries, etc., see [Input/Output Structure](/docs/openapi/input-output-structure).
 For auto-coercion, see [Zod Smart Coercion Plugin](/docs/openapi/plugins/zod-smart-coercion).
@@ -116,44 +118,40 @@ For more `.route` options, see [Routing](/docs/openapi/routing).
 ## Creating a Server
 
 ```ts twoslash
-import { router } from './shared/planet'
+import { router } from "./shared/planet";
 // ---cut---
-import { createServer } from 'node:http'
-import { OpenAPIHandler } from '@orpc/openapi/node'
-import { CORSPlugin } from '@orpc/server/plugins'
-import { onError } from '@orpc/server'
+import { createServer } from "node:http";
+import { OpenAPIHandler } from "@orpc/openapi/node";
+import { CORSPlugin } from "@orpc/server/plugins";
+import { onError } from "@orpc/server";
 
 const handler = new OpenAPIHandler(router, {
   plugins: [new CORSPlugin()],
   interceptors: [
     onError((error) => {
-      console.error(error)
+      console.error(error);
     }),
   ],
-})
+});
 
 const server = createServer(async (req, res) => {
   const result = await handler.handle(req, res, {
-    context: { headers: req.headers }
-  })
+    context: { headers: req.headers },
+  });
 
   if (!result.matched) {
-    res.statusCode = 404
-    res.end('No procedure matched')
+    res.statusCode = 404;
+    res.end("No procedure matched");
   }
-})
+});
 
-server.listen(
-  3000,
-  '127.0.0.1',
-  () => console.log('Listening on 127.0.0.1:3000')
-)
+server.listen(3000, "127.0.0.1", () => console.log("Listening on 127.0.0.1:3000"));
 ```
 
 ### Important Changes:
 
-* Use `OpenAPIHandler` instead of `RPCHandler`.
-* Learn more in [OpenAPIHandler](/docs/openapi/openapi-handler).
+- Use `OpenAPIHandler` instead of `RPCHandler`.
+- Learn more in [OpenAPIHandler](/docs/openapi/openapi-handler).
 
 ## Accessing APIs
 
@@ -171,24 +169,22 @@ Just a small tweak makes your oRPC API OpenAPI-compliant!
 ## Generating OpenAPI Spec
 
 ```ts twoslash
-import { OpenAPIGenerator } from '@orpc/openapi'
-import { ZodToJsonSchemaConverter } from '@orpc/zod/zod4'
-import { router } from './shared/planet'
+import { OpenAPIGenerator } from "@orpc/openapi";
+import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
+import { router } from "./shared/planet";
 
 const generator = new OpenAPIGenerator({
-  schemaConverters: [
-    new ZodToJsonSchemaConverter()
-  ]
-})
+  schemaConverters: [new ZodToJsonSchemaConverter()],
+});
 
 const spec = await generator.generate(router, {
   info: {
-    title: 'Planet API',
-    version: '1.0.0'
-  }
-})
+    title: "Planet API",
+    version: "1.0.0",
+  },
+});
 
-console.log(JSON.stringify(spec, null, 2))
+console.log(JSON.stringify(spec, null, 2));
 ```
 
 Run the script above to generate your OpenAPI spec.
@@ -200,7 +196,8 @@ oRPC supports a wide range of [Standard Schema](https://github.com/standard-sche
 ---
 
 ---
+
 url: /docs/adapters/h3.md
 description: Use oRPC inside an H3 project
----
 
+---

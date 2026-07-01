@@ -4,7 +4,7 @@
 // @error: The inferred type of this node exceeds the maximum length the compiler will serialize. An explicit type annotation is needed.
 export const router = {
   // many procedures here
-}
+};
 ```
 
 Are you seeing this error? If so, congratulations! your project is now complex enough to encounter it!
@@ -36,29 +36,36 @@ Use the [type](/docs/procedure#type-utility) utility if you just want to specify
 Instead of exporting one large object on the server (with `"declaration": true`), export each router segment individually and merge them on the client (where `"declaration": false`):
 
 ```ts
-export const userRouter = { /** ... */ }
-export const planetRouter = { /** ... */ }
-export const publicRouter = { /** ... */ }
+export const userRouter = {
+  /** ... */
+};
+export const planetRouter = {
+  /** ... */
+};
+export const publicRouter = {
+  /** ... */
+};
 ```
 
 Then, on the client side:
 
 ```ts
 interface Router {
-  user: typeof userRouter
-  planet: typeof planetRouter
-  public: typeof publicRouter
+  user: typeof userRouter;
+  planet: typeof planetRouter;
+  public: typeof publicRouter;
 }
 
-export const client: RouterClient<Router> = createORPCClient(link)
+export const client: RouterClient<Router> = createORPCClient(link);
 ```
 
 ---
 
 ---
+
 url: /docs/openapi/advanced/expanding-type-support-for-openapi-link.md
 description: >-
-  Learn how to extend OpenAPILink to support additional data types beyond JSON's
-  native capabilities using the Response Validation Plugin and schema coercion.
----
+Learn how to extend OpenAPILink to support additional data types beyond JSON's
+native capabilities using the Response Validation Plugin and schema coercion.
 
+---

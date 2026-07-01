@@ -13,9 +13,9 @@ First, you need to access request headers in your context. You can do this eithe
 ### Option A: Manual Context Definition
 
 ```typescript
-import { os } from '@orpc/server'
+import { os } from "@orpc/server";
 
-export const base = os.$context<{ headers: Headers }>()
+export const base = os.$context<{ headers: Headers }>();
 ```
 
 ::: tip
@@ -31,27 +31,27 @@ Follow the setup instructions on the [Request Headers Plugin](/docs/plugins/requ
 Create a middleware that fetches the session and user from Better Auth, validates authentication, and adds them to the context.
 
 ```typescript
-import { auth } from './auth' // Your Better Auth instance
-import { base } from './context'
-import { ORPCError } from '@orpc/server'
+import { auth } from "./auth"; // Your Better Auth instance
+import { base } from "./context";
+import { ORPCError } from "@orpc/server";
 
 export const authMiddleware = base.middleware(async ({ context, next }) => {
   const sessionData = await auth.api.getSession({
     headers: context.headers, // or reqHeaders if you're using the plugin
-  })
+  });
 
   if (!sessionData?.session || !sessionData?.user) {
-    throw new ORPCError('UNAUTHORIZED')
+    throw new ORPCError("UNAUTHORIZED");
   }
 
   // Adds session and user to the context
   return next({
     context: {
       session: sessionData.session,
-      user: sessionData.user
+      user: sessionData.user,
     },
-  })
-})
+  });
+});
 ```
 
 ## Usage
@@ -59,26 +59,27 @@ export const authMiddleware = base.middleware(async ({ context, next }) => {
 Instead of using `.use(authMiddleware)` every time you create a protected procedure, you can create an `authorized` base that already includes the auth middleware:
 
 ```typescript
-import { base } from './context'
-import { authMiddleware } from './middlewares/auth'
+import { base } from "./context";
+import { authMiddleware } from "./middlewares/auth";
 
-export const authorized = base.use(authMiddleware)
+export const authorized = base.use(authMiddleware);
 ```
 
 Now you can use `authorized` to create procedures that require authentication:
 
 ```typescript
-import { authorized } from './authorized'
+import { authorized } from "./authorized";
 
 export const getMessages = authorized.handler(({ context }) => {
   // context.session and context.user are guaranteed to be defined
-})
+});
 ```
 
 ---
 
 ---
+
 url: /learn-and-contribute/mini-orpc/beyond-the-basics.md
 description: Explore advanced features you can implement in Mini oRPC.
----
 
+---

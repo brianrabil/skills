@@ -42,15 +42,15 @@ The most common issue with `composite` is missing type definitions, resulting in
 If you encounter this, try installing package `Y` if not already installed and adding this to your codebase where the error occurs:
 
 ```ts
-import type * as _A from '../../node_modules/detail_Y_path_here'
+import type * as _A from "../../node_modules/detail_Y_path_here";
 ```
 
 :::
 
 ## Recommended Structure
 
-* `/apps`: `references` dependencies in `tsconfig.json`
-* `/packages`: Enable `composite` in `tsconfig.json`
+- `/apps`: `references` dependencies in `tsconfig.json`
+- `/packages`: Enable `composite` in `tsconfig.json`
 
 The key principle is separating the server component (with `composite` enabled) into a dedicated package containing only necessary files. This approach simplifies dealing with the `composite` option's constraints.
 
@@ -99,12 +99,13 @@ This is just a suggestion. You can structure your monorepo however you like.
 
 ## Related
 
-* [Publish Client to NPM](/docs/advanced/publish-client-to-npm)
+- [Publish Client to NPM](/docs/advanced/publish-client-to-npm)
 
 ---
 
 ---
+
 url: /docs/adapters/next.md
 description: Use oRPC inside an Next.js project
----
 
+---
