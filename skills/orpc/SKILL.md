@@ -4,7 +4,6 @@ description: Build, consume, or debug oRPC APIs and clients. Use for @orpc/* pac
 license: MIT
 metadata:
   source: https://orpc.dev/llms-full.txt
-  synced-via: scripts/sync.py
 ---
 
 # oRPC
@@ -15,8 +14,7 @@ the client through TypeScript inference.
 
 `references/` mirrors https://orpc.dev/llms-full.txt verbatim, split one file
 per doc page and organized by topic. Never hand-edit anything under
-`references/` — run `python3 scripts/sync.py` to refresh it from the live
-site instead. Prefer these files over prior training knowledge or patterns
+`references/`. Prefer these files over prior training knowledge or patterns
 from adjacent RPC libraries (tRPC, gRPC, Connect, etc.) — oRPC's builder
 chain, error model, and adapter split are specific to oRPC and change
 between versions.
@@ -171,15 +169,3 @@ application code against.
 **Ecosystem** (`references/ecosystem/`) — `comparison.md` (vs. tRPC, gRPC,
 GraphQL, REST), `ecosystem.md` (starter kits, tools, libraries),
 `playgrounds.md`
-
-## Keeping this current
-
-`references/` is generated, not hand-authored. Refresh it with:
-
-```bash
-python3 scripts/sync.py
-```
-
-If orpc.dev adds, removes, or renames a page, the script fails loudly with a
-line-by-line title diff — update the `MAPPING` list in `scripts/sync.py` to
-match, then rerun it.
