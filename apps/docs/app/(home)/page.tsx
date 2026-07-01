@@ -24,16 +24,6 @@ const installCommand = `npx skills add ${gitConfig.user}/${gitConfig.repo}`;
 
 const agents = ["Claude Code", "Cursor", "Codex", "Windsurf", "Zed", "70+ more"];
 
-const installTree = [
-  ".agents/",
-  "└── skills/",
-  "    └── orpc/",
-  "        └── SKILL.md",
-  "",
-  "# plus a symlink for your agent:",
-  "# .claude/skills, .cursor/skills, …",
-].join("\n");
-
 type Skill = {
   name: string;
   slug: string;
@@ -79,8 +69,8 @@ export default function HomePage() {
           className="pointer-events-none absolute inset-0 -z-10"
           style={gridBackground}
         />
-        <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:py-20">
-          <div className="flex flex-col items-start gap-6 text-left">
+        <div className="mx-auto w-full max-w-6xl px-4 py-16 lg:py-20">
+          <div className="flex max-w-2xl flex-col items-start gap-6 text-left">
             <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
               Give your coding agent real expertise
             </h1>
@@ -116,14 +106,6 @@ export default function HomePage() {
                 </Link>
               </Button>
             </div>
-          </div>
-          <div className="overflow-hidden rounded-xl border border-border bg-card">
-            <div className="border-b border-border px-4 py-2.5 text-xs text-muted-foreground">
-              What gets installed
-            </div>
-            <pre className="overflow-x-auto px-4 py-4 font-mono text-[0.8rem] leading-relaxed text-foreground/90">
-              {installTree}
-            </pre>
           </div>
         </div>
       </section>
