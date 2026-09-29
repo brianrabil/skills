@@ -14,6 +14,9 @@
     "dev": "turbo run dev",
     "agent:dev": "turbo run dev --filter=agent",
     "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
+    "quality": "turbo run lint fmt:check konsistent typecheck",
+    "quality:fix": "turbo run fmt",
     "lint": "oxlint .",
     "konsistent": "konsistent",
     "lint:fix": "oxlint --fix .",
@@ -22,7 +25,6 @@
     "skills:sync": "skills experimental_install"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.31.0",
     "konsistent": "^1.0.0-beta.9",
     "oxfmt": "^0.57.0",
     "oxlint": "^1.72.0",

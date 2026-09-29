@@ -32,7 +32,7 @@ export type SnippetProps = ComponentProps<typeof InputGroup> & {
   code: string;
 };
 
-export const Snippet = ({ code, className, children, ...props }: SnippetProps) => {
+export function Snippet({ code, className, children, ...props }: SnippetProps) {
   const contextValue = useMemo(() => ({ code }), [code]);
 
   return (
@@ -42,7 +42,7 @@ export const Snippet = ({ code, className, children, ...props }: SnippetProps) =
       </InputGroup>
     </SnippetContext.Provider>
   );
-};
+}
 
 export type SnippetAddonProps = ComponentProps<typeof InputGroupAddon>;
 

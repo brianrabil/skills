@@ -121,25 +121,22 @@ The second example is invalid because `Bad Section` has no leading paragraph. `l
 This repository publishes Agent Skills from `skills/`. Nested collections such as `skills/plan-mode/`, `skills/writing/`, and `skills/marketkit/` require `--full-depth` when installing one skill by name.
 
 - Keep each `SKILL.md` name lowercase and hyphenated, with a description that states what the skill does and when it activates.
-- Update the matching README table, docs page under `apps/docs/content/docs/`, and changeset when published skills change.
+- Update the matching README table and docs page under `apps/docs/content/docs/` when published skills change.
 - Treat `.agents/skills/` and `.claude/skills/` as ignored development dependencies restored from `skills-lock.json`, not published content.
 - Keep generated evaluation workspaces out of `skills/`; `skills/*-workspace/` is ignored.
 
 # Applications
 
-- `apps/docs` is the Fumadocs site. Run `bun run --filter docs types:check` after changing MDX or app types.
+- `apps/docs` is the Fumadocs site. Run `bun run --filter docs typecheck` after changing MDX or app types.
 - `apps/agent` is a local Eve skill-drafting agent. Read the installed Eve docs under `apps/agent/node_modules/eve/docs/` before changing it.
 
 # Commands
 
 ```bash
 bun install
-bun run lint
-bun run fmt:check
+bun run quality
 bun run build
-bun run --filter agent typecheck
-bun run --filter docs types:check
 lat check
 ```
 
-The root package is private and uses changesets only for versioning and tags; releases do not publish an npm package.
+The root package is private and contains only repository-level tooling.

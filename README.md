@@ -72,8 +72,7 @@ npx skills add brianrabil/skills --full-depth --skill plan-mode-research
 | [`plan-mode-visualize`](./skills/plan-mode/visualize)         | Choose a useful visual form for a problem or decision       |
 
 The [Plan Mode guide](./apps/docs/content/docs/plan-mode/index.mdx) explains
-the boundaries. The older five-pack proposal and its `write-reword` draft
-are not part of this collection.
+the collection boundaries and how to choose among these skills.
 
 ## Plan
 
@@ -210,11 +209,8 @@ bun install                                      # install JS dependencies
 bun run --filter docs dev                        # start the docs site on :3000
 bun run agent:dev                                # start the local Eve agent
 bun run build                                    # build apps/docs and apps/agent
-bunx turbo run quality                           # lint and format check
-bunx turbo run quality:fix                       # fix lint and formatting
-bunx changeset                                   # record a changelog entry
+bun run typecheck                                # type-check both apps
+bun run quality                                  # lint, format-check, structure-check, and type-check
+bun run quality:fix                              # fix lint and formatting
 bun run skills:sync                              # restore local dev-tool skills
 ```
-
-Versioning is driven by [changesets](https://github.com/changesets/changesets);
-merging to `main` only versions and tags the repo — nothing is published to npm.

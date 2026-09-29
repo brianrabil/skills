@@ -94,12 +94,6 @@ The skills are cognitive verbs. They group into seven movements:
 | [`plan-mode-sunset`](./sunset) | Kill a goal that is not worth pursuing               |
 | [`plan-mode-park`](./park)     | Capture rejected and deferred work so it is not lost |
 
-### Write
-
-| Skill                            | What it does                                                   |
-| -------------------------------- | -------------------------------------------------------------- |
-| [`write-reword`](./write/reword) | Reword selected prose while preserving meaning and commitments |
-
 ### Meta
 
 | Skill                      | What it does                                         |

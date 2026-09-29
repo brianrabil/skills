@@ -56,7 +56,6 @@ Each skill maps to one artifact. The filename is the artifact type in kebab-case
 | `marketkit-to-images`     | Image manifest        | `images.md`         |
 | `marketkit-to-schedule`   | Publishing schedule   | `schedule.md`       |
 | `marketkit-to-checklist`  | Publishing checklist  | `checklist.md`      |
-| `write-reword`            | Reworded text         | `reword.md`         |
 
 ## Artifact structure
 

@@ -12,7 +12,7 @@ Standalone skills live directly under [skills/](/skills). Imported engineering w
 
 Plan Mode contains 35 standalone `plan-mode-*` skills for inquiry, decisions, artifacts, review, and follow-through.
 
-Each skill has its own trigger and output contract; there is no required sequence or runtime package. [README.md](/README.md) and the [Plan Mode docs](/apps/docs/content/docs/plan-mode/index.mdx) enumerate the collection. The `write-reword` prototype remains outside the 35-skill set.
+Each skill has its own trigger and output contract; there is no required sequence or runtime package. [README.md](/README.md) and the [Plan Mode docs](/apps/docs/content/docs/plan-mode/index.mdx) enumerate the collection.
 
 ## Writing collection
 
@@ -30,7 +30,7 @@ Marketkit contains seven skills that move from campaign planning to assets, sche
 
 The repository has two Bun workspace apps and no shared workspace packages.
 
-[apps/docs](/apps/docs) is a Fumadocs site, and [apps/agent](/apps/agent) is a local Eve skill-drafting agent. Root scripts use Bun and Turborepo for both apps.
+[apps/docs](/apps/docs) is a Fumadocs site, and [apps/agent](/apps/agent) is a local Eve skill-drafting agent. Each app owns its framework-specific Turbo outputs; root scripts only orchestrate shared tasks.
 
 ## Local skill drafting agent
 
@@ -48,6 +48,6 @@ These consumed development skills are separate from published content in [skills
 
 ## Local code quality
 
-The Bun workspace uses oxlint and oxfmt, while the Rust app uses cargo fmt and cargo checks.
+The Bun workspace uses oxlint, oxfmt, and Konsistent for code quality.
 
-The root oxlint configuration rejects Node host filesystem imports. `lat check` validates this architecture index and its source references before work is considered complete.
+The root `quality` script delegates lint, formatting, structural checks, and both app typechecks through Turbo. Oxlint rejects Node host filesystem imports, while [konsistent.json](/konsistent.json) enforces docs UI and route structures. `lat check` validates this index.

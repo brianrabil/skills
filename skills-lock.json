@@ -25,6 +25,18 @@
       "skillPath": "skills/find-skills/SKILL.md",
       "computedHash": "b146008599c31057cef1c145774cea5d5afb30e8f43fa802e47a4b461419aaaf"
     },
+    "konsistent-config": {
+      "source": "vercel-labs/konsistent",
+      "sourceType": "github",
+      "skillPath": "skills/konsistent-config/SKILL.md",
+      "computedHash": "54ae990a1d9ea5f183b3d04d5fa53852c5fdd7d6d711ef15a9f836d86aa94295"
+    },
+    "konsistent-fix-violations": {
+      "source": "vercel-labs/konsistent",
+      "sourceType": "github",
+      "skillPath": "skills/konsistent-fix-violations/SKILL.md",
+      "computedHash": "deeee5396178ffa672b2d1a6b86b8f9976a10a17ee29ad88992d6e16768b23f1"
+    },
     "opensrc": {
       "source": "vercel-labs/opensrc",
       "sourceType": "github",

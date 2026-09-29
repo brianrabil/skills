@@ -3,9 +3,9 @@
   "ui": "tui",
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", ".output/**"]
+      "dependsOn": ["^build"]
     },
+    "typecheck": {},
     "dev": {
       "cache": false,
       "persistent": true
@@ -14,18 +14,10 @@
     "//#lint:fix": {
       "cache": false
     },
+    "//#konsistent": {},
     "//#fmt:check": {},
     "//#fmt": {
       "dependsOn": ["//#lint:fix"],
-      "cache": false
-    },
-    "//#quality": {
-      "dependsOn": ["//#lint", "//#fmt:check"]
-    },
-    "//#quality:fix": {
-      "dependsOn": ["//#lint:fix", "//#fmt"]
-    },
-    "//#skills:sync": {
       "cache": false
     }
   }

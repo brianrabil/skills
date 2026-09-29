@@ -2,7 +2,7 @@
 
 import { type CSSProperties, type HTMLAttributes, useEffect, useState } from "react";
 import { X } from "lucide-react";
-import { cn } from "../lib/cn";
+import { cn } from "@/lib/utils";
 import { buttonVariants } from "./ui/button";
 import { useTranslations } from "@fuma-translate/react";
 
