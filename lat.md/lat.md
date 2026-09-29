@@ -32,6 +32,12 @@ The repository has two Bun workspace apps and no shared workspace packages.
 
 [apps/docs](/apps/docs) is a Fumadocs site, and [apps/agent](/apps/agent) is a local Eve skill-drafting agent. Each app owns its framework-specific Turbo outputs; root scripts only orchestrate shared tasks.
 
+## Documentation site
+
+The docs home page presents the value proposition, install command, and primary links directly, without simulated agent-session or terminal-output UI.
+
+Its remaining sections cover supported agents, skill collections, standalone skills, and the install-trigger-execute workflow.
+
 ## Local skill drafting agent
 
 [apps/agent](/apps/agent) runs Eve locally with a just-bash sandbox and mounts [skills/](/skills) read-write at `/workspace/skills`.

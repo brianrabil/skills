@@ -3,20 +3,6 @@
   "version": "v1",
   "conventions": [
     {
-      "name": "docs-ui-components",
-      "description": "Docs UI modules export a filename-derived function component and use the shared class-name helper.",
-      "paths": "apps/docs/components/ui/{componentName}.tsx",
-      "must": {
-        "exportFunctions": ["${componentName.toPascalCase()}"],
-        "importValues": [
-          {
-            "name": "cn",
-            "from": "@/lib/utils"
-          }
-        ]
-      }
-    },
-    {
       "name": "docs-route-handlers",
       "description": "Docs route modules expose read-only GET handlers backed by the shared content source.",
       "paths": "apps/docs/app/**/route.{ts,tsx}",
