@@ -1,0 +1,29 @@
+{
+  "skill_name": "docs-to-skill",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Create a documentation skill named sample-docs from the supplied local test site's llms.txt. The generated SKILL.md must only index downloaded references, and every advertised page must be downloaded with agent-browser. Save it under the requested output directory.",
+      "expected_output": "A valid generated skill with all llms.txt pages mirrored, a compact reference-only SKILL.md, and a valid manifest.",
+      "files": [],
+      "expectations": [
+        "The generated SKILL.md has valid name and description frontmatter and contains only documentation-routing content.",
+        "Every page advertised by llms.txt exists under references and is linked from SKILL.md.",
+        "The manifest records llms.txt discovery and the correct page count.",
+        "The source index and manifest identify the llms.txt discovery URL and both downloaded pages."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Refresh an existing generated documentation skill from the supplied local test site's sitemap.xml. Replace stale previously generated pages, preserve an unrelated notes.md file, and validate the refreshed result.",
+      "expected_output": "A refreshed sitemap-backed documentation skill whose tracked references are current, unrelated files remain, and all links validate.",
+      "files": [],
+      "expectations": [
+        "The refreshed manifest records sitemap.xml discovery and the correct current page count.",
+        "A stale page tracked by the old manifest is removed.",
+        "The unrelated notes.md file is preserved unchanged.",
+        "The generated SKILL.md links every current reference with no broken links."
+      ]
+    }
+  ]
+}

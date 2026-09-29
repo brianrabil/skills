@@ -1,0 +1,12 @@
+[install]
+minimumReleaseAgeExcludes = [
+  "@ai-sdk/*",
+  "@rolldown/*",
+  "@vercel/*",
+  "@workflow/*",
+  "ai",
+  "eve",
+  "nitro",
+  "rolldown",
+  "workflow",
+]

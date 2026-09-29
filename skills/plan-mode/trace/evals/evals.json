@@ -1,0 +1,30 @@
+{
+  "skill_name": "plan-mode-trace",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Trace a single login request through our auth system end to end, from the HTTP response back to the token being returned.",
+      "expected_output": "An ordered list of hops through the real code, naming the file and function at each, with inferred hops flagged.",
+      "expectations": [
+        "Follows one concrete request rather than describing the general flow",
+        "Names the file and function at each hop",
+        "Does not skip a hop because it seems obvious",
+        "Records what changes and what is preserved at each hop",
+        "Flags any hop that was inferred rather than read"
+      ],
+      "files": ["evals/files/positive/auth"]
+    },
+    {
+      "id": 2,
+      "prompt": "Trace what happens to a user's session token after login — where does it live, how does it get validated, and where can it be lost?",
+      "expected_output": "Follows the token through storage, validation, and exit, noting where it could be dropped, duplicated, or reordered.",
+      "expectations": [
+        "Follows the token through every hop including storage and validation",
+        "Notes where the token could be dropped, duplicated, or reordered",
+        "Reports the actual path with the code that implements each hop",
+        "Reports the exact hop where the path breaks if it cannot be followed end to end"
+      ],
+      "files": ["evals/files/positive/auth"]
+    }
+  ]
+}

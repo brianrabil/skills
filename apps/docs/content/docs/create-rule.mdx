@@ -1,0 +1,29 @@
+---
+title: Create rule
+description: Create portable, persistent agent guidance as scoped AGENTS.md instructions or reusable skills instead of editor-specific rule files.
+---
+
+Turn a convention into guidance that coding agents will actually follow. Write
+[AGENTS.md](https://agents.md/) for standing orders and a skill for on-demand
+playbooks. Do not create `.cursor/rules/` or `.mdc` files unless the user
+insists after you have explained the mapping.
+
+## Install
+
+```bash
+npx skills add brianrabil/skills --skill create-rule
+```
+
+## Example requests
+
+```text
+Always run the focused tests for a changed package before claiming the work
+is done. Make that a standing rule.
+```
+
+```text
+Convert these Cursor rules into AGENTS.md so they work in fx and Claude Code
+too.
+```
+
+See the full skill source: [`skills/create-rule`](https://github.com/brianrabil/skills/tree/main/skills/create-rule).

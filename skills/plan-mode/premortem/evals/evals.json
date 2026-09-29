@@ -1,0 +1,30 @@
+{
+  "skill_name": "plan-mode-premortem",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We're about to commit to a plan to migrate our monolith to services over six months. Run a premortem: assume it failed. What went wrong?",
+      "expected_output": "Plausible causes of failure ordered by likelihood, each with its detection point and the signal that would reveal it, plus the smallest change to catch the likely ones.",
+      "expectations": [
+        "Assumes the plan failed at delivery rather than reviewing what will go right",
+        "Generates plausible causes with specific mechanisms",
+        "Orders causes by likelihood",
+        "States the earliest detection point and revealing signal for each cause",
+        "Proposes the smallest change to catch the most likely causes earliest"
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Premortem the decision to launch the new pricing page next month. Assume it launched and revenue dropped.",
+      "expected_output": "Works backward from the assumed failure to the causes, distinguishing a dependency that was assumed from a step that was skipped.",
+      "expectations": [
+        "Assumes the failure and works backward",
+        "Names specific mechanisms: assumed dependency, skipped step, unknown constraint, unconsulted stakeholder",
+        "Gives the detection point for each cause",
+        "Does not turn the premortem into a critique of the people"
+      ],
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "skill_name": "plan-mode-bounds",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Plan the migration of our 40M-row user table to the new schema. Before we sequence the work, what are the bounds we have to plan within?",
+      "expected_output": "A set of concrete limits with actual numbers, distinguished into hard and soft, with owners named for the unknowns.",
+      "expectations": [
+        "States actual numbers or thresholds rather than categories like 'time'",
+        "Distinguishes hard limits from soft preferences",
+        "Names the owner who knows each unknown limit and the cheapest way to find out",
+        "Checks the goal against the tightest limit and says whether it fits"
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "What are the bounds on adding real-time collaboration to the editor? We don't know what the infrastructure allows.",
+      "expected_output": "Surfaces the unknown infrastructure limits and names who owns them, rather than assuming they don't exist.",
+      "expectations": [
+        "Identifies the specific unknown limits (connection limits, message rate, persistence)",
+        "Names the owner who knows each limit",
+        "Does not assume unlimited capacity",
+        "Proposes the cheapest way to find each unknown"
+      ],
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "We want to migrate the entire platform to the new architecture by the end of the quarter. The quarter is 11 weeks and the platform has 140 services. Check the goal against the bounds.",
+      "expected_output": "Recognizes the goal does not fit the time bound and proposes the largest version that does.",
+      "expectations": [
+        "Computes whether the goal fits the stated time bound",
+        "States plainly that the goal does not fit rather than planning around it",
+        "Proposes the largest version that does fit",
+        "Does not silently drop the limit to make the plan work"
+      ],
+      "files": []
+    }
+  ]
+}

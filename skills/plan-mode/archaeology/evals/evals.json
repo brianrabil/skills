@@ -1,0 +1,30 @@
+{
+  "skill_name": "plan-mode-archaeology",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "The login endpoint started returning 500s about three days ago. It was working last week. Find what changed, when, and why.",
+      "expected_output": "A precise symptom with a last-good time, a narrowed window of candidates, and the change that explains the symptom with evidence.",
+      "expectations": [
+        "States the symptom precisely with a last-good time",
+        "Narrows the window using commits, deploys, dependency bumps, and config changes",
+        "Inspects the actual diff of candidates rather than guessing",
+        "Prefers the change that explains the symptom over one that is merely nearby",
+        "Reports the cause with the evidence that links it to the symptom"
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Search results have been slow since the deploy last Tuesday. What caused it?",
+      "expected_output": "Uses the deploy window to find the candidate change and links it to the slowdown with evidence.",
+      "expectations": [
+        "Uses the stated deploy window to narrow candidates",
+        "Identifies the change that touches the search code path",
+        "Links the change to the symptom with evidence",
+        "Says so if no single change explains it"
+      ],
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "skill_name": "plan-mode-estimate",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Estimate the work to add real-time notifications to the app. We've never done WebSockets here before.",
+      "expected_output": "Work broken into independently sized pieces, each with a basis, summed into a total with confidence, and the unknowns named.",
+      "expectations": [
+        "Breaks the work into pieces that can be sized independently",
+        "Gives each piece a size and the basis for it",
+        "Distinguishes a measured estimate from a guess",
+        "States the total with its confidence as a range with a reason",
+        "Names the unknowns that would most change the estimate and how to resolve them"
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "How long will it take to migrate the settings page to the new design system?",
+      "expected_output": "Sizes the migration, names the unknowns (design tokens, component gaps), and gives a range rather than a false point.",
+      "expectations": [
+        "Breaks the migration into sized pieces",
+        "Names the unknowns that would change the estimate",
+        "Gives a range with a reason rather than a false point",
+        "Does not present a guess as a commitment"
+      ],
+      "files": []
+    }
+  ]
+}

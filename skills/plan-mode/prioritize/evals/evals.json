@@ -1,0 +1,30 @@
+{
+  "skill_name": "plan-mode-prioritize",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We have these items and two weeks of capacity: fix the login bug, add export to CSV, upgrade the database driver, write the onboarding docs, and refactor the billing module. Prioritize them.",
+      "expected_output": "Work ordered into now, later, and never, with the reason for each placement and the trigger that would move an item.",
+      "expectations": [
+        "States the capacity available rather than assuming unlimited capacity",
+        "Assesses value now versus later and the cost of delay for each item",
+        "Places every item into now, later, or never",
+        "Uses never as a real answer rather than quietly dropping work",
+        "Names the trigger that would move an item between buckets"
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Prioritize: the CEO wants the investor demo ready, a customer is threatening to churn over the export bug, and the team wants to pay down tech debt.",
+      "expected_output": "Orders by cost of delay and value, distinguishing urgent from valuable, and says what happens now versus later.",
+      "expectations": [
+        "Distinguishes urgent from merely valuable",
+        "Assesses the cost of delay for each item",
+        "Gives a clear now-versus-later ordering with reasons",
+        "Does not treat everything as top priority"
+      ],
+      "files": []
+    }
+  ]
+}

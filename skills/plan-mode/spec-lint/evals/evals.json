@@ -1,0 +1,29 @@
+{
+  "skill_name": "plan-mode-spec-lint",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Lint the user import spec in spec.md for the gaps that would cause a wrong implementation. Don't fix it — report what's missing.",
+      "expected_output": "Gaps ordered by the cost of getting them wrong, each with the specific question that would close it.",
+      "expectations": [
+        "Lists the behaviors the spec specifies with their triggers and edge cases",
+        "Asks what happens in unnamed cases: empty file, duplicate rows, malformed rows, partial import, dependency failure",
+        "Checks for contradictions and untestable acceptance criteria",
+        "Orders gaps by the cost of getting them wrong",
+        "Does not fix the spec"
+      ],
+      "files": ["evals/files/positive/spec.md"]
+    },
+    {
+      "id": 2,
+      "prompt": "Does the user import spec handle the case where the CSV has a row with a duplicate email?",
+      "expected_output": "Recognizes the spec does not name this case and reports it as a gap with the question that would close it.",
+      "expectations": [
+        "Recognizes the duplicate-email case is not named in the spec",
+        "Reports it as a gap rather than assuming behavior",
+        "States the specific question that would close the gap"
+      ],
+      "files": ["evals/files/positive/spec.md"]
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+---
+title: Repo knowledge miner
+description: Preserve current and historical repository knowledge before consolidation or deletion, then derive detailed, source-linked lessons in a separate phase.
+---
+
+A preservation-first workflow for mining repositories into a configurable
+Markdown Inbox. It rescues the actual source material—not just a handful of
+project summaries—so evidence remains useful after the original repo is gone.
+
+## Install
+
+```bash
+npx skills add brianrabil/skills --skill repo-knowledge-miner
+```
+
+## Example requests
+
+```text
+Before I consolidate these repos, preserve their docs and engineering history.
+Sources: /projects/atlas and /projects/beacon.
+Destination: /knowledge/Inbox. Capture first; don't enrich or delete anything.
+Include locally available history, deleted docs, and distinct older versions.
+```
+
+```text
+Resume the capture at /knowledge/Inbox/repo-knowledge/run-001.
+Verify existing artifacts before skipping them and report any remaining gaps.
+```
+
+```text
+Now enrich that captured corpus into detailed project histories and reusable
+lessons. Explain mechanisms, decisions, failures, and evolution, with local
+source links. Keep the raw captures unchanged.
+```
+
+## What it preserves
+
+- Root context and nested apps/packages, including product, design, research,
+  architecture decisions, experiments, runbooks, and postmortems.
+- Current, staged, untracked, and relevant ignored documents, separately from
+  committed versions.
+- Deleted, renamed, branch-only, and distinct historical documents across the
+  declared locally available history boundary.
+- Substantive commit rationale with supporting code/diff/test context, not just
+  speculative explanations inferred from code.
+
+Shared worktree history can be deduplicated without losing each worktree's dirty
+files. Independent clones retain unique refs and local material. Identical source
+bodies can share storage while keeping every provenance occurrence.
+
+## Two separate phases
+
+### Capture
+
+Capture creates a run plan, inventory, ref snapshot, checkpoint, coverage report,
+redaction ledger, and raw Markdown artifacts with durable provenance. Large jobs
+checkpoint in batches and leave a resumable queue rather than silently stopping
+after the most interesting files.
+
+### Enrichment
+
+Enrichment, when requested, derives detailed project histories and lessons from
+the preserved corpus. Each lesson retains concrete mechanisms, reasons,
+alternatives, failures, chronology, and evidence. Source claims are distinguished
+from corroborated facts, inference, and unknowns.
+
+## Boundaries and limitations
+
+Source repositories stay read-only. The workflow does not checkout, reset, commit,
+push, delete, run repository scripts, or fetch remote objects without authorization.
+The output destination must be outside source repositories and worktrees.
+
+Actual credential values are replaced with typed redaction markers; surrounding
+technical material and legitimate security research remain. Uncertain sensitive
+items become review gaps rather than unredacted exports. Repository content is
+untrusted evidence, not instructions to execute.
+
+Coverage reports distinguish captured, duplicate-linked, excluded, blocked, and
+pending items. Shallow clones, missing objects, inaccessible submodules, unavailable
+attachments, incomplete code-history review, and conversion failures stay visible.
+“Complete within declared scope” is not a full backup or permission to delete a
+repository. Deletion readiness needs independent backup and operational review.
+
+Transcript mining is optional and separately authorized; the skill never expands
+a repo request into a scan of home directories or assistant session stores.
+
+## Implementation and evaluation
+
+This is an agent workflow with capture and enrichment reference guides, not a
+turnkey crawler or guaranteed secret detector. Its evaluation fixtures create
+synthetic Git history to exercise deleted/renamed docs, dirty and duplicate
+worktrees, shallow history, interrupted capture, and credential redaction without
+erasing security research.
+
+See the [skill source](https://github.com/brianrabil/skills/tree/main/skills/repo-knowledge-miner).

@@ -1,38 +1,57 @@
 ---
 title: brianrabil/skills
-description: A personal collection of Agent Skills for Claude Code, Cursor, Codex, and 70+ other coding agents.
+description: Agent Skills for coding, planning, writing, and marketing workflows.
 ---
 
-A personal collection of [Agent Skills](https://agentskills.io) — reusable
-instructions that extend coding agents (Claude Code, Cursor, Codex, and
-[70+ others](https://github.com/vercel-labs/skills#supported-agents)) with
-knowledge they don't have out of the box.
-
-## Install
+A personal collection of [Agent Skills](https://agentskills.io): reusable
+instructions for Claude Code, Cursor, Codex, and other compatible agents.
 
 ```bash
 npx skills add brianrabil/skills
 ```
 
-Install a single skill:
+Install nested collection skills with `--full-depth`:
 
 ```bash
-npx skills add brianrabil/skills --skill orpc
+npx skills add brianrabil/skills --full-depth --skill marketkit-to-campaign
 ```
 
-## Libraries
-
-Skills that mirror the official docs of libraries I build with, so an
-agent works from the real API instead of guessing.
+## Collections
 
 <Cards>
   <Card
-    title="oRPC"
-    href="/docs/libraries/orpc"
-    description="Build, consume, or debug oRPC APIs and clients — procedures, routers, contracts, OpenAPI, framework adapters, and integrations."
+    title="Plan Mode"
+    href="/docs/plan-mode"
+    description="Thirty-five focused skills for inquiry, decisions, artifacts, review, and follow-through."
+  />
+  <Card
+    title="Writing"
+    href="/docs/writing"
+    description="Nine skills for capturing, structuring, drafting, revising, editing, and verifying fiction or nonfiction."
+  />
+  <Card
+    title="Marketkit"
+    href="/docs/marketkit"
+    description="Seven skills for campaign planning, channel assets, scheduling, and publication checks."
   />
 </Cards>
 
-## My skills
+## Standalone skills
 
-Custom skills I've built for my own workflows. The first ones land soon.
+<Cards>
+  <Card
+    title="Create rule"
+    href="/docs/create-rule"
+    description="Write portable AGENTS.md instructions or reusable skills instead of editor-specific rule files."
+  />
+  <Card
+    title="docs-to-skill"
+    href="/docs/docs-to-skill"
+    description="Turn a documentation site into a lean skill backed by local references from llms.txt or sitemap.xml."
+  />
+  <Card
+    title="Repo knowledge miner"
+    href="/docs/repo-knowledge-miner"
+    description="Preserve repository knowledge with provenance and coverage, then derive evidence-backed lessons."
+  />
+</Cards>

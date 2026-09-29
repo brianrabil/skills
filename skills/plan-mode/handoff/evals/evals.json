@@ -1,0 +1,40 @@
+{
+  "skill_name": "plan-mode-handoff",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I have to drop this now. We're mid-migration of the orders database — about half the tables are moved, the rest aren't. Write a handoff so the next person can resume without me.",
+      "expected_output": "A resumable handoff recording goal, state, next action, decisions, and open questions, precise enough to act on without the author.",
+      "expectations": [
+        "Records the goal, current state, and exact next action",
+        "Separates done, in-progress, and blocked with evidence for each",
+        "Captures decisions made and alternatives rejected so they are not re-litigated",
+        "Records open questions and the observation that would answer each",
+        "Is precise enough for a fresh agent to act on without the author present"
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Write a handoff for the search indexing work. We chose Elasticsearch over Algolia but I don't want the next person reopening that.",
+      "expected_output": "Captures the Elasticsearch decision and the rejected alternative so the next session does not re-litigate it.",
+      "expectations": [
+        "Records the chosen option and the rejected alternative with the reason",
+        "Marks the decision as settled so it is not reopened",
+        "Includes the commands or checks run and their results"
+      ],
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Hand off the API versioning work. We're stuck on whether to version in the path or the header, and the team is split.",
+      "expected_output": "Records the open question and the specific observation that would resolve it, rather than pretending it is settled.",
+      "expectations": [
+        "Records the open question honestly rather than papering over it",
+        "Names the specific observation that would resolve it",
+        "States what is blocked and what can proceed independently"
+      ],
+      "files": []
+    }
+  ]
+}

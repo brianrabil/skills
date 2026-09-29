@@ -1,3 +1,11 @@
 {
-  "pages": ["index", "custom", "libraries"]
+  "pages": [
+    "index",
+    "create-rule",
+    "docs-to-skill",
+    "repo-knowledge-miner",
+    "plan-mode",
+    "writing",
+    "marketkit"
+  ]
 }

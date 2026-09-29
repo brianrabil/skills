@@ -1,0 +1,30 @@
+{
+  "skill_name": "plan-mode-calibrate",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "How sure are we that the new caching layer will cut p95 latency in half? We have a benchmark from the vendor but no production data.",
+      "expected_output": "Rates the claim with its evidence labeled by source, states what would move the rating, and does not proceed on a guess.",
+      "expectations": [
+        "States the claim and labels each piece of evidence with its source",
+        "Rates the claim as known, likely, uncertain, or unknown",
+        "States what would move the rating up or down",
+        "Does not proceed on a guess because checking seems expensive",
+        "Names the specific observation that would raise the rating"
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Can we say the migration is safe to run on production? We tested it on a copy of the database.",
+      "expected_output": "Rates the safety claim, distinguishes tested evidence from assumed evidence, and names what would raise the rating.",
+      "expectations": [
+        "Distinguishes tested evidence from assumed evidence",
+        "Rates the claim honestly rather than overstating it",
+        "Names the specific observation that would raise the rating",
+        "States the risk if the decision cannot wait for the required certainty"
+      ],
+      "files": []
+    }
+  ]
+}

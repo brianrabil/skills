@@ -1,16 +1,23 @@
-import { agentBrowserRevalidationKey, installAgentBrowser } from "@agent-browser/sandbox/eve";
-import { defaultBackend, defineSandbox } from "eve/sandbox";
+import { defineSandbox } from "eve/sandbox";
+import { JustBashSandbox } from "eve/sandbox/just-bash";
 
-export default defineSandbox({
-  // installAgentBrowser only runs generic shell commands (apt-get/npm), so it
-  // works on any backend -- defaultBackend() picks Vercel Sandbox when
-  // actually deployed on Vercel, Docker locally, etc. Pinning `vercel()`
-  // (as agent-browser's own example does) would force hosted sandboxes even
-  // in local dev.
-  backend: defaultBackend({ vercel: { runtime: "node24", resources: { vcpus: 2 } } }),
-  revalidationKey: () => agentBrowserRevalidationKey(),
-  async bootstrap({ use }) {
-    const sandbox = await use();
-    await installAgentBrowser(sandbox);
+export const environment = JustBashSandbox.environment({
+  autoInstall: false,
+  filesystem: async ({ defaultFilesystem, justBash, resolveProjectPath }) => {
+    await defaultFilesystem.mkdir("/workspace/skills", { recursive: true });
+
+    return new justBash.MountableFs({
+      base: defaultFilesystem,
+      mounts: [
+        {
+          mountPoint: "/workspace/skills",
+          filesystem: new justBash.ReadWriteFs({
+            root: resolveProjectPath("../../skills"),
+          }),
+        },
+      ],
+    });
   },
 });
+
+export default defineSandbox(() => environment.open());

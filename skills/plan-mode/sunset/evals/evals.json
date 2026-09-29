@@ -1,0 +1,30 @@
+{
+  "skill_name": "plan-mode-sunset",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We've spent four months on the internal analytics dashboard. Adoption is near zero and the team that asked for it was reorganized away. Should we keep going?",
+      "expected_output": "Assesses the evidence on the merits, checks against sunk-cost and optimism bias, and recommends stopping or continuing with the reason.",
+      "expectations": [
+        "States the evidence that the goal is not worth pursuing",
+        "Checks the evidence against sunk cost and optimism bias",
+        "Recommends stopping or continuing on the merits, not on how hard it is",
+        "States what should happen to the work already done",
+        "Names the observation that would change the assessment if the evidence does not hold"
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Sunset the plan to build our own search engine. We've been at it for a year and Elasticsearch fits our needs.",
+      "expected_output": "Recommends stopping with the evidence, and does not authorize discarding the work without the owner's agreement.",
+      "expectations": [
+        "Recommends stopping with the evidence stated",
+        "Distinguishes a recommendation from a unilateral decision to abandon work",
+        "Does not authorize deleting or discarding work without the owner's agreement",
+        "States what happens to the completed work"
+      ],
+      "files": []
+    }
+  ]
+}

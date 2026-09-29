@@ -1,0 +1,40 @@
+{
+  "skill_name": "plan-mode-decide",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We've spent two sessions going back and forth on whether to build the reporting dashboard in-house or adopt a third-party analytics library. Both are viable. We need to commit today so the team can start. Decide.",
+      "expected_output": "A committed decision naming the chosen option, the rejected alternative and why, the assumptions it rests on, its reversibility, and the trigger that would reopen it.",
+      "expectations": [
+        "Names a single chosen option rather than restating the dilemma",
+        "Records the rejected alternative and the reason for rejecting it",
+        "States how reversible the decision is",
+        "Names a specific trigger or observation that would reopen the decision",
+        "States the next action the decision unblocks"
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Decide whether we should rewrite the billing service in Rust. The team lead is already convinced it's the right call and just wants it confirmed.",
+      "expected_output": "Recognizes the options are not genuinely open and says so, rather than rubber-stamping a foregone conclusion.",
+      "expectations": [
+        "Recognizes the decision is already made rather than manufacturing a deliberation",
+        "Does not invent a false choice to appear rigorous",
+        "States what evidence would make the question genuinely open"
+      ],
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Choose between Postgres and DynamoDB for the new feature's storage. We have no data on our access patterns yet.",
+      "expected_output": "Declines to decide on insufficient evidence and names the specific observation that would change the choice.",
+      "expectations": [
+        "Declines to commit rather than guessing",
+        "Names the specific observation or measurement that would change the choice",
+        "Distinguishes a measured basis from a guess"
+      ],
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "skill_name": "plan-mode-docs",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We just finished planning the notifications feature — we decided on the approach, set the bounds, and estimated it. Document it so the team can pick it up.",
+      "expected_output": "Determines which artifacts the work requires and delegates the writing to subagents, then reconciles the docs tree.",
+      "expectations": [
+        "Reads the doc-system convention before writing",
+        "Determines which artifacts the work requires",
+        "Delegates the writing to subagents rather than writing inline",
+        "Reviews the docs tree for gaps and contradictions after the subagents complete",
+        "Reports what was recorded and what remains undocumented"
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Document the work from this session. We explored three options, decided on one, and estimated it at two weeks.",
+      "expected_output": "Produces the decision record and the estimate, and does not fabricate artifacts for skills that were not invoked.",
+      "expectations": [
+        "Produces artifacts only for the work that was actually done",
+        "Does not fabricate artifacts for skills that were not invoked",
+        "Delegates the writing to subagents",
+        "Updates the index after writing"
+      ],
+      "files": []
+    }
+  ]
+}

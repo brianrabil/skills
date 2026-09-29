@@ -1,0 +1,4 @@
+# Sample documentation
+
+- [Introduction](http://127.0.0.1:38127/intro.md)
+- [Install](http://127.0.0.1:38127/guide/install.md)

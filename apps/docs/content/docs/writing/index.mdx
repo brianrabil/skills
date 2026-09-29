@@ -1,0 +1,37 @@
+---
+title: Writing
+description: Nine skills for capturing, structuring, drafting, revising, editing, and verifying fiction or nonfiction.
+---
+
+The Writing collection has nine standalone Markdown skills. The `writing`
+router chooses a stage when the request does not name one; each stage skill can
+also be installed and invoked directly.
+
+```bash
+npx skills add brianrabil/skills --full-depth --skill writing-critique
+```
+
+## The toolkit
+
+| Skill              | Use it when                                                | Result                                       |
+| ------------------ | ---------------------------------------------------------- | -------------------------------------------- |
+| `writing`          | The right writing stage is unclear                         | A routed workflow                            |
+| `writing-capture`  | You have raw material but no structure                     | Fragments without imposed order              |
+| `writing-outline`  | Material exists but its spine or story engine is unsettled | A structural contract                        |
+| `writing-bible`    | Fiction canon must stay consistent across a larger work    | Entries, ledgers, and a retcon log           |
+| `writing-draft`    | Structure is settled and prose is needed                   | Prose grown block by block or scene by scene |
+| `writing-critique` | A draft exists and needs diagnosis                         | Ranked, read-only findings                   |
+| `writing-revise`   | Structure, argument, or scenes must change                 | A revised draft and change log               |
+| `writing-edit`     | Meaning is right but sentences are not                     | Line-level changes with meaning fixed        |
+| `writing-verify`   | Factual claims need a publication-risk audit               | A claim-by-claim source report               |
+
+## Boundaries
+
+- `writing-critique` reports findings without editing.
+- `writing-revise` changes meaning deliberately.
+- `writing-edit` changes wording while holding meaning fixed.
+- `writing-verify` flags unsupported claims instead of silently deleting them.
+- `writing-bible` owns fiction canon and continuity.
+
+The detailed fiction and nonfiction rubrics live with
+[`writing-critique`](https://github.com/brianrabil/skills/tree/main/skills/writing/writing-critique/references).

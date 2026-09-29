@@ -1,101 +1,145 @@
-# AGENTS.md
+# Before starting work
 
-Guidance for AI coding agents (OpenCode, Codex, Claude Code) working in this
-repository. This is the single source of truth — [CLAUDE.md](CLAUDE.md) just
-`@AGENTS.md`-imports it (Claude Code has no native AGENTS.md support, so this
-import is Anthropic's documented way to avoid maintaining two copies by
-hand). Add Claude-specific-only guidance directly to CLAUDE.md below the
-import if it's ever needed; everything else belongs here.
+## Host filesystem ban
 
-## What this repo is
+Do not import or require `fs`, `fs/promises`, `node:fs`, or
+`node:fs/promises` in this repository, including `apps/agent`. Do not use host
+filesystem calls in Eve sandbox configuration, tools, or custom commands. Use
+Eve's sandbox filesystem interfaces for agent files and just-bash's virtual
+filesystem for shell operations. The root oxlint configuration enforces the
+import ban.
 
-A personal collection of [Agent Skills](https://agentskills.io) — published via [skills.sh](https://skills.sh/brianrabil/skills) and installed into other projects with the `skills` CLI (`vercel-labs/skills`). The skill content itself has no build system and no test suite — `skills/` _is_ its content. The repo root is a **pnpm workspace** (`pnpm-workspace.yaml`, package manager pinned via `packageManager` in `package.json`) orchestrated with **Turborepo** (`turbo.json`): `apps/docs` (a Fumadocs site documenting the published skills), `packages/ui` (its shadcn/ui component library), and `apps/agent` (an eve agent, scaffolded but not yet built out). The root `package.json` itself is `"private": true` and publishes nothing to npm — it only exists to drive changesets-based versioning (see below) and to run Turborepo tasks across the workspace.
+- Run `lat search` to find sections relevant to your task. Read them to understand the design intent before writing code.
+- Run `lat expand` on user prompts to expand any `[[refs]]` — this resolves section names to file locations and provides context.
 
-## Commands
+# Post-task checklist (REQUIRED — do not skip)
+
+After EVERY task, before responding to the user:
+
+- [ ] Update `lat.md/` if you added or changed any functionality, architecture, tests, or behavior
+- [ ] Run `lat check` — all wiki links and code refs must pass
+- [ ] Do not skip these steps. Do not consider your task done until both are complete.
+
+---
+
+# What is lat.md?
+
+This project uses [lat.md](https://www.npmjs.com/package/lat.md) to maintain a structured knowledge graph of its architecture, design decisions, and test specs in the `lat.md/` directory. It is a set of cross-linked markdown files that describe **what** this project does and **why** — the domain concepts, key design decisions, business logic, and test specifications. Use it to ground your work in the actual architecture rather than guessing.
+
+# Commands
 
 ```bash
-# Install every skill from this repo into a target project
-npx skills add brianrabil/skills
-
-# Install a single skill
-npx skills add brianrabil/skills --skill <name>
-
-# Scaffold a new skill directory (creates <name>/SKILL.md)
-npx skills init <name>
-
-# Record a change for the next version bump / changelog entry
-pnpm changeset
-
-# Workspace-wide, via Turborepo
-pnpm install     # after cloning, or after editing any package.json
-pnpm dev         # apps/docs dev server on :3000
-pnpm build       # production build of apps/docs and apps/agent
-
-# Or scope to just the docs app directly
-pnpm --filter docs dev
-
-# Start the eve agent's interactive TUI dev mode -- see apps/agent below for
-# why this isn't a Turborepo task
-pnpm agent:dev
-
-# Lint/format the whole repo (oxlint + oxfmt, registered as Turborepo Root Tasks)
-pnpm exec turbo run quality      # lint + format check, in parallel
-pnpm exec turbo run quality:fix  # lint --fix, then format (fix runs after lint:fix to avoid write races)
-
-# Typecheck the docs app (fumadocs-mdx codegen -> next typegen -> tsc --noEmit)
-pnpm --filter docs types:check
-
-# Restore the local dev-tool skills (.agents/skills, .claude/skills) from skills-lock.json
-pnpm skills:sync
+lat locate "Section Name"      # find a section by name (exact, fuzzy)
+lat refs "file#Section"        # find what references a section
+lat search "natural language"  # semantic search across all sections
+lat expand "user prompt text"  # expand [[refs]] to resolved locations
+lat check                      # validate all links and code refs
 ```
 
-Gotcha: this repo's own `package.json` `"name"` must never be `skills` (currently `brianrabil-skills`) — if it matched, running `npx skills ...` from inside this repo would resolve to the local project instead of the registry CLI and fail with "could not determine executable to run".
+Run `lat --help` when in doubt about available commands or options.
 
-## Architecture
+If `lat search` fails because no API key is configured, explain to the user that semantic search requires a key provided via `LAT_LLM_KEY` (direct value), `LAT_LLM_KEY_FILE` (path to key file), or `LAT_LLM_KEY_HELPER` (command that prints the key). Supported key prefixes: `sk-...` (OpenAI) or `vck_...` (Vercel). If the user doesn't want to set it up, use `lat locate` for direct lookups instead.
 
-**`skills/<name>/` is the published source of truth** — each subdirectory is one Agent Skill, keyed off `SKILL.md`:
+# Syntax primer
 
-```yaml
+- **Section ids**: `lat.md/path/to/file#Heading#SubHeading` — full form uses project-root-relative path (e.g. `lat.md/tests/search#RAG Replay Tests`). Short form uses bare file name when unique (e.g. `search#RAG Replay Tests`, `cli#search#Indexing`).
+- **Wiki links**: `[[target]]` or `[[target|alias]]` — cross-references between sections. Can also reference source code: `[[src/foo.ts#myFunction]]`.
+- **Source code links**: Wiki links in `lat.md/` files can reference functions, classes, constants, and methods in TypeScript/JavaScript/Python/Rust/Go/C files. Use the full path: `[[src/config.ts#getConfigDir]]`, `[[src/server.ts#App#listen]]` (class method), `[[lib/utils.py#parse_args]]`, `[[src/lib.rs#Greeter#greet]]` (Rust impl method), `[[src/app.go#Greeter#Greet]]` (Go method), `[[src/app.h#Greeter]]` (C struct). `lat check` validates these exist.
+- **Code refs**: `// @lat: [[section-id]]` (JS/TS/Rust/Go/C) or `# @lat: [[section-id]]` (Python) — ties source code to concepts
+
+# Test specs
+
+Key tests can be described as sections in `lat.md/` files (e.g. `tests.md`). Add frontmatter to require that every leaf section is referenced by a `// @lat:` or `# @lat:` comment in test code:
+
+```markdown
 ---
-name: orpc
-description: <what it's for + when the model should trigger it>
-license: MIT
-metadata: # optional, skill-specific
-  source: <upstream doc URL>
+lat:
+  require-code-mention: true
 ---
+
+# Tests
+
+Authentication and authorization test specifications.
+
+## User login
+
+Verify credential validation and error handling for the login endpoint.
+
+### Rejects expired tokens
+
+Tokens past their expiry timestamp are rejected with 401, even if otherwise valid.
+
+### Handles missing password
+
+Login request without a password field returns 400 with a descriptive error.
 ```
 
-- `description` does double duty: it's what a coding agent reads to decide whether to invoke the skill, so it must state both _what_ the skill covers and _when_ to reach for it.
-- A skill can be **model-invoked** (default — keep `description`, omit `disable-model-invocation`) or **user-invoked only** (`disable-model-invocation: true` — description becomes human-facing, no autonomous trigger).
-- Skills may carry supporting directories: `references/` (long-form docs the skill points to), `assets/`, etc. `skills/orpc` is the fullest example — its `references/` mirrors https://orpc.dev/llms-full.txt verbatim, split one file per doc page; treat it as a snapshot and never hand-edit it.
-- New skills added under `skills/` must also be added to the table in [README.md](README.md).
+Every section MUST have a description — at least one sentence explaining what the test verifies and why. Empty sections with just a heading are not acceptable. (This is a specific case of the general leading paragraph rule below.)
 
-**`.agents/skills/` and `.claude/skills/`** are _local, machine-specific installs_ of third-party skills pulled in via `npx skills add <source> --skill <name> --agent <agent> universal` for use while developing in this repo — they are consumed dependencies, not published content, and are unrelated to the `skills/` directory above. `.agents/skills/<name>` holds the canonical copy; the agent-specific dir (e.g. `.claude/skills/<name>`) symlinks into it. Both are gitignored (see `.gitignore`); `skills-lock.json` is tracked and records what's installed, so a fresh clone restores them with `pnpm skills:sync` (registered as the `//#skills:sync` Turborepo Root Task; wraps `skills experimental_install`, not `experimental_sync` — that's a different, unrelated command that reads from `node_modules` instead of the lockfile).
+Each test in code should reference its spec with exactly one comment placed next to the relevant test — not at the top of the file:
 
-**`apps/docs/` is a Fumadocs (Next.js) site** that documents the skills published under `skills/`. It was scaffolded with `create-fumadocs-app` and is a standard Fumadocs App Router project — content lives in `apps/docs/content/docs/`, grouped into two sidebar folders: `custom/` ("My skills", original skills authored for this collection) and `libraries/` ("Libraries", skills mirroring third-party library docs, e.g. `libraries/orpc.mdx` at `/docs/libraries/orpc`). Each folder has a `meta.json` for its sidebar title, and the root `meta.json` orders the groups — put new skill doc pages in the right group, not at the top level. Site chrome/branding lives in `apps/docs/lib/shared.ts` and `lib/layout.shared.tsx`, config in `next.config.ts`. Doc pages are **hand-authored**, not generated from `SKILL.md` — when a skill under `skills/` changes meaningfully, its corresponding doc page needs a manual update too; the two aren't kept in sync automatically. The app also serves LLM feed routes (`app/llms.txt`, `app/llms.mdx`, `app/llms-full.txt`) and per-page markdown (`.md`) via a middleware rewrite in `proxy.ts`; route constants live in `lib/shared.ts`. `fumadocs-mdx` runs as a `postinstall` hook and regenerates `.source/` (gitignored) — if you add/change MDX frontmatter and the source map is stale, run `pnpm --filter docs types:check` to force codegen. `apps/docs/cli.json` configures [`@fumadocs/cli`](https://fumadocs.dev/docs/cli) for pulling in Fumadocs-native UI components/layouts (`npx @fumadocs/cli add <component>`, run from `apps/docs`) — these are separate from and unrelated to our own shadcn setup in `packages/ui`: Fumadocs components use their own `--fd-*`-prefixed theme tokens and land under `apps/docs/components/` (with their own local `apps/docs/components/ui/` primitives and `apps/docs/lib/cn.ts`), not `@workspace/ui`. The `add`/`customize` subcommands prompt interactively (file-overwrite confirms, "install with pnpm?") using raw-keypress `@clack/prompts` input that doesn't respond to piped stdin — resolve conflicts by deleting the conflicting file first so there's nothing to prompt about, then install any new dependencies it reports with a plain `pnpm add` yourself rather than letting it run its own install step.
+```python
+# @lat: [[tests#User login#Rejects expired tokens]]
+def test_rejects_expired_tokens():
+    ...
 
-Site typography is the official [`geist`](https://www.npmjs.com/package/geist) package (`GeistSans`/`GeistMono` from `geist/font/sans` / `geist/font/mono`), applied in `apps/docs/app/layout.tsx` — not `next/font/google`'s bundled `Geist`, which is a different (and lower-fidelity) source of the same typeface. Unlike `next/font/google`'s `Geist({ variable: "--font-sans" })` pattern, the official package's exports are pre-instantiated and always emit `--font-geist-sans`/`--font-geist-mono` as their `.variable` CSS custom property names — you can't rename them at the call site. `packages/ui`'s shared theme (`packages/ui/src/styles/globals.css`) expects an ambient `--font-sans`/`--font-mono` custom property (its own `@theme inline` block just self-references `--font-sans: var(--font-sans)`), so `apps/docs/app/global.css` adds a second `@theme inline` block redirecting `--font-sans`/`--font-mono` to the geist-named variables — that redirect is required, not optional; without it `font-sans`/`font-mono` utilities and any `@apply font-sans` in `packages/ui` silently fall back to Tailwind's default stack.
+# @lat: [[tests#User login#Handles missing password]]
+def test_handles_missing_password():
+    ...
+```
 
-For brand/logo icons (GitHub, etc. — anything `lucide-react` doesn't carry), use [`@thesvg/react`](https://thesvg.org) (the `thesvg` local skill documents the full icon catalog and CDN URL scheme). Import per-icon for tree-shaking: `import Github from "@thesvg/react/github"`. Only the `default`/`light`/`dark` variants ship a hardcoded brand-color `fill` on the path itself — the `mono` variant's `<path>` has no `fill` of its own and the wrapping `<svg>` defaults to `fill="none"`, so `<Github variant="mono" />` alone renders **invisible**; you must pass `fill="currentColor"` explicitly (confirmed by rendering it in the browser preview, not just reading the source) to get a theme-adaptive monochrome mark.
+Do not duplicate refs. One `@lat:` comment per spec section, placed at the test that covers it. `lat check` will flag any spec section not covered by a code reference, and any code reference pointing to a nonexistent section.
 
-**`packages/ui` (`@workspace/ui`)** is the workspace's internal [shadcn/ui](https://ui.shadcn.com) component package, consumed by `apps/docs` as `workspace:*`. shadcn components belong **here, not in the app** — both `packages/ui/components.json` and `apps/docs/components.json` steer shadcn `add`/aliases at `@workspace/ui/components`, and the docs app imports them via that path (the `shadcn` local skill documents this layout). It is `private` and never published; bumping its version is unnecessary. Third-party shadcn registries work the same way — `apps/docs/components.json` has an `@ai-elements` registry entry (from ai-sdk.dev) for `npx shadcn add @ai-elements/<name>`. Registry items typed `registry:ui` route through the alias into `packages/ui` correctly, but `registry:component` items (like `snippet`) ship a hardcoded `target` path that lands in `apps/docs/components/` regardless of alias config — move those into `packages/ui/src/components/` by hand afterward if they belong in the shared package (its rewritten imports already use `@workspace/ui/...`, so no import changes are needed). Also: unlike `@fumadocs/cli`, `shadcn add`'s "overwrite existing file?" confirm is a plain stdin-buffered prompt, not raw-keypress — `printf "n\n" | npx shadcn add ...` works fine to decline it non-interactively.
+# Section structure
 
-**`apps/agent`** is an [eve](https://eve.dev) agent, scaffolded but not yet built out — `agent/instructions.md` is still the placeholder, and it only has the built-in HTTP channel (`agent/channels/eve.ts`). Its eventual job is maintaining `skills/` and `apps/docs`; that work (real instructions, tools, connections, and — per plan — a GitHub channel with sandbox checkout) is deliberately deferred. `pnpm build` here outputs to `.output/` (Nitro), not `.next/` — `turbo.json`'s `build` task outputs list covers both. Its interactive TUI dev mode (`eve dev`) is named `agent:dev`, **not** `dev` — a plain `dev` script would get swept into `turbo.json`'s shared `dev` task, and turbo flatly refuses to run a stdin-driven task without `--ui=tui`/`interactive: true` set, which is unnecessary ceremony for a task nothing else depends on. Start it with the root `pnpm agent:dev` (plain pnpm, `--filter agent agent:dev`, no turbo involved) instead. `agent/sandbox.ts` installs [agent-browser](https://github.com/vercel-labs/agent-browser) (`@agent-browser/sandbox`) into the agent's sandbox at template-build time via `installAgentBrowser`, based on that repo's own `examples/sandbox/eve` — but using `defaultBackend()` instead of the example's hardcoded `vercel()`, since `installAgentBrowser` only runs generic shell commands and pinning `vercel()` would force hosted sandboxes even in local dev. No tools call it yet. See the `eve` local skill and its bundled docs (`apps/agent/node_modules/eve/docs/`) before extending this agent.
+Every section in `lat.md/` **must** have a leading paragraph — at least one sentence immediately after the heading, before any child headings or other block content. The first paragraph must be ≤250 characters (excluding `[[wiki link]]` content). This paragraph serves as the section's overview and is used in search results, command output, and RAG context — keeping it concise guarantees the section's essence is always captured.
 
-**Lint/format are [oxlint](https://oxc.rs)/[oxfmt](https://oxc.rs), run repo-wide from the root** — not per-package. `apps/docs` has no lint step of its own (eslint was removed). Because oxlint/oxfmt operate on the whole tree at once, `turbo.json` registers them as [Turborepo Root Tasks](https://turborepo.dev/docs/guides/tools/oxc) (`//#lint`, `//#fmt`, etc.) rather than per-package `^lint`-style tasks. `quality`/`quality:fix` exist **only** as `turbo.json` task names (no matching `package.json` script) — giving them a script that calls `turbo run quality` would create a recursive-invocation loop, which is exactly what Turborepo's own error message warns about if you try it.
+```markdown
+# Good Section
 
-`pnpm doctor` runs [react-doctor](https://github.com/millionco/react-doctor) (`npx react-doctor@latest` under the hood) — a React code-quality scanner tuned for catching mistakes AI agents tend to make. Only the `react-doctor` skill (from `millionco/react-doctor`'s own skills repo, which also ships several skills for react-doctor's _own_ development — those weren't installed) plus the `react-doctor` devDependency and the `doctor` script were added by hand; the tool's own `install` subcommand was deliberately **not** run because it fans out to ~40 agent-config directories and can wire a git pre-commit hook, neither of which fit this repo's existing single-agent (`.claude`), no-hooks convention. `ci install` (the GitHub Actions PR-review integration, free for public repos) was not set up either — ask before adding it.
+Brief overview of what this section documents and why it matters.
 
-## Versioning / releases
+More detail can go in subsequent paragraphs, code blocks, or lists.
 
-Changelog and version bumps for this repo are managed with [changesets](https://github.com/changesets/changesets):
+## Child heading
 
-- Every change worth a changelog entry gets a changeset file via `pnpm changeset` before merging to `main`.
-- `.github/workflows/release.yml` runs `changesets/action@v1` on push to `main`, which opens/updates a "Version Packages" PR that applies the pending changesets and bumps `package.json`'s version.
-- There is deliberately **no publish step** — `package.json` is `"private": true`, so merging the Version Packages PR only versions and tags the repo; nothing is pushed to the npm registry.
-- Merge the changeset PR, then merge the resulting "Version Packages" PR when ready to cut a release — both by hand via `gh pr merge` or the GitHub UI, no extra tooling needed for a repo this size.
+Details about this child topic.
+```
 
-## Reference
+```markdown
+# Bad Section
 
-- [Agent Skills specification](https://agentskills.io/specification)
-- [Skill authoring best practices](https://agentskills.io/skill-creation/best-practices)
+## Child heading
+
+Details about this child topic.
+```
+
+The second example is invalid because `Bad Section` has no leading paragraph. `lat check` validates this rule and reports errors for missing or overly long leading paragraphs.
+
+# Repository workflow
+
+This repository publishes Agent Skills from `skills/`. Nested collections such as `skills/plan-mode/`, `skills/writing/`, and `skills/marketkit/` require `--full-depth` when installing one skill by name.
+
+- Keep each `SKILL.md` name lowercase and hyphenated, with a description that states what the skill does and when it activates.
+- Update the matching README table, docs page under `apps/docs/content/docs/`, and changeset when published skills change.
+- Treat `.agents/skills/` and `.claude/skills/` as ignored development dependencies restored from `skills-lock.json`, not published content.
+- Keep generated evaluation workspaces out of `skills/`; `skills/*-workspace/` is ignored.
+
+# Applications
+
+- `apps/docs` is the Fumadocs site. Run `bun run --filter docs types:check` after changing MDX or app types.
+- `apps/agent` is a local Eve skill-drafting agent. Read the installed Eve docs under `apps/agent/node_modules/eve/docs/` before changing it.
+
+# Commands
+
+```bash
+bun install
+bun run lint
+bun run fmt:check
+bun run build
+bun run --filter agent typecheck
+bun run --filter docs types:check
+lat check
+```
+
+The root package is private and uses changesets only for versioning and tags; releases do not publish an npm package.

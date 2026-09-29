@@ -1,0 +1,26 @@
+---
+title: docs-to-skill
+description: Turn a documentation site into a lean skill backed by local references discovered from llms.txt or sitemap.xml.
+---
+
+Create or refresh a documentation skill whose `SKILL.md` is only an index to
+downloaded pages under `references/`.
+
+## Install
+
+```bash
+npx skills add brianrabil/skills --skill docs-to-skill
+```
+
+## Example requests
+
+```text
+Turn https://example.com/llms.txt into a skill named example-docs and put it
+in ~/.fx/skills/example-docs.
+```
+
+```text
+Refresh the example-docs skill from the upstream llms-full.txt snapshot.
+```
+
+See the full skill source: [`skills/docs-to-skill`](https://github.com/brianrabil/skills/tree/main/skills/docs-to-skill).

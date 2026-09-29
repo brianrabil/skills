@@ -1,0 +1,30 @@
+{
+  "skill_name": "plan-mode-park",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A team member keeps suggesting we add a dark mode. It's not in scope for this quarter. Park it so it stops coming up without losing the idea.",
+      "expected_output": "Records the idea with the reason it is set aside and the trigger that would make it worth revisiting, placed where it will be seen.",
+      "expectations": [
+        "States the idea and why it is not being done now",
+        "Records it with enough context to be understood later",
+        "Names the trigger that would make it worth revisiting",
+        "Places it where it will be seen when the trigger fires",
+        "Confirms the idea was heard and recorded, not dropped"
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Park the request to support Safari 14. Our analytics show 0.2% of users on it, and the work is significant.",
+      "expected_output": "Records the request with the reason and the revisit trigger, and does not make it the parker's responsibility to remember.",
+      "expectations": [
+        "Records the request with the reason it is set aside",
+        "Names the revisit trigger",
+        "Does not authorize starting the work",
+        "Does not make the idea the parker's responsibility to remember"
+      ],
+      "files": []
+    }
+  ]
+}

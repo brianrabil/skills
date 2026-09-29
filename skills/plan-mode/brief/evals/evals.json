@@ -1,0 +1,40 @@
+{
+  "skill_name": "plan-mode-brief",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We researched three caching libraries over the past week. The CTO needs a one-page brief to pick one by Friday. Write it.",
+      "expected_output": "A decision-ready brief that leads with the answer, gives the strongest evidence first with sources, and names the residual uncertainty.",
+      "expectations": [
+        "States the decision the brief serves",
+        "Leads with the answer in one or two sentences",
+        "Gives the strongest evidence first with its source and date",
+        "States what was investigated and ruled out",
+        "Names the residual uncertainty and the observation that would resolve it"
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Brief me on whether we should adopt this new authentication library. The research is thin — we only have the vendor's docs and one blog post.",
+      "expected_output": "Says the evidence cannot support a one-page answer rather than stretching thin evidence into false confidence.",
+      "expectations": [
+        "States that the evidence is too thin for a confident one-page answer",
+        "Does not manufacture confidence the evidence does not support",
+        "Names what additional evidence would be needed"
+      ],
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Write a brief summarizing what we learned from the user interviews.",
+      "expected_output": "Recognizes a brief needs a decision to serve and names it, rather than producing a decision-free summary.",
+      "expectations": [
+        "Names the decision the brief serves, or states that none was given",
+        "Does not produce a padded summary with no decision",
+        "Distinguishes a brief from a summary"
+      ],
+      "files": []
+    }
+  ]
+}

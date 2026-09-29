@@ -1,4 +1,4 @@
-import { ArrowRight, Network } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import ClaudeCode from "@thesvg/react/claude-code";
 import Codex from "@thesvg/react/codex";
@@ -6,22 +6,16 @@ import Cursor from "@thesvg/react/cursor";
 import Github from "@thesvg/react/github";
 import Windsurf from "@thesvg/react/windsurf";
 import Zed from "@thesvg/react/zed";
-import type { CSSProperties, ComponentType, ReactNode } from "react";
-import { Button } from "@workspace/ui/components/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card";
+import type { CSSProperties, ReactNode } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Snippet,
   SnippetAddon,
   SnippetCopyButton,
   SnippetInput,
   SnippetText,
-} from "@workspace/ui/components/snippet";
+} from "@/components/ui/snippet";
 import { docsRoute, gitConfig } from "@/lib/shared";
 
 const githubUrl = `https://github.com/${gitConfig.user}/${gitConfig.repo}`;
@@ -40,22 +34,26 @@ const agents: { name: string; icon: ReactNode }[] = [
   { name: "Zed", icon: <Zed className={agentIconClass} /> },
 ];
 
-type Skill = {
-  name: string;
-  slug: string;
-  tag: string;
-  description: string;
-  icon: ComponentType<{ className?: string }>;
-};
-
-const skills: Skill[] = [
+const skills = [
   {
-    name: "oRPC",
-    slug: "libraries/orpc",
-    tag: "Mirrors official docs",
-    icon: Network,
-    description:
-      "Build, consume, and debug oRPC APIs: procedures, routers, contracts, OpenAPI, and framework adapters.",
+    name: "create-rule",
+    slug: "create-rule",
+    description: "Write portable AGENTS.md instructions or reusable skills.",
+  },
+  {
+    name: "docs-to-skill",
+    slug: "docs-to-skill",
+    description: "Turn documentation sites into skills backed by local references.",
+  },
+  {
+    name: "opensrc",
+    slug: "opensrc",
+    description: "Inspect version-matched dependency and repository source.",
+  },
+  {
+    name: "repo-knowledge-miner",
+    slug: "repo-knowledge-miner",
+    description: "Preserve repository knowledge with provenance and coverage.",
   },
 ];
 
@@ -153,12 +151,12 @@ export default function HomePage() {
                 Browse the skills
               </h2>
               <p className="max-w-lg text-muted-foreground">
-                Library skills mirror official docs, so your agent works from the real API instead
-                of a hazy memory of it. My own custom skills land next.
+                Browse individual skills for documentation, source investigation, and repository
+                knowledge. Install them all, or pick one by name.
               </p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {skills.map(({ name, slug, tag, description, icon: Icon }) => (
+              {skills.map(({ name, slug, description }) => (
                 <Link
                   key={slug}
                   href={`${docsRoute}/${slug}`}
@@ -166,14 +164,6 @@ export default function HomePage() {
                 >
                   <Card className="h-full transition-all group-hover/skill:ring-foreground/20 motion-reduce:transition-none">
                     <CardHeader>
-                      <div className="mb-2 flex items-center justify-between">
-                        <span className="inline-flex size-9 items-center justify-center rounded-lg bg-muted text-foreground">
-                          <Icon className="size-4.5" />
-                        </span>
-                        <span className="rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground">
-                          {tag}
-                        </span>
-                      </div>
                       <CardTitle className="flex items-center gap-1.5">
                         {name}
                         <ArrowRight className="size-4 -translate-x-1 text-muted-foreground opacity-0 transition-all group-hover/skill:translate-x-0 group-hover/skill:opacity-100 motion-reduce:transition-none" />

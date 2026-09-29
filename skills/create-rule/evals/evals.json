@@ -1,0 +1,42 @@
+{
+  "skill_name": "create-rule",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Create a rule that we always use bun for install, run, and test. Never npm or yarn. Don't add package-lock.json.",
+      "expected_output": "A root AGENTS.md section about the package manager. No .cursor/rules, no skill.",
+      "files": [],
+      "expectations": [
+        "Writes or updates a root AGENTS.md",
+        "AGENTS.md tells agents to use bun and not npm or yarn",
+        "Does not create a SKILL.md for this always-on convention",
+        "Does not create .cursor/rules, a .mdc file, or CLAUDE.md"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Add a rule for the Next.js app in apps/web: before writing any Next code, read the relevant guide in node_modules/next/dist/docs/. This only applies to that app, not the rest of the monorepo.",
+      "expected_output": "A nested apps/web/AGENTS.md with the Next.js docs instruction. Root AGENTS.md is not the place for this.",
+      "files": [],
+      "expectations": [
+        "Creates or updates apps/web/AGENTS.md",
+        "Tells the agent to read node_modules/next/dist/docs before writing Next code",
+        "Does not put the Next.js-only rule into the repo-root AGENTS.md",
+        "Does not create .cursor/rules or a .mdc file"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Create a rule for how we write oRPC v2 procedures \u2014 os builder, .input/.output/.handler, no v1 APIs. We don't need this in every conversation, only when someone is touching the API layer.",
+      "expected_output": "A project skill (SKILL.md) with a pushy description, not an always-on root AGENTS.md dump.",
+      "files": [],
+      "expectations": [
+        "Creates a SKILL.md under a project skill root",
+        "Frontmatter includes name and a description that mentions oRPC or API procedures",
+        "Skill body describes os builder and .input/.output/.handler",
+        "Does not replace root AGENTS.md with the full oRPC playbook",
+        "Does not create .cursor/rules or a .mdc file"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "skill_name": "plan-mode-audit",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Audit the user API in artifact/api.py against the standard in standard/STYLE.md. Report what passes and what violates.",
+      "expected_output": "Each standard property graded as met, violated, or unverifiable, with specific file-and-line evidence, ranked by severity.",
+      "expectations": [
+        "Names the standard being judged against",
+        "Grades each property as met, violated, or unverifiable with evidence",
+        "Cites specific file and line for each violation",
+        "Distinguishes a violation of the standard from a personal preference",
+        "Ranks violations by severity and states the consequence of each"
+      ],
+      "files": ["evals/files/positive/artifact", "evals/files/positive/standard"]
+    },
+    {
+      "id": 2,
+      "prompt": "Audit artifact/api.py for security problems.",
+      "expected_output": "Recognizes no standard was named and either proposes one or states that the audit cannot proceed without one.",
+      "expectations": [
+        "Recognizes that no standard was named",
+        "Proposes a standard or states that the audit needs one",
+        "Does not silently substitute its own preferences for a named standard"
+      ],
+      "files": ["evals/files/positive/artifact"]
+    }
+  ]
+}

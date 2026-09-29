@@ -7,3 +7,9 @@ node_modules/
 # which reads skills-lock.json — see CLAUDE.md)
 .agents/
 .claude/skills/
+.fx/
+
+**/__pycache__/
+*.py[cod]
+lat.md/.cache/
+skills/*-workspace/
